@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--modal-overlay);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -15,7 +15,8 @@
 }
 
 .auth-modal {
-  background: white;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 2rem;
   width: 100%;
@@ -23,7 +24,7 @@
   max-height: calc(100vh - 2rem);
   overflow-y: auto;
   position: relative;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 20px 60px var(--shadow-heavy);
   animation: slideUp 0.3s ease;
 }
 
@@ -34,7 +35,7 @@
   background: none;
   border: none;
   font-size: 1.5rem;
-  color: #999;
+  color: var(--text-muted);
   cursor: pointer;
   padding: 0.25rem;
   line-height: 1;
@@ -43,7 +44,7 @@
 }
 
 .auth-modal-close:hover {
-  color: #333;
+  color: var(--text-primary);
 }
 
 .auth-modal-header {
@@ -55,16 +56,16 @@
 .auth-modal-header h2 {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--text-primary);
   margin: 0 0 0.25rem 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--accent-color) 0%, #764ba2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .auth-modal-header p {
-  color: #666;
+  color: var(--text-muted);
   margin: 0;
   font-size: 0.9rem;
 }
@@ -82,54 +83,54 @@
 
 .form-group label {
   font-weight: 500;
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 0.25rem;
   font-size: 0.85rem;
 }
 
 .form-group input {
   padding: 0.625rem 0.75rem;
-  border: 2px solid #e0e0e0;
+  border: 2px solid var(--border-color);
   border-radius: 6px;
   font-size: 0.9rem;
   transition: all 0.3s ease;
-  background: white;
-  color: #333;
+  background: var(--bg-primary);
+  color: var(--text-primary);
   font-family: inherit;
 }
 
 .form-group input::placeholder {
-  color: #999;
+  color: var(--text-muted);
   opacity: 1;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
-  background: white;
-  color: #333;
+  border-color: var(--accent-color);
+  background: var(--bg-primary);
+  color: var(--text-primary);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .form-group input:not(:focus) {
-  background: #fafafa;
+  background: var(--bg-secondary);
 }
 
 /* Specific fixes for password fields */
 .form-group input[type="password"] {
-  color: #333 !important;
-  background: white !important;
+  color: var(--text-primary) !important;
+  background: var(--bg-primary) !important;
   -webkit-text-security: disc;
   font-family: text-security-disc, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .form-group input[type="password"]:focus {
-  color: #333 !important;
-  background: white !important;
+  color: var(--text-primary) !important;
+  background: var(--bg-primary) !important;
 }
 
 .form-group input[type="password"]::placeholder {
-  color: #999 !important;
+  color: var(--text-muted) !important;
   -webkit-text-security: none;
   font-family: inherit;
 }
@@ -137,26 +138,26 @@
 /* Fix for all input types */
 .form-group input[type="text"],
 .form-group input[type="email"] {
-  color: #333 !important;
+  color: var(--text-primary) !important;
 }
 
 .form-group input[type="text"]:focus,
 .form-group input[type="email"]:focus {
-  color: #333 !important;
+  color: var(--text-primary) !important;
 }
 
 .error-message {
-  background: #fee;
-  color: #c33;
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error-color);
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
   font-size: 0.8rem;
-  border: 1px solid #fcc;
+  border: 1px solid rgba(239, 68, 68, 0.2);
   margin-top: 0.5rem;
 }
 
 .auth-submit-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--accent-color) 0%, #764ba2 100%);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -183,11 +184,11 @@
   text-align: center;
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--border-color);
 }
 
 .auth-switch p {
-  color: #666;
+  color: var(--text-muted);
   margin: 0;
   font-size: 0.85rem;
 }
@@ -195,7 +196,7 @@
 .auth-switch-btn {
   background: none;
   border: none;
-  color: #667eea;
+  color: var(--accent-color);
   font-weight: 600;
   cursor: pointer;
   text-decoration: underline;
@@ -204,7 +205,7 @@
 }
 
 .auth-switch-btn:hover {
-  color: #5a6fd8;
+  color: var(--accent-hover);
 }
 
 .forgot-password {
@@ -215,7 +216,7 @@
 .forgot-password-btn {
   background: none;
   border: none;
-  color: #667eea;
+  color: var(--accent-color);
   font-size: 0.8rem;
   cursor: pointer;
   text-decoration: underline;
@@ -223,7 +224,7 @@
 }
 
 .forgot-password-btn:hover {
-  color: #5a6fd8;
+  color: var(--accent-hover);
 }
 
 @keyframes fadeIn {
