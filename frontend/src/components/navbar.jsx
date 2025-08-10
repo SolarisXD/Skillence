@@ -3,7 +3,7 @@ import AuthModal from './AuthModal';
 import ThemeSelector from './ThemeSelector';
 import '../styles/navbar.css';
 
-const Navbar = () => {
+const Navbar = ({ onAuthClick, onAboutClick }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isAtTop, setIsAtTop] = useState(true);
