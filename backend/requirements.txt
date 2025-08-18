@@ -9,3 +9,4 @@ python-dotenv==1.0.0
 passlib==1.7.4
 email-mime-text
 email-mime-multipart
+dotenv

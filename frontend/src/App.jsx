@@ -18,7 +18,6 @@ function App() {
       <Navbar onAuthClick={() => setShowAuthModal(true)} onAboutClick={scrollToFooter} />
       <ThemeSelector />
       
-      {/* Hero Section */}
       <div className="hero-container">
         <div className="hero-content">
           <h1 className="hero-title">Transform Your Career with AI-Powered Guidance</h1>
