@@ -20,17 +20,18 @@ function App() {
       
       <div className="hero-container">
         <div className="hero-content">
-          <h1 className="hero-title">Transform Your Career with AI-Powered Guidance</h1>
+          <h1 className="hero-title">AI-Powered Career Intelligence Platform</h1>
           <p className="hero-subtitle">
-            Discover personalized career paths, skill assessments, and learning roadmaps 
-            tailored to your unique profile and market trends.
+            Leverage advanced machine learning algorithms to discover personalized career pathways, 
+            intelligent skill assessments, and data-driven learning roadmaps tailored to your unique 
+            professional profile and emerging market trends.
           </p>
           <div className="hero-buttons">
-            <button className="cta-button primary">Get Started</button>
-            <div className="ai-widget">
+            <button className="cta-button primary">Launch AI Assistant</button>
+            <div className="business-widget">
               <span className="widget-icon">🤖</span>
               <div className="widget-content">
-                <span className="widget-text">AI Learning Path - Personalized for you</span>
+                <span className="widget-text">AI Career Analytics - Powered by Machine Learning</span>
                 <div className="progress-indicator">
                   <div className="progress-line"></div>
                 </div>
@@ -43,34 +44,38 @@ function App() {
       {/* Key Features Section */}
       <section className="features-section">
         <div className="container">
-          <h2 className="section-title">Intelligent Career Intelligence Platform</h2>
+          <h2 className="section-title">Advanced AI Career Intelligence</h2>
+          <p className="section-subtitle">
+            Harness the power of artificial intelligence to unlock your professional potential 
+            with data-driven insights and personalized recommendations.
+          </p>
           <div className="features-grid">
             
-            {/* Skill Assessment Feature */}
+            {/* AI Skill Assessment Feature */}
             <div className="feature-card assessment">
               <div className="feature-icon">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                   <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
               </div>
-              <h3>Smart Skill Assessment</h3>
-              <p>Upload your resume or fill out forms to get AI-powered skill analysis using advanced NLP technology.</p>
+              <h3>AI-Powered Skill Assessment</h3>
+              <p>Upload your resume or complete intelligent forms to receive comprehensive skill analysis using advanced natural language processing and machine learning algorithms.</p>
               <div className="feature-tech">
-                <span className="tech-tag">spaCy</span>
-                <span className="tech-tag">BERT</span>
-                <span className="tech-tag">NLP</span>
+                <span className="tech-tag">ML Analytics</span>
+                <span className="tech-tag">NLP Processing</span>
+                <span className="tech-tag">AI Assessment</span>
               </div>
             </div>
 
-            {/* Job Market Analysis */}
+            {/* Market Intelligence Analysis */}
             <div className="feature-card market">
               <div className="feature-icon">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                   <path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
                 </svg>
               </div>
-              <h3>Market Trend Analysis</h3>
-              <p>Real-time job market insights with interactive graphs showing salary trends and demand patterns.</p>
+              <h3>Real-Time Market Intelligence</h3>
+              <p>AI-driven job market analysis with predictive algorithms showing salary trends, demand forecasting, and emerging skill requirements across industries.</p>
               <div className="trend-preview">
                 <div className="mini-chart">
                   <div className="chart-bar" style={{height: '20%'}}></div>
@@ -78,23 +83,23 @@ function App() {
                   <div className="chart-bar" style={{height: '80%'}}></div>
                   <div className="chart-bar" style={{height: '60%'}}></div>
                 </div>
-                <span className="trend-text">📈 +15% growth</span>
+                <span className="trend-text">� +23% AI demand</span>
               </div>
             </div>
 
-            {/* Career Path Recommendations */}
+            {/* Intelligent Career Path Recommendations */}
             <div className="feature-card recommendations">
               <div className="feature-icon">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                   <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 01.553-.894L9 2l6 3 5.447-2.724A1 1 0 0121 3.618v10.764a1 1 0 01-.553.894L15 18l-6-3z"/>
                 </svg>
               </div>
-              <h3>Intelligent Career Paths</h3>
-              <p>Netflix-style recommendations using collaborative filtering and knowledge graphs for seamless career transitions.</p>
+              <h3>Intelligent Career Pathways</h3>
+              <p>AI-curated career recommendations using deep learning models trained on industry data, successful career transitions, and emerging technology trends.</p>
               <div className="path-example">
                 <span className="role">Data Analyst</span>
                 <span className="arrow">→</span>
-                <span className="role">ML Engineer</span>
+                <span className="role">AI Engineer</span>
               </div>
             </div>
 
@@ -102,29 +107,33 @@ function App() {
         </div>
       </section>
 
-      {/* Learning & Progress Section */}
+      {/* AI Learning & Progress Section */}
       <section className="learning-section">
         <div className="container">
+          <h2 className="section-title">Adaptive Learning Intelligence</h2>
+          <p className="section-subtitle">
+            Experience personalized education powered by AI algorithms that adapt to your learning style and career objectives.
+          </p>
           <div className="learning-grid">
             
-            {/* Upskilling Roadmap */}
+            {/* AI-Powered Upskilling Roadmap */}
             <div className="learning-card roadmap">
-              <h3>🎯 Personalized Roadmaps</h3>
-              <p>Custom learning paths with recommended courses, certifications, and skill-building resources.</p>
+              <h3>🎯 AI-Generated Learning Roadmaps</h3>
+              <p>Machine learning algorithms create personalized learning paths with recommended courses, certifications, and skill-building resources based on your career goals and current competencies.</p>
               <div className="roadmap-preview">
-                <div className="step completed">Python Basics</div>
-                <div className="step current">Machine Learning</div>
-                <div className="step">Deep Learning</div>
+                <div className="step completed">Python Fundamentals</div>
+                <div className="step current">Machine Learning Basics</div>
+                <div className="step">Neural Networks & Deep Learning</div>
               </div>
             </div>
 
-            {/* Progress Tracker */}
+            {/* Intelligent Progress Tracker */}
             <div className="learning-card progress">
-              <h3>📊 Achievement Tracker</h3>
-              <p>Gamified progress system that grows as you complete your personalized learning roadmap.</p>
+              <h3>📊 Smart Achievement Analytics</h3>
+              <p>AI-powered progress tracking with predictive insights, personalized milestones, and intelligent recommendations to optimize your learning journey.</p>
               <div className="progress-bar">
-                <div className="progress-fill" style={{width: '65%'}}></div>
-                <span className="progress-text">65% Complete</span>
+                <div className="progress-fill" style={{width: '72%'}}></div>
+                <span className="progress-text">72% Complete</span>
               </div>
               <div className="achievement-badges">
                 <div className="badge earned">🏆</div>
@@ -137,32 +146,36 @@ function App() {
         </div>
       </section>
 
-      {/* AI Assistant Section */}
-      <section className="ai-section">
+      {/* AI Assistant & Intelligence Section */}
+      <section className="business-section">
         <div className="container">
-          <div className="ai-grid">
+          <h2 className="section-title">AI-Powered Career Intelligence</h2>
+          <p className="section-subtitle">
+            Advanced artificial intelligence systems providing personalized career guidance and predictive insights.
+          </p>
+          <div className="business-grid">
             
-            {/* Career Chatbot */}
-            <div className="ai-card chatbot">
+            {/* AI Career Chatbot */}
+            <div className="business-card chatbot">
               <div className="chat-header">
                 <div className="bot-avatar">🤖</div>
-                <h3>Career Assistant</h3>
+                <h3>AI Career Advisor</h3>
               </div>
               <div className="chat-preview">
-                <div className="message bot">How can I transition to AI/ML from web development?</div>
-                <div className="message user">I'd recommend starting with Python and statistics...</div>
+                <div className="message bot">How can I transition from web development to AI engineering?</div>
+                <div className="message user">I recommend starting with Python, machine learning fundamentals, and building portfolio projects with TensorFlow...</div>
               </div>
             </div>
 
-            {/* Emotion Analysis */}
-            <div className="ai-card emotion">
-              <h3>💭 Sentiment Insights</h3>
-              <p>AI-powered analysis of your career journal entries to provide personalized feedback.</p>
+            {/* AI Sentiment Analysis */}
+            <div className="business-card emotion">
+              <h3>💭 AI Career Sentiment Analysis</h3>
+              <p>Advanced natural language processing analyzes your career journal entries and provides intelligent insights about job satisfaction and growth opportunities.</p>
               <div className="emotion-example">
-                <div className="journal-entry">"I feel drained coding every day."</div>
+                <div className="journal-entry">"I feel overwhelmed by the rapidly changing tech landscape."</div>
                 <div className="sentiment-result">
-                  <span className="sentiment-tag negative">😔 Burnout detected</span>
-                  <span className="recommendation">Schedule adjusted to be more relaxed</span>
+                  <span className="sentiment-tag negative">� Learning Anxiety Detected</span>
+                  <span className="recommendation">AI suggests: Structured learning plan with achievable milestones</span>
                 </div>
               </div>
             </div>
@@ -171,15 +184,19 @@ function App() {
         </div>
       </section>
 
-      {/* Analytics Section */}
+      {/* AI Analytics & Intelligence Section */}
       <section className="analytics-section">
         <div className="container">
+          <h2 className="section-title">Advanced Career Analytics</h2>
+          <p className="section-subtitle">
+            Leverage machine learning insights and predictive analytics to make data-driven career decisions.
+          </p>
           <div className="analytics-grid">
             
-            {/* Location Insights */}
+            {/* AI Location Intelligence */}
             <div className="analytics-card location">
-              <h3>🗺️ Geographic Insights</h3>
-              <p>Interactive heatmaps showing job opportunities and salary ranges by location.</p>
+              <h3>🗺️ AI-Powered Geographic Intelligence</h3>
+              <p>Machine learning algorithms analyze job market data to provide intelligent heatmaps showing opportunities, salary ranges, and emerging tech hubs by location.</p>
               <div className="heatmap-preview">
                 <div className="map-placeholder">
                   <div className="heat-point hot" style={{top: '30%', left: '20%'}}></div>
@@ -189,18 +206,18 @@ function App() {
               </div>
             </div>
 
-            {/* Resume Evaluator */}
+            {/* AI Resume Intelligence */}
             <div className="analytics-card resume">
-              <h3>📄 Resume Intelligence</h3>
-              <p>AI-powered resume analysis with actionable improvement suggestions and ATS optimization.</p>
+              <h3>📄 AI Resume Intelligence Engine</h3>
+              <p>Advanced natural language processing provides comprehensive resume analysis with intelligent optimization suggestions and ATS compatibility scoring.</p>
               <div className="resume-score">
                 <div className="score-circle">
-                  <span className="score">87</span>
+                  <span className="score">92</span>
                   <span className="score-label">Score</span>
                 </div>
                 <div className="improvements">
-                  <div className="improvement">+ Add technical skills</div>
-                  <div className="improvement">+ Include metrics</div>
+                  <div className="improvement">+ Add AI/ML keywords</div>
+                  <div className="improvement">+ Include quantified achievements</div>
                 </div>
               </div>
             </div>
@@ -214,8 +231,8 @@ function App() {
         <div className="footer-container">
           <div className="footer-main">
             <div className="footer-brand">
-              <h3>Skillence</h3>
-              <p>AI-powered career guidance for modern professionals</p>
+              <h3>AI Skillence</h3>
+              <p>Next-generation career intelligence powered by artificial intelligence and machine learning algorithms</p>
             </div>
             
             <div className="footer-links">

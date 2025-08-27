@@ -83,7 +83,12 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
 
   const scrollToAbout = (e) => {
     e.preventDefault();
-    document.getElementById('about-us').scrollIntoView({ behavior: 'smooth' });
+    document.querySelector('.footer').scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const scrollToServices = (e) => {
+    e.preventDefault();
+    document.querySelector('.features-section').scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleSignOut = () => {
@@ -130,7 +135,7 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
                 <a href="#about-us" className="nav-link" onClick={scrollToAbout}>About Us</a>
               </li>
               <li className="nav-item">
-                <a href="#services" className="nav-link">Services</a>
+                <a href="#services" className="nav-link" onClick={scrollToServices}>Services</a>
               </li>
             </ul>
           </div>

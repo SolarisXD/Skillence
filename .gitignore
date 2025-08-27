@@ -54,5 +54,7 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
-
 Thumbs.db
+
+# Ignore the entire .github folder
+.github/
