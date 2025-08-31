@@ -20,7 +20,11 @@ async def connect_to_mongo():
     if not MONGODB_URI:
         raise ValueError("MONGODB_URI not found in environment variables")
     
-    client = motor.motor_asyncio.AsyncIOMotorClient(MONGODB_URI)
+    client = motor.motor_asyncio.AsyncIOMotorClient(
+        MONGODB_URI,
+        tlsAllowInvalidCertificates=True,
+        retryWrites=True
+    )
     database = client.skillence_db
     
     # Test the connection

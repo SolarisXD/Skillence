@@ -1,0 +1,77 @@
+JOHN SMITH
+Software Engineer
+📧 john.smith@example.com | 📱 (555) 123-4567 | 🔗 linkedin.com/in/johnsmith | 💻 github.com/johnsmith
+
+PROFESSIONAL SUMMARY
+Experienced Full-Stack Software Engineer with 5+ years of expertise in developing scalable web applications using modern technologies. Proficient in Python, JavaScript, and cloud platforms. Strong background in machine learning and data analysis.
+
+TECHNICAL SKILLS
+• Programming Languages: Python (Expert), JavaScript (Advanced), Java (Intermediate), C++ (Basic)
+• Web Technologies: React, Angular, Node.js, HTML5, CSS3, TypeScript
+• Frameworks: Django, Flask, Spring Boot, Express.js
+• Databases: PostgreSQL, MongoDB, Redis, MySQL
+• Cloud & DevOps: AWS, Docker, Kubernetes, Jenkins, Terraform
+• Machine Learning: TensorFlow, PyTorch, Scikit-learn, Pandas, NumPy
+• Tools: Git, JIRA, Confluence, Postman, VS Code
+
+PROFESSIONAL EXPERIENCE
+
+Senior Software Engineer
+TechCorp Inc. | San Francisco, CA
+June 2021 - Present
+• Led development of microservices architecture handling 10M+ daily requests
+• Implemented CI/CD pipelines reducing deployment time by 60%
+• Mentored 5 junior developers and conducted code reviews
+• Designed and built RESTful APIs using Python and Django
+• Optimized database queries improving application performance by 40%
+
+Software Engineer
+StartupXYZ | Remote
+March 2019 - May 2021  
+• Developed responsive web applications using React and Node.js
+• Built machine learning models for customer behavior prediction
+• Collaborated with cross-functional teams in Agile environment
+• Implemented automated testing increasing code coverage to 95%
+
+EDUCATION
+
+Master of Science in Computer Science
+Stanford University | Stanford, CA
+September 2017 - June 2019
+GPA: 3.8/4.0
+Relevant Coursework: Machine Learning, Algorithms, Database Systems
+
+Bachelor of Science in Software Engineering  
+UC Berkeley | Berkeley, CA
+September 2013 - June 2017
+GPA: 3.6/4.0
+Summa Cum Laude
+
+PROJECTS
+
+E-Commerce Platform
+• Built full-stack e-commerce application using React, Node.js, and MongoDB
+• Integrated Stripe payment processing and real-time inventory management
+• Deployed on AWS with auto-scaling capabilities
+• Technologies: React, Node.js, MongoDB, AWS, Docker
+
+AI Chatbot for Customer Support
+• Developed intelligent chatbot using NLP and machine learning
+• Achieved 85% accuracy in customer query resolution
+• Integrated with existing CRM systems
+• Technologies: Python, TensorFlow, NLTK, Flask, PostgreSQL
+
+CERTIFICATIONS
+• AWS Certified Solutions Architect - Associate (2022)
+• Google Cloud Professional Data Engineer (2021)  
+• Certified Scrum Master (CSM) (2020)
+
+ACHIEVEMENTS & AWARDS
+• Employee of the Year - TechCorp Inc. (2022)
+• Published research paper: "Scalable Microservices Architecture" - IEEE Conference (2021)
+• Winner of company-wide hackathon for innovative ML solution (2020)
+• Dean's List - UC Berkeley (2015-2017)
+
+ADDITIONAL INFORMATION
+Languages: English (Native), Spanish (Conversational), French (Basic)
+Interests: Open source contributions, competitive programming, hiking, photography

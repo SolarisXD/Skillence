@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import AuthModal from './AuthModal';
 import ThemeSelector from './ThemeSelector';
 import '../styles/navbar.css';
 
 const Navbar = ({ onAuthClick, onAboutClick }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isAtTop, setIsAtTop] = useState(true);
@@ -13,6 +16,7 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState('login');
   const [showThemeSelector, setShowThemeSelector] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,7 +53,7 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
       if (!event.target.closest('.profile-dropdown')) {
         setShowDropdown(false);
       }
-      if (!event.target.closest('.theme-dropdown-container') && !event.target.closest('.theme-selector-dropdown')) {
+      if (!event.target.closest('.theme-dropdown-container')) {
         setShowThemeSelector(false);
       }
     };
@@ -58,77 +62,111 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const checkAuthStatus = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (token) {
-        const response = await fetch('http://localhost:5000/api/auth/verify', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        if (response.ok) {
-          const userData = await response.json();
-          setIsAuthenticated(true);
-          setUser(userData);
-        } else {
-          localStorage.removeItem('token');
-        }
-      }
-    } catch (error) {
-      console.error('Auth check failed:', error);
-      localStorage.removeItem('token');
+  const checkAuthStatus = () => {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    
+    if (token && userData) {
+      setIsAuthenticated(true);
+      setUser(JSON.parse(userData));
+    } else {
+      setIsAuthenticated(false);
+      setUser(null);
     }
-  };
-
-  const scrollToAbout = (e) => {
-    e.preventDefault();
-    document.querySelector('.footer').scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const scrollToServices = (e) => {
-    e.preventDefault();
-    document.querySelector('.features-section').scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleSignOut = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setIsAuthenticated(false);
     setUser(null);
     setShowDropdown(false);
+    navigate('/');
   };
 
   const openAuthModal = (mode) => {
     setAuthMode(mode);
     setShowAuthModal(true);
+    if (onAuthClick) {
+      onAuthClick();
+    }
   };
 
   const closeAuthModal = () => {
     setShowAuthModal(false);
   };
 
-  const switchAuthMode = () => {
-    setAuthMode(authMode === 'login' ? 'signup' : 'login');
+  const handleAuthSuccess = (userData) => {
+    setIsAuthenticated(true);
+    setUser(userData);
+    setShowAuthModal(false);
+  };
+
+  const scrollToAbout = (e) => {
+    e.preventDefault();
+    if (location.pathname !== '/') {
+      navigate('/', { state: { scrollToAbout: true } });
+    } else {
+      const aboutSection = document.getElementById('about-us');
+      if (aboutSection) {
+        aboutSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+    if (onAboutClick) {
+      onAboutClick();
+    }
+  };
+
+  const scrollToServices = (e) => {
+    e.preventDefault();
+    if (location.pathname !== '/') {
+      navigate('/', { state: { scrollToServices: true } });
+    } else {
+      const servicesSection = document.getElementById('services');
+      if (servicesSection) {
+        servicesSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
+  const handleThemeClick = () => {
+    setShowThemeSelector(!showThemeSelector);
   };
 
   const handleThemeChange = (theme) => {
-    console.log('Theme changed to:', theme);
+    // Apply theme change logic here
+    setShowThemeSelector(false);
   };
 
-  const handleThemeClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setShowThemeSelector(!showThemeSelector);
-  };
+  // Handle navigation on route changes
+  useEffect(() => {
+    if (location.state?.scrollToAbout) {
+      setTimeout(() => {
+        const aboutSection = document.getElementById('about-us');
+        if (aboutSection) {
+          aboutSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else if (location.state?.scrollToServices) {
+      setTimeout(() => {
+        const servicesSection = document.getElementById('services');
+        if (servicesSection) {
+          servicesSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  }, [location]);
 
   return (
     <>
       <nav className={`navbar ${isVisible ? 'navbar-visible' : 'navbar-hidden'} ${isAtTop ? 'navbar-at-top' : 'navbar-floating'}`}>
         <div className="navbar-container">
-          <div className="navbar-brand">
+          {/* Logo - Left aligned */}
+          <div className="navbar-brand" onClick={() => navigate('/')}>
             <h1>Skillence</h1>
           </div>
           
+          {/* Navigation Menu - Center-left with proper spacing */}
           <div className="navbar-menu">
             <ul className="navbar-nav">
               <li className="nav-item">
@@ -140,16 +178,21 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
             </ul>
           </div>
           
+          {/* Mobile Menu Toggle */}
+          <button 
+            className={`mobile-menu-toggle ${mobileMenuOpen ? 'active' : ''}`}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle mobile menu"
+          >
+            <div className="hamburger-line"></div>
+            <div className="hamburger-line"></div>
+            <div className="hamburger-line"></div>
+          </button>
+          
+          {/* Actions Section - Right aligned */}
           <div className="navbar-actions">
             {isAuthenticated ? (
               <>
-                <button className="dashboard-btn">
-                  <svg viewBox="0 0 24 24" className="dashboard-icon">
-                    <path fill="currentColor" d="M13,3V9H21V3M13,21H21V11H13M3,21H11V15H3M3,13H11V3H3V13Z" />
-                  </svg>
-                  Dashboard
-                </button>
-                
                 <div className="profile-dropdown">
                   <button 
                     className="profile-btn"
@@ -161,6 +204,18 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
                   </button>
                   {showDropdown && (
                     <div className="dropdown-menu">
+                      <button 
+                        className="dropdown-item"
+                        onClick={() => {
+                          navigate('/dashboard/resume');
+                          setShowDropdown(false);
+                        }}
+                      >
+                        <svg viewBox="0 0 24 24" className="dropdown-icon">
+                          <path fill="currentColor" d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                        </svg>
+                        <span>Resume Dashboard</span>
+                      </button>
                       <a href="/profile" className="dropdown-item">
                         <svg viewBox="0 0 24 24" className="dropdown-icon">
                           <path fill="currentColor" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
@@ -218,12 +273,83 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
         </div>
       </nav>
 
-      <AuthModal 
-        isOpen={showAuthModal}
-        onClose={closeAuthModal}
-        mode={authMode}
-        onSwitchMode={switchAuthMode}
-      />
+      {/* Mobile Navigation Menu */}
+      {mobileMenuOpen && (
+        <div className="mobile-nav active">
+          <ul className="mobile-nav-list">
+            <li className="mobile-nav-item">
+              <a 
+                href="#about-us" 
+                className="mobile-nav-link" 
+                onClick={(e) => {
+                  scrollToAbout(e);
+                  setMobileMenuOpen(false);
+                }}
+              >
+                About Us
+              </a>
+            </li>
+            <li className="mobile-nav-item">
+              <a 
+                href="#services" 
+                className="mobile-nav-link"
+                onClick={(e) => {
+                  scrollToServices(e);
+                  setMobileMenuOpen(false);
+                }}
+              >
+                Services
+              </a>
+            </li>
+          </ul>
+          
+          {isAuthenticated && (
+            <div className="mobile-auth-buttons">
+              <button 
+                className="btn-primary"
+                onClick={() => {
+                  navigate('/dashboard/resume');
+                  setMobileMenuOpen(false);
+                }}
+              >
+                Resume Dashboard
+              </button>
+            </div>
+          )}
+          
+          {!isAuthenticated && (
+            <div className="mobile-auth-buttons">
+              <button 
+                className="btn-secondary"
+                onClick={() => {
+                  openAuthModal('login');
+                  setMobileMenuOpen(false);
+                }}
+              >
+                Sign In
+              </button>
+              <button 
+                className="btn-primary"
+                onClick={() => {
+                  openAuthModal('signup');
+                  setMobileMenuOpen(false);
+                }}
+              >
+                Get Started
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {showAuthModal && (
+        <AuthModal
+          isOpen={showAuthModal}
+          onClose={closeAuthModal}
+          mode={authMode}
+          onSuccess={handleAuthSuccess}
+        />
+      )}
     </>
   );
 };

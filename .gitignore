@@ -58,3 +58,4 @@ Thumbs.db
 
 # Ignore the entire .github folder
 .github/
+VALIDATION_REPORT.md

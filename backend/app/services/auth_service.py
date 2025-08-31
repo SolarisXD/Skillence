@@ -75,6 +75,40 @@ class AuthService:
         
         return {"access_token": access_token, "token_type": "bearer"}
     
+    async def verify_token(self, token: str):
+        """Verify JWT token and return user data"""
+        users_collection = self._get_collection()
+        
+        payload = verify_token(token)
+        if not payload:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token"
+            )
+        
+        email = payload.get("sub")
+        user_id = payload.get("user_id")
+        if not email or not user_id:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token"
+            )
+        
+        user = await users_collection.find_one({"email": email})
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="User not found"
+            )
+        
+        return {
+            "userId": str(user["_id"]),
+            "email": user["email"],
+            "name": user["name"],
+            "created_at": user["created_at"],
+            "is_verified": user["is_verified"]
+        }
+
     async def get_current_user(self, token: str):
         users_collection = self._get_collection()
         

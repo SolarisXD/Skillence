@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/AuthModal.css';
 
 const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -33,7 +35,7 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
           return;
         }
 
-        const response = await fetch('http://localhost:5000/api/auth/register', {
+        const response = await fetch('http://localhost:8000/api/auth/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -48,14 +50,16 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
         if (response.ok) {
           const data = await response.json();
           localStorage.setItem('token', data.access_token);
+          localStorage.setItem('userId', data.user_id);
+          localStorage.setItem('user', JSON.stringify({ email: formData.email, name: formData.name }));
           onClose();
-          window.location.reload(); // Refresh to update auth state
+          navigate('/dashboard/resume'); // Navigate to resume dashboard
         } else {
           const errorData = await response.json();
           setError(errorData.detail || 'Registration failed');
         }
       } else {
-        const response = await fetch('http://localhost:5000/api/auth/login', {
+        const response = await fetch('http://localhost:8000/api/auth/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -69,8 +73,10 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
         if (response.ok) {
           const data = await response.json();
           localStorage.setItem('token', data.access_token);
+          localStorage.setItem('userId', data.user_id);
+          localStorage.setItem('user', JSON.stringify({ email: formData.email }));
           onClose();
-          window.location.reload(); // Refresh to update auth state
+          navigate('/dashboard/resume'); // Navigate to resume dashboard
         } else {
           const errorData = await response.json();
           setError(errorData.detail || 'Login failed');

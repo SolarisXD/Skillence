@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from app.routers import auth
+from app.routers import auth, resume, profile
 from app.database import connect_to_mongo, close_mongo_connection
 import os
 from dotenv import load_dotenv
@@ -19,13 +19,15 @@ app = FastAPI(title="Skillence API", version="1.0.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173"],
+    allow_origins=["http://localhost:3000", "http://localhost:5173", "http://localhost:5174", "http://localhost:8001"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 app.include_router(auth.router, prefix="/api/auth", tags=["authentication"])
+app.include_router(resume.router, prefix="/api/resume", tags=["resume"])
+app.include_router(profile.router, prefix="/api/profile", tags=["profile"])
 
 @app.get("/")
 async def root():
@@ -33,4 +35,4 @@ async def root():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=5000)
+    uvicorn.run(app, host="0.0.0.0", port=8002)

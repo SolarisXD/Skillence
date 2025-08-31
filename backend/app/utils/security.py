@@ -37,7 +37,10 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
 def verify_token(token: str):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        return payload
+        user_id = payload.get("user_id")
+        if user_id is None:
+            raise JWTError("User ID not found in token")
+        return user_id
     except JWTError:
         return None
 
