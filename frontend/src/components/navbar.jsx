@@ -193,6 +193,18 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
           <div className="navbar-actions">
             {isAuthenticated ? (
               <>
+                {/* Dashboard Button - Only shown when logged in */}
+                <button 
+                  className="dashboard-btn"
+                  onClick={() => navigate('/dashboard/resume')}
+                  title="Dashboard"
+                >
+                  <svg viewBox="0 0 24 24" className="dashboard-icon">
+                    <path fill="currentColor" d="M13,3V9H21V3M13,21H21V11H13M3,21H11V15H3M3,13H11V3H3V13Z" />
+                  </svg>
+                  <span>Dashboard</span>
+                </button>
+                
                 <div className="profile-dropdown">
                   <button 
                     className="profile-btn"
@@ -204,18 +216,6 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
                   </button>
                   {showDropdown && (
                     <div className="dropdown-menu">
-                      <button 
-                        className="dropdown-item"
-                        onClick={() => {
-                          navigate('/dashboard/resume');
-                          setShowDropdown(false);
-                        }}
-                      >
-                        <svg viewBox="0 0 24 24" className="dropdown-icon">
-                          <path fill="currentColor" d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
-                        </svg>
-                        <span>Resume Dashboard</span>
-                      </button>
                       <a href="/profile" className="dropdown-item">
                         <svg viewBox="0 0 24 24" className="dropdown-icon">
                           <path fill="currentColor" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />

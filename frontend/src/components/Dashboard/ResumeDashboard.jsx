@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Navbar from '../navbar';
 import './ResumeDashboard.css';
 
 // SkillTagInput Component for managing skill tags
@@ -2313,12 +2315,12 @@ const ProfileBuilder = () => {
   };
 
   return (
-    <div className="profile-builder-container">
-      <div className="debug-info" style={{position: 'fixed', top: '10px', right: '10px', background: 'rgba(0,0,0,0.7)', color: 'white', padding: '5px', fontSize: '12px', zIndex: 1000}}>
-        Current View: {currentView} | Profile Data: {profileData ? 'Loaded' : 'Empty'}
+    <>
+      <Navbar />
+      <div className="profile-builder-container">
+        {renderCurrentView()}
       </div>
-      {renderCurrentView()}
-    </div>
+    </>
   );
 };
 

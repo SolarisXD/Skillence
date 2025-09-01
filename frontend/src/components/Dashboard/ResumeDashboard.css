@@ -1,12 +1,14 @@
 /* ProfileBuilder - Comprehensive Career Profile Creation System */
+/* Using consistent styling with landing page */
 
 .profile-builder-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
+  width: 100%;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 90px 0 20px 0; /* Top padding to account for fixed navbar, no side padding for full width */
+  background: var(--primary-gradient);
   font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-primary);
+  transition: var(--transition-base);
 }
 
 /* ==================== PROFILE SELECTION ==================== */
@@ -14,6 +16,8 @@
 .profile-selection-container {
   text-align: center;
   padding: 40px 20px;
+  max-width: 1400px; /* Increased max-width for better use of space */
+  margin: 0 auto;
 }
 
 .profile-header {
@@ -23,14 +27,17 @@
 .profile-header h1 {
   font-size: 3rem;
   font-weight: 700;
-  color: white;
+  color: var(--text-primary);
   margin-bottom: 20px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .profile-header p {
   font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-secondary);
   max-width: 600px;
   margin: 0 auto;
 }
@@ -43,7 +50,7 @@
 }
 
 .profile-option {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--card-gradient);
   backdrop-filter: blur(10px);
   border-radius: 20px;
   padding: 40px;
@@ -59,9 +66,9 @@
 
 .profile-option:hover {
   transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-  border-color: #667eea;
-  background: rgba(255, 255, 255, 1);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--accent-color);
+  background: var(--bg-primary);
 }
 
 .option-icon {
@@ -73,13 +80,13 @@
 .profile-option h3 {
   font-size: 1.8rem;
   font-weight: 700;
-  color: #2d3748;
+  color: var(--text-primary);
   margin-bottom: 15px;
 }
 
 .profile-option p {
   font-size: 1rem;
-  color: #4a5568;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 25px;
   flex-grow: 1;
@@ -94,7 +101,7 @@
 }
 
 .option-features span {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: var(--accent-gradient);
   color: white;
   padding: 6px 12px;
   border-radius: 20px;
@@ -109,13 +116,13 @@
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: var(--transition-base);
   width: 100%;
   margin-top: auto;
 }
 
 .option-button.primary {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: var(--accent-gradient);
   color: white;
 }
 
@@ -126,19 +133,20 @@
 
 .option-button:hover {
   transform: scale(1.05);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-hover);
 }
 
 .profile-benefits {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--card-gradient);
   backdrop-filter: blur(10px);
   border-radius: 20px;
   padding: 40px;
   margin-top: 40px;
+  border: 1px solid var(--border-color);
 }
 
 .profile-benefits h3 {
-  color: white;
+  color: var(--text-primary);
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 30px;
@@ -155,7 +163,7 @@
   display: flex;
   align-items: center;
   gap: 15px;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-secondary);
   font-size: 1rem;
 }
 
@@ -169,13 +177,14 @@
 .resume-upload-container,
 .manual-form-container,
 .profile-editor {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--card-gradient);
   backdrop-filter: blur(10px);
   border-radius: 20px;
   padding: 40px;
   margin: 20px auto;
-  max-width: 900px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  max-width: 1200px; /* Increased for better use of space */
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
 }
 
 .upload-header,
@@ -186,22 +195,23 @@
 }
 
 .back-button {
-  background: rgba(108, 117, 125, 0.1);
-  border: 1px solid rgba(108, 117, 125, 0.3);
-  color: #6c757d;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
   padding: 10px 20px;
   border-radius: 8px;
   cursor: pointer;
   margin-bottom: 20px;
-  transition: all 0.3s ease;
+  transition: var(--transition-base);
   display: inline-flex;
   align-items: center;
   gap: 8px;
 }
 
 .back-button:hover {
-  background: rgba(108, 117, 125, 0.2);
+  background: var(--bg-tertiary);
   transform: translateX(-2px);
+  color: var(--text-primary);
 }
 
 .upload-header h2,
@@ -209,13 +219,13 @@
 .editor-header h2 {
   font-size: 2rem;
   font-weight: 700;
-  color: #2d3748;
+  color: var(--text-primary);
   margin-bottom: 10px;
 }
 
 .upload-header p,
 .form-header p {
-  color: #4a5568;
+  color: var(--text-secondary);
   font-size: 1.1rem;
 }
 
@@ -225,19 +235,19 @@
 }
 
 .file-drop-zone {
-  border: 3px dashed #cbd5e0;
+  border: 3px dashed var(--border-color);
   border-radius: 20px;
   padding: 60px 40px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  background: rgba(247, 250, 252, 0.8);
+  transition: var(--transition-base);
+  background: var(--bg-secondary);
 }
 
 .file-drop-zone:hover,
 .file-drop-zone.drag-over {
-  border-color: #667eea;
-  background: rgba(102, 126, 234, 0.05);
+  border-color: var(--accent-color);
+  background: var(--bg-primary);
   transform: scale(1.02);
 }
 
@@ -282,7 +292,7 @@
 }
 
 .upload-button {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: var(--accent-gradient);
   color: white;
   border: none;
   padding: 15px 30px;
@@ -290,12 +300,12 @@
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: var(--transition-base);
 }
 
 .upload-button:hover {
   transform: scale(1.05);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  box-shadow: var(--shadow-hover);
 }
 
 /* Progress States */

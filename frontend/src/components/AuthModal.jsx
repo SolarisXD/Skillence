@@ -53,7 +53,7 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
           localStorage.setItem('userId', data.user_id);
           localStorage.setItem('user', JSON.stringify({ email: formData.email, name: formData.name }));
           onClose();
-          navigate('/dashboard/resume'); // Navigate to resume dashboard
+          // Stay on landing page after signup
         } else {
           const errorData = await response.json();
           setError(errorData.detail || 'Registration failed');
@@ -76,7 +76,7 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
           localStorage.setItem('userId', data.user_id);
           localStorage.setItem('user', JSON.stringify({ email: formData.email }));
           onClose();
-          navigate('/dashboard/resume'); // Navigate to resume dashboard
+          // Stay on landing page after login
         } else {
           const errorData = await response.json();
           setError(errorData.detail || 'Login failed');
