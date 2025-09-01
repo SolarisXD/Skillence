@@ -35,23 +35,22 @@
   border-bottom: 1px solid var(--navbar-border);
 }
 
-/* Main Container with proper alignment */
+/* Main Container with full width alignment */
 .navbar-container {
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
   padding: 0 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 70px;
-  gap: 2rem;
 }
 
-/* Logo Section - Left aligned */
+/* Logo Section - Extreme left */
 .navbar-brand {
   flex-shrink: 0;
   cursor: pointer;
   transition: transform 0.3s ease;
+  order: 1;
 }
 
 .navbar-brand:hover {
@@ -70,11 +69,13 @@
   letter-spacing: -0.5px;
 }
 
-/* Navigation Menu - Center-left */
+/* Navigation Menu - Centered */
 .navbar-menu {
   display: flex;
   align-items: center;
-  margin-left: 3rem;
+  justify-content: center;
+  flex: 1;
+  order: 2;
 }
 
 .navbar-nav {
@@ -124,6 +125,15 @@
 
 .nav-link:hover::after {
   width: 100%;
+}
+
+/* Actions Section - Extreme right */
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+  order: 3;
 }
 
 /* Mobile Menu Toggle Button */
@@ -226,12 +236,26 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .navbar-container {
+    padding: 0 1rem;
+    justify-content: space-between;
+  }
+  
+  .navbar-brand {
+    order: 1;
+  }
+  
   .navbar-menu {
     display: none;
   }
   
   .mobile-menu-toggle {
     display: flex;
+    order: 2;
+  }
+  
+  .navbar-actions {
+    order: 3;
   }
   
   .navbar-actions .btn-secondary,
@@ -252,10 +276,23 @@
 @media (max-width: 480px) {
   .navbar-container {
     padding: 0 15px;
+    justify-content: space-between;
+  }
+  
+  .navbar-brand {
+    order: 1;
   }
   
   .navbar-brand h1 {
     font-size: 1.5rem;
+  }
+  
+  .mobile-menu-toggle {
+    order: 2;
+  }
+  
+  .navbar-actions {
+    order: 3;
   }
   
   .profile-dropdown .dropdown-menu {
@@ -605,6 +642,11 @@
 @media (max-width: 768px) {
   .navbar-container {
     padding: 0 1.5rem;
+    justify-content: space-between;
+  }
+  
+  .navbar-brand {
+    order: 1;
   }
   
   .navbar-nav {
@@ -615,8 +657,13 @@
     font-size: 1.5rem;
   }
   
+  .mobile-menu-toggle {
+    order: 2;
+  }
+  
   .navbar-actions {
     gap: 0.75rem;
+    order: 3;
   }
   
   .dashboard-btn {
@@ -640,10 +687,23 @@
   .navbar-container {
     height: 60px;
     padding: 0 1rem;
+    justify-content: space-between;
+  }
+  
+  .navbar-brand {
+    order: 1;
   }
   
   .navbar-brand h1 {
     font-size: 1.3rem;
+  }
+  
+  .mobile-menu-toggle {
+    order: 2;
+  }
+  
+  .navbar-actions {
+    order: 3;
   }
   
   .dashboard-btn span {

@@ -122,7 +122,7 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
     if (location.pathname !== '/') {
       navigate('/', { state: { scrollToServices: true } });
     } else {
-      const servicesSection = document.getElementById('services');
+      const servicesSection = document.getElementById('advanced-ai-career-intelligence');
       if (servicesSection) {
         servicesSection.scrollIntoView({ behavior: 'smooth' });
       }
@@ -149,7 +149,7 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
       }, 100);
     } else if (location.state?.scrollToServices) {
       setTimeout(() => {
-        const servicesSection = document.getElementById('services');
+        const servicesSection = document.getElementById('advanced-ai-career-intelligence');
         if (servicesSection) {
           servicesSection.scrollIntoView({ behavior: 'smooth' });
         }
@@ -173,7 +173,7 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
                 <a href="#about-us" className="nav-link" onClick={scrollToAbout}>About Us</a>
               </li>
               <li className="nav-item">
-                <a href="#services" className="nav-link" onClick={scrollToServices}>Services</a>
+                <a href="#advanced-ai-career-intelligence" className="nav-link" onClick={scrollToServices}>Services</a>
               </li>
             </ul>
           </div>
@@ -291,7 +291,7 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
             </li>
             <li className="mobile-nav-item">
               <a 
-                href="#services" 
+                href="#advanced-ai-career-intelligence" 
                 className="mobile-nav-link"
                 onClick={(e) => {
                   scrollToServices(e);

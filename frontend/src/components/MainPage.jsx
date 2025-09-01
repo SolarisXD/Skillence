@@ -51,7 +51,7 @@ const MainPage = () => {
       </div>
 
       {/* Key Features Section */}
-      <section className="features-section">
+      <section id="advanced-ai-career-intelligence" className="features-section">
         <div className="container">
           <h2 className="section-title">Advanced AI Career Intelligence</h2>
           <p className="section-subtitle">
