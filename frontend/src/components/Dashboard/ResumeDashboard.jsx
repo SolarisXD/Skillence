@@ -3,6 +3,111 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../navbar';
 import './ResumeDashboard.css';
 
+// Helper function to transform Azure + Gemini parsed data to frontend format
+const transformAzureParsedData = (parsedData) => {
+  if (!parsedData) {
+    return {
+      contact_info: { name: 'Unknown', email: '', phone: '' },
+      experience: [],
+      education: [],
+      skills: [],
+      projects: [],
+      certifications: [],
+      achievements: []
+    };
+  }
+
+  // Transform contact_info
+  const contact_info = parsedData.contact_info || {};
+  
+  // Transform work_experience to experience
+  const experience = (parsedData.work_experience || []).map(exp => ({
+    title: exp.position || exp.title || '',
+    company: exp.company || '',
+    duration: exp.start_date && exp.end_date ? `${exp.start_date} - ${exp.end_date}` : (exp.duration || ''),
+    location: exp.location || '',
+    responsibilities: Array.isArray(exp.responsibilities) ? exp.responsibilities : 
+                    (exp.description ? [exp.description] : [])
+  }));
+
+  // Transform education
+  const education = (parsedData.education || []).map(edu => ({
+    degree: edu.degree || '',
+    institution: edu.institution || '',
+    year: edu.start_date && edu.end_date ? `${edu.start_date} - ${edu.end_date}` : (edu.year || ''),
+    gpa: edu.gpa || '',
+    location: edu.location || '',
+    details: edu.description || ''
+  }));
+
+  // Transform skills - Azure parser returns array of SkillCategory objects
+  const skills = {
+    technical: [],
+    soft: [],
+    languages: []
+  };
+
+  if (parsedData.skills && Array.isArray(parsedData.skills)) {
+    parsedData.skills.forEach(skillCategory => {
+      if (skillCategory.category && skillCategory.skills) {
+        const categoryLower = skillCategory.category.toLowerCase();
+        if (categoryLower.includes('technical') || categoryLower.includes('programming') || categoryLower.includes('technology')) {
+          skills.technical = [...skills.technical, ...skillCategory.skills];
+        } else if (categoryLower.includes('soft') || categoryLower.includes('interpersonal')) {
+          skills.soft = [...skills.soft, ...skillCategory.skills];
+        } else if (categoryLower.includes('language')) {
+          skills.languages = [...skills.languages, ...skillCategory.skills];
+        } else {
+          // Default to technical skills
+          skills.technical = [...skills.technical, ...skillCategory.skills];
+        }
+      }
+    });
+  }
+
+  // Transform projects
+  const projects = (parsedData.projects || []).map(proj => ({
+    name: proj.name || '',
+    description: proj.description || '',
+    technologies: proj.technologies || [],
+    duration: proj.start_date && proj.end_date ? `${proj.start_date} - ${proj.end_date}` : '',
+    url: proj.url || proj.github_url || '',
+    role: proj.role || ''
+  }));
+
+  // Transform certifications
+  const certifications = (parsedData.certifications || []).map(cert => ({
+    name: cert.name || '',
+    issuer: cert.issuer || '',
+    date: cert.date_obtained || cert.date || '',
+    id: cert.credential_id || '',
+    url: cert.url || ''
+  }));
+
+  // Transform achievements
+  const achievements = (parsedData.achievements || []).map(ach => ({
+    title: ach.title || '',
+    description: ach.description || '',
+    date: ach.date || '',
+    issuer: ach.issuer || ''
+  }));
+
+  return {
+    contact_info,
+    careerSummary: parsedData.career_summary || '',
+    education,
+    experience,
+    skills,
+    projects,
+    certifications,
+    achievements,
+    languages: parsedData.languages || [],
+    source: 'azure_ai',
+    parsing_confidence: parsedData.parsing_confidence || 0.9,
+    createdAt: new Date().toISOString()
+  };
+};
+
 // SkillTagInput Component for managing skill tags
 const SkillTagInput = ({ skills, onSkillsChange, placeholder = "Add skills..." }) => {
   const [inputValue, setInputValue] = useState('');
@@ -714,12 +819,12 @@ const ProfileBuilder = () => {
         <div className="profile-option" onClick={() => setCurrentView('upload')}>
           <div className="option-icon">🤖</div>
           <h3>AI-Powered Resume Upload</h3>
-          <p>Upload your existing resume in PDF or DOCX format and let our advanced AI extract and structure your information automatically using natural language processing.</p>
+          <p>Upload your existing resume in PDF or DOCX format and let our advanced Azure Document Intelligence + Gemini AI extract and structure your information automatically with industry-leading accuracy.</p>
           
           <div className="option-features">
             <span>PDF & DOCX Support</span>
-            <span>NLP Processing</span>
-            <span>Auto-Extract</span>
+            <span>Azure AI Processing</span>
+            <span>Gemini AI Structuring</span>
             <span>Smart Parsing</span>
           </div>
           
@@ -845,12 +950,14 @@ const ProfileBuilder = () => {
 
     const processResume = async (file) => {
       const steps = [
-        'Extracting text content...',
-        'Parsing personal information...',
+        'Uploading to Azure Document Intelligence...',
+        'Extracting text content with OCR...',
+        'Processing with Gemini AI...',
+        'Structuring personal information...',
         'Identifying work experience...',
         'Extracting education details...',
         'Analyzing skills and competencies...',
-        'Structuring profile data...'
+        'Finalizing profile data...'
       ];
 
       try {
@@ -875,19 +982,18 @@ const ProfileBuilder = () => {
         if (response.ok) {
           const result = await response.json();
           console.log('Resume parsing result:', result); // Debug log
-          
-          // Ensure we have profile data or create empty structure
-          const parsedProfileData = result.profile_data || {
-            contact_info: { name: 'Unknown', email: '', phone: '' },
-            experience: [],
-            education: [],
-            skills: [],
-            projects: [],
-            certifications: [],
-            achievements: []
-          };
-          
-          setProfileData(parsedProfileData);
+
+          // Support multiple possible response shapes
+          const rawParsed = result?.profile_data || result?.data || result?.resume_data || result?.resume?.resume_data || null;
+          if (!rawParsed) {
+            console.warn('No parsed data found in response. Keys:', Object.keys(result || {}));
+          }
+
+          // Transform Azure + Gemini parsed data to frontend format
+          const transformedData = transformAzureParsedData(rawParsed);
+          console.log('Transformed profile data:', transformedData);
+
+          setProfileData(transformedData);
           setUploadState('success');
           
           // Auto-redirect to editor after 3 seconds
@@ -928,7 +1034,7 @@ const ProfileBuilder = () => {
           
           <div className="upload-header">
             <h2>Upload Your Resume</h2>
-            <p>Upload your resume in PDF or Word format and let our AI extract your professional information</p>
+            <p>Upload your resume in PDF or Word format and let our Azure Document Intelligence + Gemini AI extract your professional information with exceptional accuracy</p>
           </div>
 
           <div className="upload-area">
@@ -993,7 +1099,7 @@ const ProfileBuilder = () => {
           <div className="processing-progress">
             <div className="progress-icon">🤖</div>
             <h3>Processing Your Resume</h3>
-            <p>Our AI is analyzing your resume and extracting key information...</p>
+            <p>Our Azure Document Intelligence + Gemini AI is analyzing your resume and extracting key information...</p>
             
             <div className="processing-steps">
               <div className="step active">{processingStep}</div>
@@ -1016,8 +1122,8 @@ const ProfileBuilder = () => {
             <p>We've extracted and structured your professional information</p>
             
             <div className="success-stats">
-              <span>📊 Profile Created</span>
-              <span>🎯 Skills Identified</span>
+              <span>📊 Azure AI Processed</span>
+              <span>🧠 Gemini AI Structured</span>
               <span>💼 Experience Mapped</span>
               <span>🎓 Education Parsed</span>
             </div>

@@ -2,16 +2,25 @@ from typing import Optional, Dict, Any
 from fastapi import UploadFile, HTTPException
 import logging
 from app.models.resume import ResumeData, Resume
-from app.services.resume_parser import AdvancedResumeParser
+from app.services.azure_resume_parser import AzureResumeParser
 from app.database import get_database
 from datetime import datetime
 import hashlib
 
 class ResumeService:
     def __init__(self):
-        """Initialize resume service with database connection and parser."""
-        self.parser = AdvancedResumeParser()
-        self.logger = logging.getLogger(__name__)
+        """Initialize resume service with database connection and Azure-based parser."""
+        try:
+            self.parser = AzureResumeParser()
+            self.logger = logging.getLogger(__name__)
+            self.logger.info("Resume service initialized with Azure Document Intelligence parser")
+        except Exception as e:
+            self.logger.error(f"Failed to initialize Azure parser: {e}")
+            # Fallback to basic parser if Azure is not available
+            from app.services.resume_parser import AdvancedResumeParser
+            self.parser = AdvancedResumeParser()
+            self.logger.warning("Falling back to basic NLP parser")
+        
         self._db = None
         self._collection = None
     
@@ -75,11 +84,26 @@ class ResumeService:
             if not text.strip():
                 return await self._handle_parsing_failure(file, user_id, file_hash)
             
-            # Parse resume using NLP
+            # Parse resume using Azure Document Intelligence + Gemini AI
             parsed_data = self.parser.parse_resume(text)
             
-            # Create ResumeData object
+            # Create ResumeData object from parsed data
             resume_data = ResumeData(**parsed_data)
+
+            # Print a brief summary to terminal for visibility
+            try:
+                print("=== PARSED RESUME SUMMARY ===")
+                ci = resume_data.contact_info.dict() if hasattr(resume_data.contact_info, 'dict') else (resume_data.contact_info or {})
+                print({
+                    "name": ci.get("name"),
+                    "email": ci.get("email"),
+                    "work_experience_count": len(resume_data.work_experience or []),
+                    "education_count": len(resume_data.education or []),
+                    "skills_count": sum(len(s.skills or []) for s in (resume_data.skills or [])),
+                    "parsing_confidence": parsed_data.get('parsing_confidence', 0)
+                })
+            except Exception:
+                pass
             
             # Create Resume document
             resume_doc = Resume(
@@ -100,34 +124,7 @@ class ResumeService:
             
             return {
                 "success": True,
-                "message": "Resume parsed and saved successfully",
-                "data": resume_data.dict(),
-                "parsing_confidence": parsed_data.get('parsing_confidence', 0),
-                "is_new": result.upserted_id is not None
-            }
-            
-        except Exception as e:
-            self.logger.error(f"Error processing resume: {e}")
-            return await self._handle_parsing_failure(file, user_id, None)
-            resume_doc = Resume(
-                user_id=user_id,
-                resume_data=resume_data,
-                file_hash=file_hash,
-                original_filename=file.filename,
-                created_at=datetime.utcnow(),
-                updated_at=datetime.utcnow()
-            )
-            
-            # Save to database (upsert based on user_id)
-            result = await self.collection.replace_one(
-                {"user_id": user_id},
-                resume_doc.dict(),
-                upsert=True
-            )
-            
-            return {
-                "success": True,
-                "message": "Resume parsed and saved successfully",
+                "message": "Resume parsed and saved successfully with Azure + Gemini AI",
                 "data": resume_data.dict(),
                 "parsing_confidence": parsed_data.get('parsing_confidence', 0),
                 "is_new": result.upserted_id is not None
@@ -143,7 +140,7 @@ class ResumeService:
         """
         try:
             # Get database collection
-            collection = await self.collection
+            collection = self.collection  # Remove await here
             
             # Create empty resume structure for manual filling
             empty_resume_data = ResumeData(
@@ -187,7 +184,7 @@ class ResumeService:
     async def get_resume_by_user_id(self, user_id: str) -> Optional[Dict[str, Any]]:
         """Fetch resume data for a specific user."""
         try:
-            collection = await self.collection
+            collection = self.collection  # Remove await here
             resume_doc = await collection.find_one({"user_id": user_id})
             if resume_doc:
                 # Remove MongoDB _id for JSON serialization
@@ -203,7 +200,7 @@ class ResumeService:
         Update resume data for a user with manual edits tracking.
         """
         try:
-            collection = await self.collection
+            collection = self.collection  # Remove await here
             
             # Get existing resume
             existing = await collection.find_one({"user_id": user_id})

@@ -5,6 +5,7 @@ from app.routers import auth, resume, profile
 from app.database import connect_to_mongo, close_mongo_connection
 import os
 from dotenv import load_dotenv
+import logging
 
 env_path = os.path.join(os.path.dirname(__file__), '..', '.env')
 load_dotenv(dotenv_path=env_path)
@@ -14,6 +15,12 @@ async def lifespan(app: FastAPI):
     await connect_to_mongo()
     yield
     await close_mongo_connection()
+
+# Configure basic logging so info/debug from services print to terminal
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
 
 app = FastAPI(title="Skillence API", version="1.0.0", lifespan=lifespan)
 
@@ -35,4 +42,4 @@ async def root():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="info")
