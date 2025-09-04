@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from './navbar';
 import ThemeSelector from './ThemeSelector';
 import AuthModal from './AuthModal';
+import NeuralBg from './NeuralBg';
 
 const MainPage = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -28,6 +29,7 @@ const MainPage = () => {
       <ThemeSelector />
       
       <div className="hero-container">
+        <NeuralBg />
         <div className="hero-content">
           <h1 className="hero-title">AI-Powered Career Intelligence Platform</h1>
           <p className="hero-subtitle">
