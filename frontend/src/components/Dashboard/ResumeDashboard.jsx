@@ -1268,7 +1268,7 @@ const ProfileBuilder = () => {
           setSaveStatus('saved');
           setProfileData(profilePayload);
           setTimeout(() => {
-            setCurrentView('editor');
+            navigate('/profile');
           }, 2000);
         } else {
           throw new Error('Failed to save profile');
@@ -2246,7 +2246,9 @@ const ProfileBuilder = () => {
 
         if (response.ok) {
           setSaveStatus('saved');
-          setTimeout(() => setSaveStatus(''), 3000);
+          setTimeout(() => {
+            navigate('/profile');
+          }, 2000);
         } else {
           throw new Error('Failed to save profile');
         }
@@ -2337,56 +2339,61 @@ const ProfileBuilder = () => {
           ))}
 
           <div className="add-section-container">
-            {!showAddSection ? (
-              <button 
-                className="add-section-button"
-                onClick={() => setShowAddSection(true)}
-              >
-                ➕ Add Custom Section
-              </button>
-            ) : (
-              <div className="add-section-form">
-                <h4>Add New Section</h4>
-                <p>Create a custom section for additional information</p>
-                
-                <input
-                  type="text"
-                  value={newSectionName}
-                  onChange={(e) => setNewSectionName(e.target.value)}
-                  placeholder="Section name (e.g., Awards, Publications, Hobbies)"
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      handleAddCustomSection();
-                    } else if (e.key === 'Escape') {
-                      setShowAddSection(false);
-                      setNewSectionName('');
-                    }
-                  }}
-                />
-                
-                {newSectionName && (activeProfile[newSectionName] || customSections[newSectionName]) && (
-                  <p className="error-message">Section name already exists</p>
+            {/* Only show Add Custom Section if data wasn't loaded from resume upload */}
+            {(!profileData?.parsing_confidence || profileData?.parsing_confidence === 0) && (
+              <>
+                {!showAddSection ? (
+                  <button 
+                    className="add-section-button"
+                    onClick={() => setShowAddSection(true)}
+                  >
+                    ➕ Add Custom Section
+                  </button>
+                ) : (
+                  <div className="add-section-form">
+                    <h4>Add New Section</h4>
+                    <p>Create a custom section for additional information</p>
+                    
+                    <input
+                      type="text"
+                      value={newSectionName}
+                      onChange={(e) => setNewSectionName(e.target.value)}
+                      placeholder="Section name (e.g., Awards, Publications, Hobbies)"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleAddCustomSection();
+                        } else if (e.key === 'Escape') {
+                          setShowAddSection(false);
+                          setNewSectionName('');
+                        }
+                      }}
+                    />
+                    
+                    {newSectionName && (activeProfile[newSectionName] || customSections[newSectionName]) && (
+                      <p className="error-message">Section name already exists</p>
+                    )}
+                    
+                    <div className="add-section-actions">
+                      <button 
+                        className="confirm-add-button"
+                        onClick={handleAddCustomSection}
+                        disabled={!newSectionName.trim() || activeProfile[newSectionName] || customSections[newSectionName]}
+                      >
+                        ✅ Add Section
+                      </button>
+                      <button 
+                        className="cancel-add-button"
+                        onClick={() => {
+                          setShowAddSection(false);
+                          setNewSectionName('');
+                        }}
+                      >
+                        ❌ Cancel
+                      </button>
+                    </div>
+                  </div>
                 )}
-                
-                <div className="add-section-actions">
-                  <button 
-                    className="confirm-add-button"
-                    onClick={handleAddCustomSection}
-                    disabled={!newSectionName.trim() || activeProfile[newSectionName] || customSections[newSectionName]}
-                  >
-                    ✅ Add Section
-                  </button>
-                  <button 
-                    className="cancel-add-button"
-                    onClick={() => {
-                      setShowAddSection(false);
-                      setNewSectionName('');
-                    }}
-                  >
-                    ❌ Cancel
-                  </button>
-                </div>
-              </div>
+              </>
             )}
           </div>
         </div>

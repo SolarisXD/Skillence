@@ -51,7 +51,16 @@ class ResumeService:
         """
         try:
             # Get database collection
-            collection = self.collection
+            db = get_database()
+            if db is None:
+                self.logger.error("Database connection is None - database not initialized")
+                return {
+                    "success": False,
+                    "message": "Database connection failed",
+                    "data": None
+                }
+            
+            collection = db.resumes
             
             # Read file content
             file_content = await file.read()
@@ -59,15 +68,16 @@ class ResumeService:
             # Calculate file hash for duplicate detection
             file_hash = self.parser.calculate_file_hash(file_content)
             
-            # Check if this exact file has been uploaded before
-            existing_by_hash = await collection.find_one({"file_hash": file_hash})
+            # Check if this exact file has been uploaded before by the same user
+            existing_by_hash = await collection.find_one({"file_hash": file_hash, "user_id": user_id})
             if existing_by_hash:
-                return {
-                    "success": False,
-                    "message": "This resume file has already been uploaded.",
-                    "data": None,
-                    "is_duplicate": True
-                }
+                # Same file by same user - allow update by continuing with parsing
+                self.logger.info(f"Same file re-uploaded by user {user_id}, will update existing record")
+            
+            # Check if different user uploaded the same file (optional security check)
+            existing_by_other_user = await collection.find_one({"file_hash": file_hash, "user_id": {"$ne": user_id}})
+            if existing_by_other_user:
+                self.logger.warning(f"File with same hash uploaded by different user - continuing with processing")
             
             # Extract text based on file type
             if file.filename.lower().endswith('.pdf'):
@@ -140,7 +150,16 @@ class ResumeService:
         """
         try:
             # Get database collection
-            collection = self.collection  # Remove await here
+            db = get_database()
+            if db is None:
+                self.logger.error("Database connection is None in fallback handler")
+                return {
+                    "success": False,
+                    "message": "Database connection failed",
+                    "data": None
+                }
+            
+            collection = db.resumes
             
             # Create empty resume structure for manual filling
             empty_resume_data = ResumeData(
@@ -184,7 +203,12 @@ class ResumeService:
     async def get_resume_by_user_id(self, user_id: str) -> Optional[Dict[str, Any]]:
         """Fetch resume data for a specific user."""
         try:
-            collection = self.collection  # Remove await here
+            db = get_database()
+            if db is None:
+                self.logger.error("Database connection is None in get_resume_by_user_id")
+                return None
+            
+            collection = db.resumes
             resume_doc = await collection.find_one({"user_id": user_id})
             if resume_doc:
                 # Remove MongoDB _id for JSON serialization
@@ -200,7 +224,15 @@ class ResumeService:
         Update resume data for a user with manual edits tracking.
         """
         try:
-            collection = self.collection  # Remove await here
+            db = get_database()
+            if db is None:
+                self.logger.error("Database connection is None in update_resume_data")
+                return {
+                    "success": False,
+                    "message": "Database connection failed"
+                }
+            
+            collection = db.resumes
             
             # Get existing resume
             existing = await collection.find_one({"user_id": user_id})

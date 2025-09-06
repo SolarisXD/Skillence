@@ -216,12 +216,18 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
                   </button>
                   {showDropdown && (
                     <div className="dropdown-menu">
-                      <a href="/profile" className="dropdown-item">
+                      <button 
+                        onClick={() => {
+                          navigate('/profile');
+                          setShowDropdown(false);
+                        }} 
+                        className="dropdown-item"
+                      >
                         <svg viewBox="0 0 24 24" className="dropdown-icon">
                           <path fill="currentColor" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
                         </svg>
                         Profile
-                      </a>
+                      </button>
                       <div className="dropdown-item theme-dropdown-container">
                         <button 
                           className="theme-dropdown-btn"

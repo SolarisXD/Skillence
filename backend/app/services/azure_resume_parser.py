@@ -288,16 +288,10 @@ Resume text: ```{resume_text}```
             response = requests.post(endpoint, headers=headers, params=params, json=payload, timeout=60)
             response.raise_for_status()
             data = response.json()
-
+            
             # Log Gemini API response for debugging
             self.logger.info("=== GEMINI API RESPONSE ===")
             self.logger.info(f"Full response: {json.dumps(data, indent=2)}")
-            # Also print to terminal explicitly
-            print("=== GEMINI API RAW RESPONSE ===")
-            try:
-                print(json.dumps(data, indent=2))
-            except Exception:
-                print(str(data))
 
             # Extract text from Gemini response
             model_text = None
@@ -305,9 +299,6 @@ Resume text: ```{resume_text}```
                 # The actual JSON is in candidate -> content -> parts -> text
                 model_text = data['candidates'][0]['content']['parts'][0]['text']
                 self.logger.info(f"Extracted model text: {model_text}")
-                # Print extracted model text to terminal as requested
-                print("=== GEMINI MODEL TEXT ===")
-                print(model_text)
             except (KeyError, IndexError, TypeError) as e:
                 self.logger.warning(f"Could not extract text from expected path in Gemini response: {e}")
                 # Fallback to complex parser
@@ -325,16 +316,12 @@ Resume text: ```{resume_text}```
                         # Log the extracted JSON for debugging
                         self.logger.info(f"=== EXTRACTED JSON FROM GEMINI ===")
                         self.logger.info(f"JSON string: {m.group(0)}")
-                        print("=== EXTRACTED JSON FROM GEMINI ===")
-                        print(m.group(0))
                         
                         structured = json.loads(m.group(0))
                         
                         # Log the parsed structured data
                         self.logger.info(f"=== PARSED STRUCTURED DATA ===")
                         self.logger.info(f"Structured data: {json.dumps(structured, indent=2)}")
-                        print("=== PARSED STRUCTURED DATA ===")
-                        print(json.dumps(structured, indent=2))
                     except Exception as e:
                         self.logger.error(f"Failed to parse JSON from Gemini regex match: {e}")
                         structured = None
@@ -343,16 +330,12 @@ Resume text: ```{resume_text}```
                         # Log the full model text as JSON
                         self.logger.info(f"=== FULL MODEL TEXT AS JSON ===")
                         self.logger.info(f"JSON string: {model_text}")
-                        print("=== FULL MODEL TEXT AS JSON ===")
-                        print(model_text)
                         
                         structured = json.loads(model_text)
                         
                         # Log the parsed structured data
                         self.logger.info(f"=== PARSED STRUCTURED DATA ===")
                         self.logger.info(f"Structured data: {json.dumps(structured, indent=2)}")
-                        print("=== PARSED STRUCTURED DATA ===")
-                        print(json.dumps(structured, indent=2))
                     except Exception as e:
                         self.logger.error(f"Failed to parse JSON from full model text: {e}")
                         structured = None

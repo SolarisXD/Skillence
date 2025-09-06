@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import './App.css';
 import MainPage from './components/MainPage';
 import ResumeDashboard from './components/Dashboard/ResumeDashboard';
+import ProfilePage from './components/ProfilePage';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -35,6 +36,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <ResumeDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/profile" 
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
               </ProtectedRoute>
             } 
           />
