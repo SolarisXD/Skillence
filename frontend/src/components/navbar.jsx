@@ -102,6 +102,10 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
     setShowAuthModal(false);
   };
 
+  const onSwitchMode = () => {
+    setAuthMode((prevMode) => (prevMode === 'login' ? 'signup' : 'login'));
+  };
+
   const scrollToAbout = (e) => {
     e.preventDefault();
     if (location.pathname !== '/') {
@@ -354,6 +358,7 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
           onClose={closeAuthModal}
           mode={authMode}
           onSuccess={handleAuthSuccess}
+          onSwitchMode={onSwitchMode}
         />
       )}
     </>
