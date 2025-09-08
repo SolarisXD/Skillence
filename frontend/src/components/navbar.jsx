@@ -29,8 +29,10 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
       } else {
         setIsAtTop(false);
         if (currentScrollY < lastScrollY) {
+          // Scrolling up - show navbar
           setIsVisible(true);
         } else {
+          // Scrolling down - hide navbar
           setIsVisible(false);
         }
       }
@@ -41,7 +43,7 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+  }, [lastScrollY, location.pathname]);
 
   // Check authentication status on component mount
   useEffect(() => {

@@ -2,8 +2,10 @@
 .job-trend-dashboard {
   min-height: 100vh;
   background: var(--bg-primary);
-  padding: 2rem 1rem;
+  padding: 6rem 1rem 2rem 1rem; /* Added top padding to account for fixed navbar */
   transition: var(--transition-base);
+  position: relative;
+  z-index: 1;
 }
 
 /* Loading and Error States */
@@ -515,11 +517,6 @@
 
 .chart-container:hover::before {
   transform: translateX(100%);
-}
-
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
 }
 
 /* Focus styles for accessibility */
