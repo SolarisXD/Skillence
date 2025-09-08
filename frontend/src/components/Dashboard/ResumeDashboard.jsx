@@ -2,6 +2,27 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../navbar';
 import './ResumeDashboard.css';
+import { 
+  UploadIcon, 
+  DocumentIcon, 
+  FormIcon, 
+  ProcessingIcon, 
+  SuccessIcon, 
+  ErrorIcon, 
+  RetryIcon, 
+  ArrowLeftIcon, 
+  LoadingSpinner,
+  UserIcon,
+  BriefcaseIcon,
+  GraduationIcon,
+  SkillsIcon,
+  ProjectIcon,
+  CertificateIcon,
+  ReviewIcon,
+  SaveIcon,
+  TargetIcon,
+  CloseIcon
+} from '../Icons/ProfessionalIcons';
 
 // Helper function to transform Azure + Gemini parsed data to frontend format
 const transformAzureParsedData = (parsedData) => {
@@ -861,10 +882,12 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
           {isEditing && (
             <>
               <button className="save-section-button" onClick={handleSave}>
-                💾 Save
+                <SaveIcon size={16} />
+                Save
               </button>
               <button className="cancel-button" onClick={handleCancel}>
-                ❌ Cancel
+                <CloseIcon size={16} />
+                Cancel
               </button>
             </>
           )}
@@ -915,14 +938,14 @@ const ProfileBuilder = () => {
 
   // Form Steps Configuration
   const formSteps = [
-    { id: 'personal', label: 'Personal Info', icon: '👤' },
-    { id: 'career', label: 'Career Overview', icon: '🎯' },
-    { id: 'education', label: 'Education', icon: '🎓' },
-    { id: 'experience', label: 'Experience', icon: '💼' },
-    { id: 'skills', label: 'Skills', icon: '⚡' },
-    { id: 'projects', label: 'Projects', icon: '🚀' },
-    { id: 'certifications', label: 'Certifications', icon: '📜' },
-    { id: 'review', label: 'Review', icon: '👁️' }
+    { id: 'personal', label: 'Personal Info', icon: <UserIcon size={20} /> },
+    { id: 'career', label: 'Career Overview', icon: <TargetIcon size={20} /> },
+    { id: 'education', label: 'Education', icon: <GraduationIcon size={20} /> },
+    { id: 'experience', label: 'Experience', icon: <BriefcaseIcon size={20} /> },
+    { id: 'skills', label: 'Skills', icon: <SkillsIcon size={20} /> },
+    { id: 'projects', label: 'Projects', icon: <ProjectIcon size={20} /> },
+    { id: 'certifications', label: 'Certifications', icon: <CertificateIcon size={20} /> },
+    { id: 'review', label: 'Review', icon: <ReviewIcon size={20} /> }
   ];
 
   // Profile Mode Selection Component
@@ -935,61 +958,31 @@ const ProfileBuilder = () => {
 
       <div className="profile-options">
         <div className="profile-option" onClick={() => setCurrentView('upload')}>
-          <div className="option-icon">🤖</div>
-          <h3>AI-Powered Resume Upload</h3>
-          <p>Upload your existing resume in PDF or DOCX format and let our advanced Azure Document Intelligence + Gemini AI extract and structure your information automatically with industry-leading accuracy.</p>
-          
-          <div className="option-features">
-            <span>PDF & DOCX Support</span>
-            <span>Azure AI Processing</span>
-            <span>Gemini AI Structuring</span>
-            <span>Smart Parsing</span>
+          <div className="option-icon">
+            <DocumentIcon size={32} />
           </div>
+          <h3>Resume Upload</h3>
+          <p>Upload your existing resume and let our intelligent system extract and structure your professional information automatically.</p>
           
           <button className="option-button primary">
-            📄 Upload Resume
+            Upload Resume
           </button>
         </div>
 
         <div className="profile-option" onClick={() => setCurrentView('manual')}>
-          <div className="option-icon">✍️</div>
-          <h3>Manual Profile Creation</h3>
-          <p>Build your profile step-by-step using our guided form system. Perfect for creating a fresh profile or when you want complete control over your information.</p>
-          
-          <div className="option-features">
-            <span>8-Step Process</span>
-            <span>Custom Sections</span>
-            <span>Progress Tracking</span>
-            <span>Complete Control</span>
+          <div className="option-icon">
+            <FormIcon size={32} />
           </div>
+          <h3>Manual Profile Creation</h3>
+          <p>Build your profile step-by-step using our guided form system. Perfect for creating a fresh profile or when you prefer complete control.</p>
           
           <button className="option-button secondary">
-            📝 Create Manually
+            Create Manually
           </button>
         </div>
       </div>
 
-      <div className="profile-benefits">
-        <h3>Why Create Your Profile?</h3>
-        <div className="benefits-grid">
-          <div className="benefit-item">
-            <span className="benefit-icon">🎯</span>
-            <span>Tailored career opportunities</span>
-          </div>
-          <div className="benefit-item">
-            <span className="benefit-icon">📈</span>
-            <span>Track your professional growth</span>
-          </div>
-          <div className="benefit-item">
-            <span className="benefit-icon">🤝</span>
-            <span>Connect with relevant employers</span>
-          </div>
-          <div className="benefit-item">
-            <span className="benefit-icon">💡</span>
-            <span>Get personalized recommendations</span>
-          </div>
-        </div>
-      </div>
+
     </div>
   );
 
@@ -1114,10 +1107,7 @@ const ProfileBuilder = () => {
           setProfileData(transformedData);
           setUploadState('success');
           
-          // Auto-redirect to editor after 3 seconds
-          setTimeout(() => {
-            setCurrentView('editor');
-          }, 3000);
+          // Remove the auto-redirect - user will click button to continue
         } else {
           const errorText = await response.text();
           console.error('API Error Response:', errorText);
@@ -1147,12 +1137,13 @@ const ProfileBuilder = () => {
       return (
         <div className="resume-upload-container">
           <button className="back-button" onClick={() => setCurrentView('selection')}>
-            ← Back to Options
+            <ArrowLeftIcon size={16} />
+            Back to Options
           </button>
           
           <div className="upload-header">
             <h2>Upload Your Resume</h2>
-            <p>Upload your resume in PDF or Word format and let our Azure Document Intelligence + Gemini AI extract your professional information with exceptional accuracy</p>
+            <p>Upload your resume in PDF or Word format for automatic information extraction and profile creation.</p>
           </div>
 
           <div className="upload-area">
@@ -1165,7 +1156,9 @@ const ProfileBuilder = () => {
               onClick={() => fileInputRef.current?.click()}
             >
               <div className="drop-zone-content">
-                <div className="upload-icon">📄</div>
+                <div className="upload-icon">
+                  <UploadIcon size={48} />
+                </div>
                 <h3>Drag & Drop Your Resume</h3>
                 <p>or click to browse files</p>
                 
@@ -1185,6 +1178,10 @@ const ProfileBuilder = () => {
               onChange={handleFileSelect}
               style={{ display: 'none' }}
             />
+            
+            <button className="confirm-upload-button" onClick={() => console.log('Confirm upload')}>
+              Confirm Upload
+            </button>
           </div>
         </div>
       );
@@ -1194,7 +1191,9 @@ const ProfileBuilder = () => {
       return (
         <div className="resume-upload-container">
           <div className="upload-progress">
-            <div className="progress-icon">⬆️</div>
+            <div className="progress-icon">
+              <LoadingSpinner size={32} />
+            </div>
             <h3>Uploading Your Resume</h3>
             <p>Please wait while we upload your file...</p>
             
@@ -1215,9 +1214,11 @@ const ProfileBuilder = () => {
       return (
         <div className="resume-upload-container">
           <div className="processing-progress">
-            <div className="progress-icon">🤖</div>
+            <div className="progress-icon">
+              <ProcessingIcon size={32} />
+            </div>
             <h3>Processing Your Resume</h3>
-            <p>Our Azure Document Intelligence + Gemini AI is analyzing your resume and extracting key information...</p>
+            <p>Analyzing your resume and extracting key information...</p>
             
             <div className="processing-steps">
               <div className="step active">{processingStep}</div>
@@ -1235,20 +1236,18 @@ const ProfileBuilder = () => {
       return (
         <div className="resume-upload-container">
           <div className="upload-success">
-            <div className="success-icon">✅</div>
-            <h3>Resume Processed Successfully!</h3>
-            <p>We've extracted and structured your professional information</p>
-            
-            <div className="success-stats">
-              <span>📊 Azure AI Processed</span>
-              <span>🧠 Gemini AI Structured</span>
-              <span>💼 Experience Mapped</span>
-              <span>🎓 Education Parsed</span>
+            <div className="success-icon">
+              <SuccessIcon size={48} />
             </div>
+            <h3>Resume Processed Successfully</h3>
+            <p>Your professional information has been extracted and structured</p>
             
-            <div className="redirect-message">
-              Redirecting to profile editor in 3 seconds...
-            </div>
+            <button 
+              className="continue-button" 
+              onClick={() => setCurrentView('editor')}
+            >
+              Continue to Profile Editor
+            </button>
           </div>
         </div>
       );
@@ -1258,7 +1257,9 @@ const ProfileBuilder = () => {
       return (
         <div className="resume-upload-container">
           <div className="upload-error">
-            <div className="error-icon">❌</div>
+            <div className="error-icon">
+              <ErrorIcon size={48} />
+            </div>
             <h3>Upload Failed</h3>
             <p>{errorMessage}</p>
             
@@ -1274,10 +1275,12 @@ const ProfileBuilder = () => {
             
             <div className="error-actions">
               <button className="retry-button" onClick={handleRetry}>
-                🔄 Try Again
+                <RetryIcon size={16} />
+                Try Again
               </button>
               <button className="manual-button" onClick={handleManualFallback}>
-                ✍️ Create Manually Instead
+                <FormIcon size={16} />
+                Create Manually Instead
               </button>
             </div>
           </div>
@@ -1401,7 +1404,7 @@ const ProfileBuilder = () => {
     // Personal Info Step
     const PersonalInfoStep = () => (
       <div className="form-step">
-        <h3>👤 Personal Information</h3>
+        <h3><UserIcon size={24} className="inline-icon" /> Personal Information</h3>
         <p>Let's start with your basic information</p>
         
         <div className="form-grid">
@@ -1491,7 +1494,7 @@ const ProfileBuilder = () => {
     // Career Overview Step
     const CareerOverviewStep = () => (
       <div className="form-step">
-        <h3>🎯 Career Overview</h3>
+        <h3><TargetIcon size={24} className="inline-icon" /> Career Overview</h3>
         <p>Tell us about your professional background and goals</p>
         
         <div className="form-grid">
@@ -1578,7 +1581,7 @@ const ProfileBuilder = () => {
     // Education Step
     const EducationStep = () => (
       <div className="form-step">
-        <h3>🎓 Education</h3>
+        <h3><GraduationIcon size={24} className="inline-icon" /> Education</h3>
         <p>Add your educational background</p>
         
         {manualFormData.education.map((edu, index) => (
@@ -1696,7 +1699,7 @@ const ProfileBuilder = () => {
     // Work Experience Step
     const WorkExperienceStep = () => (
       <div className="form-step">
-        <h3>💼 Work Experience</h3>
+        <h3><BriefcaseIcon size={24} className="inline-icon" /> Work Experience</h3>
         <p>Add your professional work experience</p>
         
         {manualFormData.workExperience.map((exp, index) => (
@@ -1843,7 +1846,7 @@ const ProfileBuilder = () => {
     // Skills Step
     const SkillsStep = () => (
       <div className="form-step">
-        <h3>⚡ Skills</h3>
+        <h3><SkillsIcon size={24} className="inline-icon" /> Skills</h3>
         <p>Add your technical skills, soft skills, and languages</p>
         
         <div className="skills-section">
@@ -1889,7 +1892,7 @@ const ProfileBuilder = () => {
     // Projects Step
     const ProjectsStep = () => (
       <div className="form-step">
-        <h3>🚀 Projects</h3>
+        <h3><ProjectIcon size={24} className="inline-icon" /> Projects</h3>
         <p>Showcase your notable projects and achievements</p>
         
         {manualFormData.projects.map((project, index) => (
@@ -1991,7 +1994,7 @@ const ProfileBuilder = () => {
     // Certifications Step
     const CertificationsStep = () => (
       <div className="form-step">
-        <h3>📜 Certifications</h3>
+        <h3><CertificateIcon size={24} className="inline-icon" /> Certifications</h3>
         <p>Add your professional certifications and achievements</p>
         
         {manualFormData.certifications.map((cert, index) => (
@@ -2121,7 +2124,7 @@ const ProfileBuilder = () => {
       
       return (
         <div className="form-step">
-          <h3>👁️ Review Your Profile</h3>
+          <h3><ReviewIcon size={24} className="inline-icon" /> Review Your Profile</h3>
           <p>Review your information before saving</p>
           
           <div className="completeness-indicator">
