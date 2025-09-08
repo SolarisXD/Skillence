@@ -39,25 +39,75 @@ const COUNTRY_CODES = {
   'Poland': 'pl'
 };
 
-// Fallback market data for demo/development
+// Fallback market data for demo/development - India specific
 const FALLBACK_MARKET_DATA = {
-  jobs: {
-    count: 125,
-    results: [
-      { title: 'Senior Software Engineer', salary_min: 90000, salary_max: 130000 },
-      { title: 'Software Developer', salary_min: 70000, salary_max: 100000 },
-      { title: 'Full Stack Engineer', salary_min: 85000, salary_max: 120000 },
-      { title: 'Data Scientist', salary_min: 95000, salary_max: 140000 },
-      { title: 'Product Manager', salary_min: 100000, salary_max: 150000 }
-    ]
+  // Indian Software Engineer salaries in INR
+  'India': {
+    jobs: {
+      count: 450,
+      results: [
+        { title: 'Senior Software Engineer', salary_min: 1200000, salary_max: 2200000 }, // 12-22 LPA
+        { title: 'Software Engineer', salary_min: 800000, salary_max: 1500000 }, // 8-15 LPA  
+        { title: 'Full Stack Developer', salary_min: 900000, salary_max: 1800000 }, // 9-18 LPA
+        { title: 'Backend Developer', salary_min: 850000, salary_max: 1600000 }, // 8.5-16 LPA
+        { title: 'Frontend Developer', salary_min: 700000, salary_max: 1400000 }, // 7-14 LPA
+        { title: 'Machine Learning Engineer', salary_min: 1000000, salary_max: 2000000 }, // 10-20 LPA
+        { title: 'Data Scientist', salary_min: 900000, salary_max: 1800000 }, // 9-18 LPA
+        { title: 'DevOps Engineer', salary_min: 1100000, salary_max: 2100000 }, // 11-21 LPA
+        { title: 'Product Manager', salary_min: 1500000, salary_max: 2800000 }, // 15-28 LPA
+        { title: 'Software Developer', salary_min: 600000, salary_max: 1200000 }, // 6-12 LPA
+      ]
+    }
+  },
+  // US market data in USD
+  'United States': {
+    jobs: {
+      count: 125,
+      results: [
+        { title: 'Senior Software Engineer', salary_min: 120000, salary_max: 180000 },
+        { title: 'Software Developer', salary_min: 80000, salary_max: 120000 },
+        { title: 'Full Stack Engineer', salary_min: 95000, salary_max: 140000 },
+        { title: 'Data Scientist', salary_min: 110000, salary_max: 160000 },
+        { title: 'Product Manager', salary_min: 130000, salary_max: 200000 }
+      ]
+    }
   }
 };
 
 // Adzuna API functions
 const adzunaAPI = {
+  // Test API connection
+  testConnection: async () => {
+    try {
+      console.log('🧪 Testing Adzuna API connection...');
+      const url = new URL(`${ADZUNA_CONFIG.BASE_URL}/jobs/in/search/1`);
+      url.searchParams.append('app_id', ADZUNA_CONFIG.APP_ID);
+      url.searchParams.append('app_key', ADZUNA_CONFIG.API_KEY);
+      url.searchParams.append('what', 'software engineer');
+      url.searchParams.append('results_per_page', '5');
+      
+      console.log('Test URL:', url.toString());
+      const response = await fetch(url);
+      console.log('Response status:', response.status);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('✅ API Test successful:', data);
+        return data;
+      } else {
+        const errorText = await response.text();
+        console.error('❌ API Test failed:', response.status, errorText);
+        return null;
+      }
+    } catch (error) {
+      console.error('❌ API Test error:', error);
+      return null;
+    }
+  },
+
   // Search jobs for salary comparison
   searchJobs: async (country, query, location = '') => {
-    const countryCode = COUNTRY_CODES[country] || 'us';
+    const countryCode = COUNTRY_CODES[country] || 'in'; // Default to India
     const url = new URL(`${ADZUNA_CONFIG.BASE_URL}/jobs/${countryCode}/search/1`);
     
     const params = {
@@ -73,16 +123,17 @@ const adzunaAPI = {
       if (params[key]) url.searchParams.append(key, params[key]);
     });
     
+    console.log('🔍 API Call URL:', url.toString());
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error(`Adzuna API error: ${response.status}`);
+      throw new Error(`Adzuna API error: ${response.status} - ${await response.text()}`);
     }
     return await response.json();
   },
 
   // Get salary histogram data
   getSalaryHistogram: async (country, query, location = '') => {
-    const countryCode = COUNTRY_CODES[country] || 'us';
+    const countryCode = COUNTRY_CODES[country] || 'in'; // Default to India
     const url = new URL(`${ADZUNA_CONFIG.BASE_URL}/jobs/${countryCode}/histogram`);
     
     const params = {
@@ -98,14 +149,14 @@ const adzunaAPI = {
     
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error(`Adzuna API error: ${response.status}`);
+      throw new Error(`Adzuna API error: ${response.status} - ${await response.text()}`);
     }
     return await response.json();
   },
 
   // Get salary history/trends
   getSalaryHistory: async (country, query, location = '') => {
-    const countryCode = COUNTRY_CODES[country] || 'us';
+    const countryCode = COUNTRY_CODES[country] || 'in'; // Default to India
     const url = new URL(`${ADZUNA_CONFIG.BASE_URL}/jobs/${countryCode}/history`);
     
     const params = {
@@ -121,7 +172,7 @@ const adzunaAPI = {
     
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error(`Adzuna API error: ${response.status}`);
+      throw new Error(`Adzuna API error: ${response.status} - ${await response.text()}`);
     }
     return await response.json();
   }
@@ -139,9 +190,10 @@ const JobOfferEvaluator = () => {
   const [formData, setFormData] = useState({
     jobTitle: '',
     salary: '',
-    currency: 'USD',
+    currency: 'INR', // Default to INR since focusing on India
     city: '',
     country: '',
+    experienceLevel: 'entry', // New field for experience level
     healthInsurance: false,
     remoteWork: false,
     esops: false,
@@ -265,46 +317,70 @@ const JobOfferEvaluator = () => {
       return;
     }
 
-    if (!ADZUNA_CONFIG.API_KEY || !ADZUNA_CONFIG.APP_ID) {
-      // Use fallback data when API is not configured
-      console.log('Using fallback market data - API not configured');
-      const marketData = {
-        ...FALLBACK_MARKET_DATA,
-        errors: ['Using demo data - Configure VITE_ADZUNA_API_KEY and VITE_ADZUNA_APP_ID environment variables for real market data']
-      };
-
-      setMarketData(marketData);
-      const evaluation = evaluateJobOffer(formData, marketData);
-      setEvaluationResults(evaluation);
-      setIsEvaluating(false);
-      return;
-    }
-
     setIsEvaluating(true);
     setApiError(null);
     setEvaluationResults(null);
 
     try {
-      // Fetch market data from Adzuna API
-      console.log('Fetching market data for:', formData.jobTitle, 'in', formData.country);
+      let marketData;
       
-      const [jobSearchData, salaryHistogram, salaryHistory] = await Promise.allSettled([
-        adzunaAPI.searchJobs(formData.country, formData.jobTitle, formData.city),
-        adzunaAPI.getSalaryHistogram(formData.country, formData.jobTitle, formData.city),
-        adzunaAPI.getSalaryHistory(formData.country, formData.jobTitle, formData.city)
-      ]);
+      // Check if we have valid API credentials (not placeholder values)
+      const hasValidCredentials = ADZUNA_CONFIG.API_KEY && 
+                                 ADZUNA_CONFIG.APP_ID && 
+                                 ADZUNA_CONFIG.API_KEY !== 'your_adzuna_api_key' && 
+                                 ADZUNA_CONFIG.APP_ID !== 'your_adzuna_app_id' &&
+                                 ADZUNA_CONFIG.API_KEY.length > 10;
 
-      // Process the API responses
-      const marketData = {
-        jobs: jobSearchData.status === 'fulfilled' ? jobSearchData.value : null,
-        histogram: salaryHistogram.status === 'fulfilled' ? salaryHistogram.value : null,
-        history: salaryHistory.status === 'fulfilled' ? salaryHistory.value : null,
-        errors: [
-          jobSearchData.status === 'rejected' ? `Job Search: ${jobSearchData.reason.message}` : null,
-          salaryHistogram.status === 'rejected' ? `Salary Data: ${salaryHistogram.reason.message}` : null,
-          salaryHistory.status === 'rejected' ? `Salary History: ${salaryHistory.reason.message}` : null
-        ].filter(Boolean)
-      };
+      console.log('API Configuration Check:');
+      console.log('API_KEY:', ADZUNA_CONFIG.API_KEY);
+      console.log('APP_ID:', ADZUNA_CONFIG.APP_ID);
+      console.log('Has valid credentials:', hasValidCredentials);
+
+      if (hasValidCredentials) {
+        console.log('✅ Using Adzuna API - Fetching real market data for:', formData.jobTitle, 'in', formData.country);
+        
+        // Fetch market data from Adzuna API
+        const [jobSearchData, salaryHistogram, salaryHistory] = await Promise.allSettled([
+          adzunaAPI.searchJobs(formData.country, formData.jobTitle, formData.city),
+          adzunaAPI.getSalaryHistogram(formData.country, formData.jobTitle, formData.city),
+          adzunaAPI.getSalaryHistory(formData.country, formData.jobTitle, formData.city)
+        ]);
+
+        console.log('API Responses:', { jobSearchData, salaryHistogram, salaryHistory });
+
+        // Process the API responses
+        marketData = {
+          jobs: jobSearchData.status === 'fulfilled' ? jobSearchData.value : null,
+          histogram: salaryHistogram.status === 'fulfilled' ? salaryHistogram.value : null,
+          history: salaryHistory.status === 'fulfilled' ? salaryHistory.value : null,
+          errors: [
+            jobSearchData.status === 'rejected' ? `Job Search: ${jobSearchData.reason.message}` : null,
+            salaryHistogram.status === 'rejected' ? `Salary Data: ${salaryHistogram.reason.message}` : null,
+            salaryHistory.status === 'rejected' ? `Salary History: ${salaryHistory.reason.message}` : null
+          ].filter(Boolean),
+          isRealData: true
+        };
+
+        // If all API calls failed, fall back to demo data
+        if (!marketData.jobs && !marketData.histogram && !marketData.history) {
+          console.log('⚠️ All API calls failed, using fallback data');
+          const countryFallbackData = FALLBACK_MARKET_DATA[formData.country] || FALLBACK_MARKET_DATA['India'];
+          marketData = {
+            ...countryFallbackData,
+            errors: ['All API calls failed. Using demo data as fallback.'],
+            isRealData: false
+          };
+        }
+      } else {
+        // Use fallback data when API is not configured
+        console.log('⚠️ Using fallback market data - API not configured properly');
+        const countryFallbackData = FALLBACK_MARKET_DATA[formData.country] || FALLBACK_MARKET_DATA['India'];
+        marketData = {
+          ...countryFallbackData,
+          errors: ['Using demo data - Configure VITE_ADZUNA_API_KEY and VITE_ADZUNA_APP_ID environment variables for real market data'],
+          isRealData: false
+        };
+      }
 
       setMarketData(marketData);
 
@@ -322,7 +398,7 @@ const JobOfferEvaluator = () => {
     }
   };
 
-  // Job offer evaluation logic
+  // Job offer evaluation logic with proper Indian salary filtering
   const evaluateJobOffer = (offerData, marketData) => {
     const offerSalary = parseFloat(offerData.salary);
     let evaluation = {
@@ -333,34 +409,125 @@ const JobOfferEvaluator = () => {
       recommendations: []
     };
 
-    // Salary Analysis
+    console.log('💰 Starting salary evaluation for:', {
+      offerSalary,
+      country: offerData.country,
+      jobTitle: offerData.jobTitle,
+      rawMarketData: marketData.jobs
+    });
+
+    // Salary Analysis with Indian market specific filtering
     if (marketData.jobs && marketData.jobs.results && marketData.jobs.results.length > 0) {
-      const jobs = marketData.jobs.results.filter(job => job.salary_min && job.salary_max);
+      let jobs = marketData.jobs.results.filter(job => job.salary_min && job.salary_max);
+      
+      console.log('📊 Raw jobs before filtering:', jobs.length);
       
       if (jobs.length > 0) {
-        const salaries = jobs.map(job => (job.salary_min + job.salary_max) / 2);
-        const avgMarketSalary = salaries.reduce((a, b) => a + b, 0) / salaries.length;
-        const minSalary = Math.min(...salaries);
-        const maxSalary = Math.max(...salaries);
-        
-        const percentile = calculatePercentile(offerSalary, salaries);
-        
-        evaluation.salary_analysis = {
-          offer_salary: offerSalary,
-          market_average: Math.round(avgMarketSalary),
-          market_min: Math.round(minSalary),
-          market_max: Math.round(maxSalary),
-          percentile: Math.round(percentile),
-          difference_from_average: Math.round(offerSalary - avgMarketSalary),
-          difference_percentage: Math.round(((offerSalary - avgMarketSalary) / avgMarketSalary) * 100),
-          total_jobs_analyzed: jobs.length
-        };
+        // Calculate average salaries for each job
+        let salaries = jobs.map(job => {
+          const avgSalary = (job.salary_min + job.salary_max) / 2;
+          return {
+            title: job.title,
+            salary: avgSalary,
+            min: job.salary_min,
+            max: job.salary_max
+          };
+        });
 
-        // Salary score (0-40 points)
-        if (percentile >= 75) evaluation.overall_score += 40;
-        else if (percentile >= 50) evaluation.overall_score += 30;
-        else if (percentile >= 25) evaluation.overall_score += 20;
-        else evaluation.overall_score += 10;
+        console.log('💵 Raw salary data:', salaries);
+
+        // Filter out unrealistic salaries for Indian market
+        if (offerData.country === 'India') {
+          // For India, filter salaries to reasonable ranges (2 lacs to 50 lacs)
+          salaries = salaries.filter(job => {
+            const isReasonable = job.salary >= 200000 && job.salary <= 5000000;
+            if (!isReasonable) {
+              console.log('🚫 Filtered out unrealistic salary:', job);
+            }
+            return isReasonable;
+          });
+
+          // Further filter based on job title similarity and experience level
+          const offerJobTitle = offerData.jobTitle.toLowerCase();
+          const experienceLevel = offerData.experienceLevel;
+
+          // Filter based on selected experience level
+          if (experienceLevel === 'entry') {
+            // For entry level, filter out senior roles and high salaries
+            salaries = salaries.filter(job => {
+              const jobTitle = job.title.toLowerCase();
+              const isSenior = jobTitle.includes('senior') || 
+                             jobTitle.includes('lead') || 
+                             jobTitle.includes('principal') || 
+                             jobTitle.includes('architect') ||
+                             job.salary > 2000000; // Above 20 lacs likely senior for entry level
+              
+              if (isSenior) {
+                console.log('🎓 Filtered out senior role for entry-level:', job);
+              }
+              return !isSenior;
+            });
+          } else if (experienceLevel === 'mid') {
+            // For mid level, filter out very junior and very senior roles
+            salaries = salaries.filter(job => {
+              const isVerySenior = job.salary > 3000000 || // Above 30 lacs
+                                 job.title.toLowerCase().includes('principal') ||
+                                 job.title.toLowerCase().includes('architect');
+              const isVeryJunior = job.salary < 600000; // Below 6 lacs
+              
+              if (isVerySenior) {
+                console.log('🎓 Filtered out very senior role for mid-level:', job);
+              }
+              if (isVeryJunior) {
+                console.log('🎓 Filtered out junior role for mid-level:', job);
+              }
+              return !isVerySenior && !isVeryJunior;
+            });
+          }
+          // For senior level, we keep most roles but still filter extreme outliers
+        }
+
+        console.log('✅ Filtered salary data for analysis:', salaries);
+
+        if (salaries.length > 0) {
+          const salaryValues = salaries.map(job => job.salary);
+          const avgMarketSalary = salaryValues.reduce((a, b) => a + b, 0) / salaryValues.length;
+          const minSalary = Math.min(...salaryValues);
+          const maxSalary = Math.max(...salaryValues);
+          
+          const percentile = calculatePercentile(offerSalary, salaryValues);
+          
+          console.log('📈 Calculated market metrics:', {
+            avgMarketSalary: Math.round(avgMarketSalary),
+            minSalary: Math.round(minSalary),
+            maxSalary: Math.round(maxSalary),
+            percentile: Math.round(percentile),
+            totalJobsAnalyzed: salaries.length
+          });
+          
+          evaluation.salary_analysis = {
+            offer_salary: offerSalary,
+            market_average: Math.round(avgMarketSalary),
+            market_min: Math.round(minSalary),
+            market_max: Math.round(maxSalary),
+            percentile: Math.round(percentile),
+            difference_from_average: Math.round(offerSalary - avgMarketSalary),
+            difference_percentage: Math.round(((offerSalary - avgMarketSalary) / avgMarketSalary) * 100),
+            total_jobs_analyzed: salaries.length,
+            filtered_jobs_count: jobs.length - salaries.length
+          };
+
+          // Salary score (0-40 points)
+          if (percentile >= 75) evaluation.overall_score += 40;
+          else if (percentile >= 50) evaluation.overall_score += 30;
+          else if (percentile >= 25) evaluation.overall_score += 20;
+          else evaluation.overall_score += 10;
+        } else {
+          console.log('⚠️ No valid salary data after filtering, using fallback');
+          // Use fallback data if no valid salaries found
+          const countryFallbackData = FALLBACK_MARKET_DATA[offerData.country] || FALLBACK_MARKET_DATA['India'];
+          return evaluateJobOffer(offerData, countryFallbackData);
+        }
       }
     }
 
@@ -569,7 +736,32 @@ const JobOfferEvaluator = () => {
               </div>
 
               <div className="form-group">
-                <label className="form-label">Offered Salary</label>
+                <label className="form-label">
+                  Experience Level
+                  <span style={{ fontSize: '0.9rem', color: '#6b7280', fontWeight: 'normal' }}>
+                    (affects salary comparison)
+                  </span>
+                </label>
+                <select
+                  name="experienceLevel"
+                  value={formData.experienceLevel}
+                  onChange={handleInputChange}
+                  className="form-input"
+                  style={{ cursor: 'pointer' }}
+                >
+                  <option value="entry">Entry Level (0-2 years)</option>
+                  <option value="mid">Mid Level (2-5 years)</option>
+                  <option value="senior">Senior Level (5+ years)</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">
+                  Offered Salary 
+                  <span style={{ fontSize: '0.9rem', color: '#6b7280', fontWeight: 'normal' }}>
+                    (Annual gross salary)
+                  </span>
+                </label>
                 <div className="salary-input-container">
                   <select
                     name="currency"
@@ -589,7 +781,7 @@ const JobOfferEvaluator = () => {
                     name="salary"
                     value={formData.salary}
                     onChange={handleInputChange}
-                    placeholder="Enter salary amount"
+                    placeholder="e.g., 100000 (annual)"
                     className="form-input salary-input"
                   />
                 </div>
@@ -670,9 +862,22 @@ const JobOfferEvaluator = () => {
                 </div>
               </div>
 
-              <button type="submit" className="search-button" disabled={isEvaluating}>
-                {isEvaluating ? 'Evaluating...' : 'Evaluate'}
-              </button>
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <button 
+                  type="button" 
+                  onClick={async () => {
+                    console.log('🧪 Testing API...');
+                    await adzunaAPI.testConnection();
+                  }}
+                  className="secondary-button"
+                  style={{ padding: '0.75rem 1rem', borderRadius: '8px', border: '2px solid #e5e7eb', background: '#f8f9fa' }}
+                >
+                  Test API
+                </button>
+                <button type="submit" className="search-button" disabled={isEvaluating}>
+                  {isEvaluating ? 'Evaluating...' : 'Evaluate'}
+                </button>
+              </div>
             </form>
 
             {/* API Error Display */}
@@ -747,7 +952,14 @@ const JobOfferEvaluator = () => {
                       )}
                     </div>
                     <div className="data-source">
-                      <small>Based on {evaluationResults.salary_analysis.total_jobs_analyzed} similar job listings</small>
+                      <small>
+                        Based on {evaluationResults.salary_analysis.total_jobs_analyzed} similar job listings
+                        {evaluationResults.salary_analysis.filtered_jobs_count > 0 && (
+                          <span style={{ color: '#2563eb' }}>
+                            {' '}(filtered {evaluationResults.salary_analysis.filtered_jobs_count} outliers for accuracy)
+                          </span>
+                        )}
+                      </small>
                     </div>
                   </div>
                 )}
@@ -786,17 +998,22 @@ const JobOfferEvaluator = () => {
                     <div className="market-insights">
                       {marketData.jobs && (
                         <div className="insight-item">
-                          <strong>Job Market:</strong> Found {marketData.jobs.count} job listings for "{formData.jobTitle}" in {formData.country}
-                          {!ADZUNA_CONFIG.API_KEY && (
+                          <strong>Job Market:</strong> Found {marketData.jobs.count || marketData.jobs.results?.length} job listings for "{formData.jobTitle}" in {formData.country}
+                          {!marketData.isRealData && (
                             <div style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: '#2563eb' }}>
-                              💡 <strong>Demo Mode:</strong> This data is simulated. Add your Adzuna API credentials to get real market data.
+                              💡 <strong>Demo Mode:</strong> This data is simulated. Check console for API configuration details.
+                            </div>
+                          )}
+                          {marketData.isRealData && (
+                            <div style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: '#059669' }}>
+                              ✅ <strong>Live Data:</strong> Using real market data from Adzuna API
                             </div>
                           )}
                         </div>
                       )}
                       {marketData.errors.length > 0 && (
                         <div className="api-warnings">
-                          <h4>ℹ️ Data Information:</h4>
+                          <h4>{marketData.isRealData ? '⚠️ API Notes:' : 'ℹ️ Data Information:'}</h4>
                           <ul>
                             {marketData.errors.map((error, index) => (
                               <li key={index}>{error}</li>
