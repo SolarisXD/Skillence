@@ -19,3 +19,5 @@ azure-ai-documentintelligence==1.0.0b1
 azure-core==1.29.5
 # Requests for Gemini API calls
 requests==2.31.0
+pandas==2.2.3
+openpyxl==3.1.2

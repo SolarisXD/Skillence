@@ -151,12 +151,37 @@ const SkillTagInput = ({ skills, onSkillsChange, placeholder = "Add skills..." }
 };
 
 // EditableSection Component for profile editing with proper form fields
-const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = false }) => {
+const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = false, sectionKey = '', hideParsedFields = false }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(content);
 
   const handleSave = () => {
-    onEdit(editedContent);
+    // Before saving, strip any hidden fields if this section is from a parsed upload
+    const hiddenFieldsBySection = {
+      education: ['details'],
+      projects: ['duration', 'role'],
+      certifications: ['issuer', 'date', 'id', 'url'],
+      achievements: ['description', 'date', 'issuer']
+    };
+
+    const sanitizeItem = (item) => {
+      if (!item || typeof item !== 'object') return item;
+      const hid = hiddenFieldsBySection[sectionKey] || [];
+      const cleaned = { ...item };
+      hid.forEach(k => {
+        if (k in cleaned) delete cleaned[k];
+      });
+      return cleaned;
+    };
+
+    let toSave = editedContent;
+    if (Array.isArray(editedContent)) {
+      toSave = editedContent.map(sanitizeItem);
+    } else if (typeof editedContent === 'object') {
+      toSave = sanitizeItem(editedContent);
+    }
+
+    onEdit(toSave);
     setIsEditing(false);
   };
 
@@ -181,7 +206,9 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
   };
 
   const addArrayItem = () => {
-    if (title.toLowerCase().includes('experience')) {
+    const titleLower = title.toLowerCase();
+    const isParsed = hideParsedFields;
+    if (titleLower.includes('experience')) {
       setEditedContent([...editedContent, {
         title: '',
         company: '',
@@ -189,28 +216,45 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
         responsibilities: []
       }]);
     } else if (title.toLowerCase().includes('education')) {
-      setEditedContent([...editedContent, {
+      setEditedContent([...editedContent, isParsed ? {
         degree: '',
         institution: '',
         year: '',
         gpa: ''
+      } : {
+        degree: '',
+        institution: '',
+        year: '',
+        gpa: '',
+        details: ''
       }]);
     } else if (title.toLowerCase().includes('project')) {
-      setEditedContent([...editedContent, {
+      setEditedContent([...editedContent, isParsed ? {
         name: '',
         description: '',
         technologies: [],
         link: ''
+      } : {
+        name: '',
+        description: '',
+        technologies: [],
+        duration: '',
+        role: '',
+        link: ''
       }]);
     } else if (title.toLowerCase().includes('certification')) {
-      setEditedContent([...editedContent, {
+      setEditedContent([...editedContent, isParsed ? {
+        name: ''
+      } : {
         name: '',
         issuer: '',
         date: '',
         id: ''
       }]);
     } else if (title.toLowerCase().includes('achievement')) {
-      setEditedContent([...editedContent, {
+      setEditedContent([...editedContent, isParsed ? {
+        title: ''
+      } : {
         title: '',
         description: '',
         date: ''
@@ -418,6 +462,23 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
               placeholder="e.g., 3.8/4.0"
             />
           </div>
+
+          {/* details field removed for parsed uploads */}
+          {!hideParsedFields && (
+            <div className="form-group">
+              <label>Details</label>
+              <textarea
+                value={edu.details || ''}
+                onChange={(e) => {
+                  const newEdu = [...editedContent];
+                  newEdu[index] = { ...edu, details: e.target.value };
+                  setEditedContent(newEdu);
+                }}
+                rows={3}
+                placeholder="Additional details about this education item"
+              />
+            </div>
+          )}
         </div>
       ))}
       <button type="button" className="add-item" onClick={addArrayItem}>
@@ -499,6 +560,39 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
               placeholder="React, Node.js, MongoDB (comma-separated)"
             />
           </div>
+          {/* duration and role removed for parsed uploads */}
+          {!hideParsedFields && (
+            <div className="form-group">
+              <label>Duration</label>
+              <input
+                type="text"
+                value={project.duration || ''}
+                onChange={(e) => {
+                  const newProjects = [...editedContent];
+                  newProjects[index] = { ...project, duration: e.target.value };
+                  setEditedContent(newProjects);
+                }}
+                placeholder="e.g., Jan 2022 - Jun 2023"
+              />
+            </div>
+          )}
+
+          {!hideParsedFields && (
+            <div className="form-group">
+              <label>Role</label>
+              <input
+                type="text"
+                value={project.role || ''}
+                onChange={(e) => {
+                  const newProjects = [...editedContent];
+                  newProjects[index] = { ...project, role: e.target.value };
+                  setEditedContent(newProjects);
+                }}
+                placeholder="Your role in the project"
+              />
+            </div>
+          )}
+
           <div className="form-group">
             <label>Project Link (Optional)</label>
             <input
@@ -547,45 +641,50 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
               placeholder="e.g., AWS Certified Solutions Architect"
             />
           </div>
-          <div className="form-group">
-            <label>Issuing Organization</label>
-            <input
-              type="text"
-              value={cert.issuer || ''}
-              onChange={(e) => {
-                const newCerts = [...editedContent];
-                newCerts[index] = { ...cert, issuer: e.target.value };
-                setEditedContent(newCerts);
-              }}
-              placeholder="e.g., Amazon Web Services"
-            />
-          </div>
-          <div className="form-group">
-            <label>Date Obtained</label>
-            <input
-              type="text"
-              value={cert.date || ''}
-              onChange={(e) => {
-                const newCerts = [...editedContent];
-                newCerts[index] = { ...cert, date: e.target.value };
-                setEditedContent(newCerts);
-              }}
-              placeholder="e.g., March 2023"
-            />
-          </div>
-          <div className="form-group">
-            <label>Credential ID (Optional)</label>
-            <input
-              type="text"
-              value={cert.id || ''}
-              onChange={(e) => {
-                const newCerts = [...editedContent];
-                newCerts[index] = { ...cert, id: e.target.value };
-                setEditedContent(newCerts);
-              }}
-              placeholder="Credential ID or verification link"
-            />
-          </div>
+          {/* Issuer, Date, Id, Url removed for parsed uploads */}
+          {!hideParsedFields && (
+            <>
+              <div className="form-group">
+                <label>Issuing Organization</label>
+                <input
+                  type="text"
+                  value={cert.issuer || ''}
+                  onChange={(e) => {
+                    const newCerts = [...editedContent];
+                    newCerts[index] = { ...cert, issuer: e.target.value };
+                    setEditedContent(newCerts);
+                  }}
+                  placeholder="e.g., Amazon Web Services"
+                />
+              </div>
+              <div className="form-group">
+                <label>Date Obtained</label>
+                <input
+                  type="text"
+                  value={cert.date || ''}
+                  onChange={(e) => {
+                    const newCerts = [...editedContent];
+                    newCerts[index] = { ...cert, date: e.target.value };
+                    setEditedContent(newCerts);
+                  }}
+                  placeholder="e.g., March 2023"
+                />
+              </div>
+              <div className="form-group">
+                <label>Credential ID (Optional)</label>
+                <input
+                  type="text"
+                  value={cert.id || ''}
+                  onChange={(e) => {
+                    const newCerts = [...editedContent];
+                    newCerts[index] = { ...cert, id: e.target.value };
+                    setEditedContent(newCerts);
+                  }}
+                  placeholder="Credential ID or verification link"
+                />
+              </div>
+            </>
+          )}
         </div>
       ))}
       <button type="button" className="add-item" onClick={addArrayItem}>
@@ -621,32 +720,37 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
               placeholder="e.g., Employee of the Year"
             />
           </div>
-          <div className="form-group">
-            <label>Description</label>
-            <textarea
-              value={achievement.description || ''}
-              onChange={(e) => {
-                const newAchievements = [...editedContent];
-                newAchievements[index] = { ...achievement, description: e.target.value };
-                setEditedContent(newAchievements);
-              }}
-              rows={3}
-              placeholder="Brief description of the achievement"
-            />
-          </div>
-          <div className="form-group">
-            <label>Date</label>
-            <input
-              type="text"
-              value={achievement.date || ''}
-              onChange={(e) => {
-                const newAchievements = [...editedContent];
-                newAchievements[index] = { ...achievement, date: e.target.value };
-                setEditedContent(newAchievements);
-              }}
-              placeholder="e.g., December 2022"
-            />
-          </div>
+          {/* description, date, issuer removed for parsed uploads */}
+          {!hideParsedFields && (
+            <>
+              <div className="form-group">
+                <label>Description</label>
+                <textarea
+                  value={achievement.description || ''}
+                  onChange={(e) => {
+                    const newAchievements = [...editedContent];
+                    newAchievements[index] = { ...achievement, description: e.target.value };
+                    setEditedContent(newAchievements);
+                  }}
+                  rows={3}
+                  placeholder="Brief description of the achievement"
+                />
+              </div>
+              <div className="form-group">
+                <label>Date</label>
+                <input
+                  type="text"
+                  value={achievement.date || ''}
+                  onChange={(e) => {
+                    const newAchievements = [...editedContent];
+                    newAchievements[index] = { ...achievement, date: e.target.value };
+                    setEditedContent(newAchievements);
+                  }}
+                  placeholder="e.g., December 2022"
+                />
+              </div>
+            </>
+          )}
         </div>
       ))}
       <button type="button" className="add-item" onClick={addArrayItem}>
@@ -692,6 +796,20 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
   };
 
   const renderContent = () => {
+    // Fields to hide for parsed (uploaded) profiles per section
+    const hiddenFieldsBySection = {
+      education: ['details'],
+      projects: ['duration', 'role'],
+      certifications: ['issuer', 'date', 'id', 'url'],
+      achievements: ['description', 'date', 'issuer']
+    };
+
+    const shouldHideField = (fieldKey) => {
+      if (!hideParsedFields) return false;
+      const key = String(fieldKey || '').toLowerCase();
+      const hid = hiddenFieldsBySection[sectionKey];
+      return Array.isArray(hid) && hid.includes(key);
+    };
     if (Array.isArray(content)) {
       if (content.length === 0) {
         return <p className="no-content">No items added yet</p>;
@@ -699,7 +817,7 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
       return content.map((item, index) => (
         <div key={index} className="preview-item">
           {typeof item === 'object' ? (
-            Object.entries(item).map(([key, value]) => (
+            Object.entries(item).filter(([key]) => !shouldHideField(key)).map(([key, value]) => (
               <p key={key}>
                 <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong> {
                   Array.isArray(value) ? value.join(', ') : value
@@ -712,7 +830,7 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
         </div>
       ));
     } else if (typeof content === 'object') {
-      return Object.entries(content).map(([key, value]) => (
+      return Object.entries(content).filter(([key]) => !shouldHideField(key)).map(([key, value]) => (
         <p key={key}>
           <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong> {
             Array.isArray(value) ? value.join(', ') : value || 'Not specified'
@@ -2229,8 +2347,49 @@ const ProfileBuilder = () => {
       
       try {
         const token = localStorage.getItem('token');
+        // Sanitize profile for saving: strip hidden fields if profile is parsed
+        const isParsedUpload = activeProfile.source === 'azure_ai' || activeProfile.parsing_confidence;
+        const hiddenFieldsBySection = {
+          education: ['details'],
+          projects: ['duration', 'role'],
+          certifications: ['issuer', 'date', 'id', 'url'],
+          achievements: ['description', 'date', 'issuer']
+        };
+
+        const sanitizeSection = (sectionKey, sectionData) => {
+          if (!sectionData) return sectionData;
+          const hid = hiddenFieldsBySection[sectionKey] || [];
+          if (Array.isArray(sectionData)) {
+            return sectionData.map(item => {
+              if (!item || typeof item !== 'object') return item;
+              const cleaned = { ...item };
+              hid.forEach(k => { if (k in cleaned) delete cleaned[k]; });
+              return cleaned;
+            });
+          }
+          if (typeof sectionData === 'object') {
+            const cleaned = { ...sectionData };
+            hid.forEach(k => { if (k in cleaned) delete cleaned[k]; });
+            return cleaned;
+          }
+          return sectionData;
+        };
+
+        let sanitized = { ...activeProfile };
+        if (isParsedUpload) {
+          // remove full sections
+          delete sanitized.careerSummary;
+          delete sanitized.languages;
+          delete sanitized.parsing_confidence;
+        }
+
+        // sanitize subfields
+        ['education', 'projects', 'certifications', 'achievements'].forEach(sec => {
+          if (sanitized[sec]) sanitized[sec] = sanitizeSection(sec, sanitized[sec]);
+        });
+
         const profilePayload = {
-          ...activeProfile,
+          ...sanitized,
           customSections,
           updatedAt: new Date().toISOString()
         };
@@ -2309,22 +2468,30 @@ const ProfileBuilder = () => {
 
             <div className="editor-sections">
               {Object.entries(activeProfile).map(([sectionName, content]) => {
-            if (sectionName === 'source' || sectionName === 'createdAt' || sectionName === 'updatedAt') {
-              return null;
-            }
-            
-            return (
-              <EditableSection
-                key={sectionName}
-                title={sectionName.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
-                content={content}
-                icon={getSectionIcon(sectionName)}
-                onEdit={(newContent) => handleSectionEdit(sectionName, newContent)}
-                onDelete={() => {}} // Standard sections cannot be deleted
-                isCustom={false}
-              />
-            );
-          })}
+              // Skip meta fields
+              if (sectionName === 'source' || sectionName === 'createdAt' || sectionName === 'updatedAt') {
+                return null;
+              }
+
+              // If profile came from Azure/Gemini (source azure_ai or has parsing_confidence), hide entire sections
+              const isParsedUpload = activeProfile.source === 'azure_ai' || activeProfile.parsing_confidence;
+              const skipSectionsForParsed = ['careerSummary', 'languages', 'parsing_confidence'];
+              if (isParsedUpload && skipSectionsForParsed.includes(sectionName)) return null;
+
+              return (
+                <EditableSection
+                  key={sectionName}
+                  title={sectionName.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                  content={content}
+                  icon={getSectionIcon(sectionName)}
+                  onEdit={(newContent) => handleSectionEdit(sectionName, newContent)}
+                  onDelete={() => {}} // Standard sections cannot be deleted
+                  isCustom={false}
+                  sectionKey={sectionName}
+                  hideParsedFields={isParsedUpload}
+                />
+              );
+            })}
 
           {Object.entries(customSections).map(([sectionName, content]) => (
             <EditableSection
@@ -2338,64 +2505,62 @@ const ProfileBuilder = () => {
             />
           ))}
 
-          <div className="add-section-container">
-            {/* Only show Add Custom Section if data wasn't loaded from resume upload */}
-            {(!profileData?.parsing_confidence || profileData?.parsing_confidence === 0) && (
-              <>
-                {!showAddSection ? (
-                  <button 
-                    className="add-section-button"
-                    onClick={() => setShowAddSection(true)}
-                  >
-                    ➕ Add Custom Section
-                  </button>
-                ) : (
-                  <div className="add-section-form">
-                    <h4>Add New Section</h4>
-                    <p>Create a custom section for additional information</p>
-                    
-                    <input
-                      type="text"
-                      value={newSectionName}
-                      onChange={(e) => setNewSectionName(e.target.value)}
-                      placeholder="Section name (e.g., Awards, Publications, Hobbies)"
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          handleAddCustomSection();
-                        } else if (e.key === 'Escape') {
-                          setShowAddSection(false);
-                          setNewSectionName('');
-                        }
+          {/* Only show Add Custom Section if data wasn't loaded from resume upload */}
+          {(!profileData?.parsing_confidence || profileData?.parsing_confidence === 0) && (
+            <div className="add-section-container">
+              {!showAddSection ? (
+                <button 
+                  className="add-section-button"
+                  onClick={() => setShowAddSection(true)}
+                >
+                  ➕ Add Custom Section
+                </button>
+              ) : (
+                <div className="add-section-form">
+                  <h4>Add New Section</h4>
+                  <p>Create a custom section for additional information</p>
+                  
+                  <input
+                    type="text"
+                    value={newSectionName}
+                    onChange={(e) => setNewSectionName(e.target.value)}
+                    placeholder="Section name (e.g., Awards, Publications, Hobbies)"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleAddCustomSection();
+                      } else if (e.key === 'Escape') {
+                        setShowAddSection(false);
+                        setNewSectionName('');
+                      }
+                    }}
+                  />
+                  
+                  {newSectionName && (activeProfile[newSectionName] || customSections[newSectionName]) && (
+                    <p className="error-message">Section name already exists</p>
+                  )}
+                  
+                  <div className="add-section-actions">
+                    <button 
+                      className="confirm-add-button"
+                      onClick={handleAddCustomSection}
+                      disabled={!newSectionName.trim() || activeProfile[newSectionName] || customSections[newSectionName]}
+                    >
+                      ✅ Add Section
+                    </button>
+                    <button 
+                      className="cancel-add-button"
+                      onClick={() => {
+                        setShowAddSection(false);
+                        setNewSectionName('');
                       }}
-                    />
-                    
-                    {newSectionName && (activeProfile[newSectionName] || customSections[newSectionName]) && (
-                      <p className="error-message">Section name already exists</p>
-                    )}
-                    
-                    <div className="add-section-actions">
-                      <button 
-                        className="confirm-add-button"
-                        onClick={handleAddCustomSection}
-                        disabled={!newSectionName.trim() || activeProfile[newSectionName] || customSections[newSectionName]}
-                      >
-                        ✅ Add Section
-                      </button>
-                      <button 
-                        className="cancel-add-button"
-                        onClick={() => {
-                          setShowAddSection(false);
-                          setNewSectionName('');
-                        }}
-                      >
-                        ❌ Cancel
-                      </button>
-                    </div>
+                    >
+                      ❌ Cancel
+                    </button>
                   </div>
-                )}
-              </>
-            )}
-          </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {saveStatus && (

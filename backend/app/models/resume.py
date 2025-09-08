@@ -69,7 +69,7 @@ class SkillCategory(BaseModel):
 
 class ResumeData(BaseModel):
     contact_info: ContactInfo = ContactInfo()
-    career_summary: Optional[str] = None
+    # REMOVED: career_summary: Optional[str] = None
     education: List[EducationEntry] = []
     work_experience: List[WorkExperience] = []
     projects: List[Project] = []

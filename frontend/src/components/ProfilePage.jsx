@@ -114,23 +114,6 @@ const ProfilePage = () => {
     );
   };
 
-  const renderCareerSummary = () => {
-    const summary = profileData?.careerOverview?.summary || profileData?.careerSummary;
-    if (!summary) return null;
-
-    return (
-      <div className="profile-section">
-        <h3 className="section-title">
-          <span className="section-icon">📝</span>
-          Career Summary
-        </h3>
-        <div className="summary-content">
-          <p>{summary}</p>
-        </div>
-      </div>
-    );
-  };
-
   const renderExperience = () => {
     const experience = profileData?.workExperience || profileData?.experience;
     if (!experience || experience.length === 0) return null;
@@ -235,16 +218,7 @@ const ProfilePage = () => {
               </div>
             </div>
           )}
-          {skills.languages && skills.languages.length > 0 && (
-            <div className="skill-category">
-              <h4 className="skill-category-title">Languages</h4>
-              <div className="skill-tags">
-                {skills.languages.map((skill, index) => (
-                  <span key={index} className="skill-tag language">{skill}</span>
-                ))}
-              </div>
-            </div>
-          )}
+          {/* Languages removed for uploaded/parsing-generated profiles per requirements */}
         </div>
       </div>
     );
@@ -437,7 +411,6 @@ const ProfilePage = () => {
 
           <div className="profile-content">
             {renderContactInfo()}
-            {renderCareerSummary()}
             {renderExperience()}
             {renderEducation()}
             {renderSkills()}

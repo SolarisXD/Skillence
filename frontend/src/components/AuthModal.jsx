@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/AuthModal.css';
 
-const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
+const AuthModal = ({ isOpen, onClose, mode, onSwitchMode, onSuccess }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
@@ -52,6 +52,15 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
           localStorage.setItem('token', data.access_token);
           localStorage.setItem('userId', data.user_id);
           localStorage.setItem('user', JSON.stringify({ email: formData.email, name: formData.name }));
+          // Notify parent (Navbar) about successful auth so it can update UI immediately
+          if (typeof onSuccess === 'function') {
+            try {
+              const storedUser = JSON.parse(localStorage.getItem('user')) || { email: formData.email, name: formData.name };
+              onSuccess(storedUser);
+            } catch (err) {
+              onSuccess({ email: formData.email, name: formData.name });
+            }
+          }
           onClose();
           // Stay on landing page after signup
         } else {
@@ -74,7 +83,18 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }) => {
           const data = await response.json();
           localStorage.setItem('token', data.access_token);
           localStorage.setItem('userId', data.user_id);
-          localStorage.setItem('user', JSON.stringify({ email: formData.email }));
+          // Try to persist some user info. If API returns user info prefer that, otherwise fall back to email.
+          const userToStore = data.user || { email: formData.email };
+          localStorage.setItem('user', JSON.stringify(userToStore));
+          // Notify parent (Navbar) about successful auth so it can update UI immediately
+          if (typeof onSuccess === 'function') {
+            try {
+              const storedUser = JSON.parse(localStorage.getItem('user')) || userToStore;
+              onSuccess(storedUser);
+            } catch (err) {
+              onSuccess(userToStore);
+            }
+          }
           onClose();
           // Stay on landing page after login
         } else {

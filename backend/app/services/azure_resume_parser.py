@@ -241,17 +241,102 @@ class AzureResumeParser:
             return None
         
         try:
-            # Build the instruction prompt (same as original script)
+            # Build the improved instruction prompt with detailed guidance
             instruction = f"""
-Extract the following sections from the resume text delimited by triple backticks.
-Return a single valid JSON object exactly with these keys:
-User Info: {{Name, Contact Info, Mail}},
-Education, Experience, Projects, Skills, Certifications, Achievements.
-For each key use either a string or an array of strings as appropriate.
-If a section is missing, return an empty string or empty array.
-Output ONLY valid JSON (no commentary).
+You are an expert resume parser. Analyze the resume text carefully and extract information systematically. Think step by step and structure the data precisely.
 
-Resume text: ```{resume_text}```
+IMPORTANT INSTRUCTIONS:
+1. DO NOT include any Career Summary or Professional Summary section
+2. Think carefully about each section before extracting
+3. For skills, intelligently categorize them into Technical, Soft Skills, and Languages
+4. For projects, extract clean names, descriptions, and separate any URLs
+5. For education, parse degree, institution, dates, GPA, and location properly
+6. Return ONLY valid JSON with no commentary
+
+Extract and structure the following sections from the resume text:
+
+**USER INFO**: Extract name, email, phone, and any social links
+**EDUCATION**: For each education entry, think about:
+- What is the degree/qualification?
+- Which institution/university?
+- What field of study?
+- What are the dates (start/end or graduation year)?
+- What is the GPA/CGPA if mentioned?
+- What is the location?
+
+**EXPERIENCE**: For each job, extract company, position, dates, location, and responsibilities
+
+**PROJECTS**: For each project, think about:
+- What is the project name?
+- What does this project do? (combine bullet points into a coherent description)
+- Are there any URLs, GitHub links, or demo links? (extract and separate by comma if multiple)
+
+**SKILLS**: Intelligently categorize skills:
+- Technical: Programming languages, frameworks, tools, technologies, databases
+- Soft: Communication, leadership, teamwork, problem-solving, etc.
+- Languages: Human languages (English, Spanish, etc.)
+
+**CERTIFICATIONS**: Extract only the certification name (no issuer, dates, or other details)
+
+**ACHIEVEMENTS**: Extract only the achievement title (no descriptions or details)
+
+Return a JSON object with this EXACT structure:
+{{
+  "User Info": {{
+    "Name": "Full Name",
+    "Email": "email@domain.com",
+    "Phone": "phone number",
+    "LinkedIn": "linkedin url if found",
+    "GitHub": "github url if found",
+    "Website": "website url if found"
+  }},
+  "Education": [
+    {{
+      "Institution": "University/School Name",
+      "Degree": "Degree Type (e.g., B.Tech, MBA, etc.)",
+      "Field": "Field of Study",
+      "Start Date": "start date if available",
+      "End Date": "end date or graduation year",
+      "GPA": "GPA/CGPA if mentioned",
+      "Location": "city, state/country"
+    }}
+  ],
+  "Experience": [
+    {{
+      "Company": "Company Name",
+      "Position": "Job Title",
+      "Start Date": "start date",
+      "End Date": "end date or Present",
+      "Location": "city, state",
+      "Description": "job description and responsibilities"
+    }}
+  ],
+  "Projects": [
+    {{
+      "Name": "Project Name",
+      "Description": "Clear description of what the project does (summarize bullet points)",
+      "Link": "URL1, URL2 if multiple links found"
+    }}
+  ],
+  "Skills": {{
+    "Technical": ["skill1", "skill2", "skill3"],
+    "Soft": ["skill1", "skill2"],
+    "Languages": ["language1", "language2"]
+  }},
+  "Certifications": [
+    {{
+      "Name": "Certification Name Only"
+    }}
+  ],
+  "Achievements": [
+    {{
+      "Title": "Achievement Title Only"
+    }}
+  ]
+}}
+
+Now analyze this resume text and extract the information:
+```{resume_text}```
 """
             
             # Determine endpoint: prefer explicit GEMINI_ENDPOINT, else use the correct default
@@ -379,7 +464,7 @@ Resume text: ```{resume_text}```
     def _convert_to_resume_data(self, structured_data: Dict[str, Any], raw_text: str) -> Dict[str, Any]:
         """Convert Gemini structured data to ResumeData format."""
         try:
-            # Extract user info
+            # Extract user info with improved structure
             user_info = structured_data.get("User Info", {})
             if isinstance(user_info, str):
                 # If user_info is a string, try to parse basic info
@@ -387,14 +472,14 @@ Resume text: ```{resume_text}```
             else:
                 contact_info = ContactInfo(
                     name=user_info.get("Name", ""),
-                    email=user_info.get("Mail", "") or user_info.get("Email", ""),
-                    phone=self._extract_phone_from_text(raw_text),
-                    linkedin=self._extract_linkedin_from_text(raw_text),
-                    github=self._extract_github_from_text(raw_text),
-                    website=self._extract_website_from_text(raw_text)
+                    email=user_info.get("Email", "") or user_info.get("Mail", ""),
+                    phone=user_info.get("Phone", ""),
+                    linkedin=user_info.get("LinkedIn", ""),
+                    github=user_info.get("GitHub", ""),
+                    website=user_info.get("Website", "")
                 )
             
-            # Extract education
+            # Extract education with improved parsing
             education_data = structured_data.get("Education", [])
             education = []
             if isinstance(education_data, str):
@@ -408,9 +493,18 @@ Resume text: ```{resume_text}```
                         description=edu_item
                     ))
                 else:
-                    education.append(EducationEntry(**edu_item))
+                    # Handle the new structured format
+                    education.append(EducationEntry(
+                        institution=edu_item.get("Institution", ""),
+                        degree=edu_item.get("Degree", ""),
+                        field_of_study=edu_item.get("Field", ""),
+                        start_date=edu_item.get("Start Date", ""),
+                        end_date=edu_item.get("End Date", ""),
+                        gpa=edu_item.get("GPA", ""),
+                        location=edu_item.get("Location", "")
+                    ))
             
-            # Extract experience
+            # Extract experience with improved parsing
             experience_data = structured_data.get("Experience", [])
             experience = []
             if isinstance(experience_data, str):
@@ -425,18 +519,42 @@ Resume text: ```{resume_text}```
                         responsibilities=[exp_item]
                     ))
                 else:
-                    experience.append(WorkExperience(**exp_item))
+                    # Handle the new structured format
+                    experience.append(WorkExperience(
+                        company=exp_item.get("Company", ""),
+                        position=exp_item.get("Position", ""),
+                        start_date=exp_item.get("Start Date", ""),
+                        end_date=exp_item.get("End Date", ""),
+                        location=exp_item.get("Location", ""),
+                        description=exp_item.get("Description", ""),
+                        responsibilities=[exp_item.get("Description", "")] if exp_item.get("Description") else []
+                    ))
             
-            # Extract skills
-            skills_data = structured_data.get("Skills", [])
+            # Extract skills with intelligent categorization
+            skills_data = structured_data.get("Skills", {})
             skills = []
+            
             if isinstance(skills_data, str):
+                # Fallback: put all in Technical category
                 skills_list = [s.strip() for s in skills_data.split(',') if s.strip()]
                 skills.append(SkillCategory(category="Technical", skills=skills_list))
             elif isinstance(skills_data, list):
+                # Fallback: put all in Technical category
                 skills.append(SkillCategory(category="Technical", skills=skills_data))
+            elif isinstance(skills_data, dict):
+                # Handle the new categorized format
+                technical_skills = skills_data.get("Technical", [])
+                soft_skills = skills_data.get("Soft", [])
+                languages = skills_data.get("Languages", [])
+                
+                if technical_skills:
+                    skills.append(SkillCategory(category="Technical", skills=technical_skills))
+                if soft_skills:
+                    skills.append(SkillCategory(category="Soft Skills", skills=soft_skills))
+                if languages:
+                    skills.append(SkillCategory(category="Languages", skills=languages))
             
-            # Extract projects
+            # Extract projects with improved format
             projects_data = structured_data.get("Projects", [])
             projects = []
             if isinstance(projects_data, str):
@@ -449,9 +567,28 @@ Resume text: ```{resume_text}```
                         description=proj_item
                     ))
                 else:
-                    projects.append(Project(**proj_item))
+                    # Handle the new structured format
+                    links = proj_item.get("Link", "")
+                    url = ""
+                    github_url = ""
+                    
+                    if links:
+                        # Split multiple links and categorize them
+                        link_list = [link.strip() for link in links.split(',')]
+                        for link in link_list:
+                            if 'github' in link.lower():
+                                github_url = link
+                            elif url == "":  # First non-github link becomes main URL
+                                url = link
+                    
+                    projects.append(Project(
+                        name=proj_item.get("Name", ""),
+                        description=proj_item.get("Description", ""),
+                        url=url,
+                        github_url=github_url
+                    ))
             
-            # Extract certifications
+            # Extract certifications with only name
             cert_data = structured_data.get("Certifications", [])
             certifications = []
             if isinstance(cert_data, str):
@@ -460,13 +597,15 @@ Resume text: ```{resume_text}```
             for cert_item in cert_data:
                 if isinstance(cert_item, str):
                     certifications.append(Certification(
-                        name=cert_item,
-                        issuer=self._extract_issuer(cert_item)
+                        name=cert_item
                     ))
                 else:
-                    certifications.append(Certification(**cert_item))
+                    # Handle the new structured format
+                    certifications.append(Certification(
+                        name=cert_item.get("Name", "")
+                    ))
             
-            # Extract achievements
+            # Extract achievements with only title
             achievement_data = structured_data.get("Achievements", [])
             achievements = []
             if isinstance(achievement_data, str):
@@ -475,16 +614,18 @@ Resume text: ```{resume_text}```
             for achievement_item in achievement_data:
                 if isinstance(achievement_item, str):
                     achievements.append(Achievement(
-                        title=self._extract_achievement_title(achievement_item),
-                        description=achievement_item
+                        title=achievement_item
                     ))
                 else:
-                    achievements.append(Achievement(**achievement_item))
+                    # Handle the new structured format
+                    achievements.append(Achievement(
+                        title=achievement_item.get("Title", "")
+                    ))
             
-            # Create ResumeData
+            # Create ResumeData WITHOUT career_summary
             resume_data = {
                 "contact_info": contact_info.dict() if hasattr(contact_info, 'dict') else contact_info,
-                "career_summary": self._extract_summary_from_text(raw_text),
+                # REMOVED: "career_summary": self._extract_summary_from_text(raw_text),
                 "education": [edu.dict() if hasattr(edu, 'dict') else edu for edu in education],
                 "work_experience": [exp.dict() if hasattr(exp, 'dict') else exp for exp in experience],
                 "projects": [proj.dict() if hasattr(proj, 'dict') else proj for proj in projects],
@@ -502,10 +643,10 @@ Resume text: ```{resume_text}```
             
         except Exception as e:
             self.logger.error(f"Error converting structured data to ResumeData: {e}")
-            # Return basic structure with raw text
+            # Return basic structure with raw text WITHOUT career_summary
             return {
                 "contact_info": {"name": "Unknown", "email": "", "phone": ""},
-                "career_summary": "",
+                # REMOVED: "career_summary": "",
                 "education": [],
                 "work_experience": [],
                 "projects": [],
@@ -548,7 +689,7 @@ Resume text: ```{resume_text}```
                 "email": self._extract_email_basic(text),
                 "phone": self._extract_phone_from_text(text)
             },
-            "career_summary": "",
+            # REMOVED: "career_summary": "",
             "education": [],
             "work_experience": [],
             "projects": [],
