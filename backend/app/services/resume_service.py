@@ -100,20 +100,12 @@ class ResumeService:
             # Create ResumeData object from parsed data
             resume_data = ResumeData(**parsed_data)
 
-            # Print a brief summary to terminal for visibility
+            # Print final summary only
             try:
-                print("=== PARSED RESUME SUMMARY ===")
                 ci = resume_data.contact_info.dict() if hasattr(resume_data.contact_info, 'dict') else (resume_data.contact_info or {})
-                print({
-                    "name": ci.get("name"),
-                    "email": ci.get("email"),
-                    "work_experience_count": len(resume_data.work_experience or []),
-                    "education_count": len(resume_data.education or []),
-                    "skills_count": sum(len(s.skills or []) for s in (resume_data.skills or [])),
-                    "parsing_confidence": parsed_data.get('parsing_confidence', 0)
-                })
+                print(f"✅ Resume parsed successfully for {ci.get('name', 'Unknown')} - Confidence: {parsed_data.get('parsing_confidence', 0):.2f}")
             except Exception:
-                pass
+                print("✅ Resume parsing completed")
             
             # Create Resume document
             resume_doc = Resume(

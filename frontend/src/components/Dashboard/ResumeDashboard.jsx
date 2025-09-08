@@ -952,6 +952,7 @@ const ProfileBuilder = () => {
   const [showAddSection, setShowAddSection] = useState(false);
   const [newSectionName, setNewSectionName] = useState('');
   const [saveStatus, setSaveStatus] = useState(''); // saving, saved, error
+  const [showGoToProfile, setShowGoToProfile] = useState(false);
 
   const fileInputRef = useRef(null);
   const dropZoneRef = useRef(null);
@@ -964,6 +965,18 @@ const ProfileBuilder = () => {
       }
     };
   }, [selectedFileURL]);
+
+  // Handle save notification timer
+  useEffect(() => {
+    if (saveStatus === 'saved') {
+      setShowGoToProfile(true);
+      const timer = setTimeout(() => {
+        setSaveStatus('');
+        setShowGoToProfile(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [saveStatus]);
 
   // Form Steps Configuration
   const formSteps = [
@@ -996,6 +1009,12 @@ const ProfileBuilder = () => {
           <button className="option-button primary">
             Upload Resume
           </button>
+        </div>
+
+        <div className="profile-options-divider">
+          <div className="divider-line"></div>
+          <div className="divider-or">OR</div>
+          <div className="divider-line"></div>
         </div>
 
         <div className="profile-option" onClick={() => setCurrentView('manual')}>
@@ -1240,7 +1259,10 @@ const ProfileBuilder = () => {
                   )}
 
                   <div className="selected-file-actions">
-                    <button className="confirm-upload-button" onClick={() => startUpload(selectedFile)}>
+                    <button className="confirm-upload-button" onClick={(e) => {
+                      e.stopPropagation();
+                      startUpload(selectedFile);
+                    }}>
                       Confirm Upload
                     </button>
                     <button 
@@ -1255,7 +1277,8 @@ const ProfileBuilder = () => {
                     >
                       Replace File
                     </button>
-                    <button className="remove-button" onClick={() => {
+                    <button className="remove-button" onClick={(e) => {
+                      e.stopPropagation();
                       if (selectedFileURL) URL.revokeObjectURL(selectedFileURL);
                       setSelectedFile(null);
                       setSelectedFileURL(null);
@@ -2697,7 +2720,19 @@ const ProfileBuilder = () => {
       {saveStatus && (
         <div className={`save-notification ${saveStatus}`}>
           {saveStatus === 'saving' && 'Saving profile...'}
-          {saveStatus === 'saved' && 'Profile saved successfully!'}
+          {saveStatus === 'saved' && (
+            <div className="save-success-content">
+              <span>Profile saved successfully!</span>
+              {showGoToProfile && (
+                <button 
+                  className="goto-profile-button"
+                  onClick={() => navigate('/profile')}
+                >
+                  View My Profile
+                </button>
+              )}
+            </div>
+          )}
           {saveStatus === 'error' && 'Failed to save profile'}
         </div>
       )}

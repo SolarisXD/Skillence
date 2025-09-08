@@ -17,6 +17,10 @@ const ProfilePage = () => {
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [editMode, setEditMode] = useState(false);
+  const [editingSection, setEditingSection] = useState(null);
+  const [editData, setEditData] = useState({});
+  const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -64,64 +68,211 @@ const ProfilePage = () => {
     }
   };
 
+  const handleEditSection = (sectionName, data) => {
+    setEditingSection(sectionName);
+    setEditData(data);
+    setEditMode(true);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingSection(null);
+    setEditData({});
+    setEditMode(false);
+  };
+
+  const handleSaveSection = async (sectionName, updatedData) => {
+    setSaving(true);
+    try {
+      const token = localStorage.getItem('token');
+      const updatedProfile = {
+        ...profileData,
+        [sectionName]: updatedData
+      };
+
+      const response = await fetch('http://localhost:8000/api/profile/', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ profile_data: updatedProfile })
+      });
+
+      if (response.ok) {
+        setProfileData(updatedProfile);
+        setEditingSection(null);
+        setEditData({});
+        setEditMode(false);
+      } else {
+        throw new Error('Failed to save changes');
+      }
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      setError('Failed to save changes. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const renderContactInfo = () => {
     const contact = profileData?.personalInfo || profileData?.contact_info;
     if (!contact) return null;
 
+    const isEditing = editMode && editingSection === 'contact_info';
+
     return (
       <div className="profile-section">
-        <h3 className="section-title">
-          <span className="section-icon">
-            <UserIcon size={20} />
-          </span>
-          Contact Information
-        </h3>
-        <div className="contact-grid">
-          {contact.fullName && (
-            <div className="contact-item">
-              <span className="contact-label">Name:</span>
-              <span className="contact-value">{contact.fullName}</span>
-            </div>
-          )}
-          {contact.email && (
-            <div className="contact-item">
-              <span className="contact-label">Email:</span>
-              <span className="contact-value">{contact.email}</span>
-            </div>
-          )}
-          {contact.phone && (
-            <div className="contact-item">
-              <span className="contact-label">Phone:</span>
-              <span className="contact-value">{contact.phone}</span>
-            </div>
-          )}
-          {contact.location && (
-            <div className="contact-item">
-              <span className="contact-label">Location:</span>
-              <span className="contact-value">{contact.location}</span>
-            </div>
-          )}
-          {contact.website && (
-            <div className="contact-item">
-              <span className="contact-label">Website:</span>
-              <span className="contact-value">
-                <a href={contact.website} target="_blank" rel="noopener noreferrer">
-                  {contact.website}
-                </a>
-              </span>
-            </div>
-          )}
-          {contact.linkedin && (
-            <div className="contact-item">
-              <span className="contact-label">LinkedIn:</span>
-              <span className="contact-value">
-                <a href={contact.linkedin} target="_blank" rel="noopener noreferrer">
-                  {contact.linkedin}
-                </a>
-              </span>
-            </div>
+        <div className="section-header">
+          <h3 className="section-title">
+            <span className="section-icon">
+              <UserIcon size={20} />
+            </span>
+            Contact Information
+          </h3>
+          {editMode && !isEditing && (
+            <button 
+              className="edit-section-button"
+              onClick={() => handleEditSection('contact_info', contact)}
+            >
+              ✏️ Edit
+            </button>
           )}
         </div>
+
+        {isEditing ? (
+          <div className="edit-section-form">
+            <div className="form-grid">
+              <div className="form-group">
+                <label>Full Name</label>
+                <input
+                  type="text"
+                  value={editData.fullName || editData.name || ''}
+                  onChange={(e) => setEditData({...editData, fullName: e.target.value, name: e.target.value})}
+                />
+              </div>
+              <div className="form-group">
+                <label>Email</label>
+                <input
+                  type="email"
+                  value={editData.email || ''}
+                  onChange={(e) => setEditData({...editData, email: e.target.value})}
+                />
+              </div>
+              <div className="form-group">
+                <label>Phone</label>
+                <input
+                  type="tel"
+                  value={editData.phone || ''}
+                  onChange={(e) => setEditData({...editData, phone: e.target.value})}
+                />
+              </div>
+              <div className="form-group">
+                <label>Location</label>
+                <input
+                  type="text"
+                  value={editData.location || ''}
+                  onChange={(e) => setEditData({...editData, location: e.target.value})}
+                />
+              </div>
+              <div className="form-group">
+                <label>Website</label>
+                <input
+                  type="url"
+                  value={editData.website || ''}
+                  onChange={(e) => setEditData({...editData, website: e.target.value})}
+                />
+              </div>
+              <div className="form-group">
+                <label>LinkedIn</label>
+                <input
+                  type="url"
+                  value={editData.linkedin || ''}
+                  onChange={(e) => setEditData({...editData, linkedin: e.target.value})}
+                />
+              </div>
+              <div className="form-group">
+                <label>GitHub</label>
+                <input
+                  type="url"
+                  value={editData.github || ''}
+                  onChange={(e) => setEditData({...editData, github: e.target.value})}
+                />
+              </div>
+            </div>
+            <div className="edit-actions">
+              <button 
+                className="save-button"
+                onClick={() => handleSaveSection('contact_info', editData)}
+                disabled={saving}
+              >
+                {saving ? 'Saving...' : 'Save Changes'}
+              </button>
+              <button 
+                className="cancel-button"
+                onClick={handleCancelEdit}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="contact-grid">
+            {(contact.fullName || contact.name) && (
+              <div className="contact-item">
+                <span className="contact-label">Name:</span>
+                <span className="contact-value">{contact.fullName || contact.name}</span>
+              </div>
+            )}
+            {contact.email && (
+              <div className="contact-item">
+                <span className="contact-label">Email:</span>
+                <span className="contact-value">{contact.email}</span>
+              </div>
+            )}
+            {contact.phone && (
+              <div className="contact-item">
+                <span className="contact-label">Phone:</span>
+                <span className="contact-value">{contact.phone}</span>
+              </div>
+            )}
+            {contact.location && (
+              <div className="contact-item">
+                <span className="contact-label">Location:</span>
+                <span className="contact-value">{contact.location}</span>
+              </div>
+            )}
+            {contact.website && (
+              <div className="contact-item">
+                <span className="contact-label">Website:</span>
+                <span className="contact-value">
+                  <a href={contact.website} target="_blank" rel="noopener noreferrer">
+                    {contact.website}
+                  </a>
+                </span>
+              </div>
+            )}
+            {contact.linkedin && (
+              <div className="contact-item">
+                <span className="contact-label">LinkedIn:</span>
+                <span className="contact-value">
+                  <a href={contact.linkedin} target="_blank" rel="noopener noreferrer">
+                    {contact.linkedin}
+                  </a>
+                </span>
+              </div>
+            )}
+            {contact.github && (
+              <div className="contact-item">
+                <span className="contact-label">GitHub:</span>
+                <span className="contact-value">
+                  <a href={contact.github} target="_blank" rel="noopener noreferrer">
+                    {contact.github}
+                  </a>
+                </span>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     );
   };
@@ -130,35 +281,69 @@ const ProfilePage = () => {
     const experience = profileData?.workExperience || profileData?.experience;
     if (!experience || experience.length === 0) return null;
 
+    const isEditing = editMode && editingSection === 'experience';
+
     return (
       <div className="profile-section">
-        <h3 className="section-title">
-          <span className="section-icon">
-            <BriefcaseIcon size={20} />
-          </span>
-          Work Experience
-        </h3>
-        <div className="experience-list">
-          {experience.map((exp, index) => (
-            <div key={index} className="experience-item">
-              <div className="experience-header">
-                <h4 className="job-title">{exp.position || exp.title}</h4>
-                <span className="job-duration">{exp.duration}</span>
-              </div>
-              <div className="company-info">
-                <span className="company-name">{exp.company}</span>
-                {exp.location && <span className="job-location">• {exp.location}</span>}
-              </div>
-              {exp.responsibilities && exp.responsibilities.length > 0 && (
-                <ul className="responsibilities">
-                  {exp.responsibilities.map((resp, idx) => (
-                    <li key={idx}>{resp}</li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
+        <div className="section-header">
+          <h3 className="section-title">
+            <span className="section-icon">
+              <BriefcaseIcon size={20} />
+            </span>
+            Work Experience
+          </h3>
+          {editMode && !isEditing && (
+            <button 
+              className="edit-section-button"
+              onClick={() => handleEditSection('experience', experience)}
+            >
+              ✏️ Edit
+            </button>
+          )}
         </div>
+
+        {isEditing ? (
+          <div className="edit-section-form">
+            <div className="edit-actions">
+              <button 
+                className="save-button"
+                onClick={() => handleSaveSection('experience', editData)}
+                disabled={saving}
+              >
+                {saving ? 'Saving...' : 'Save Changes'}
+              </button>
+              <button 
+                className="cancel-button"
+                onClick={handleCancelEdit}
+              >
+                Cancel
+              </button>
+            </div>
+            <p className="edit-note">Experience editing requires advanced form handling. Please use the dashboard for detailed editing.</p>
+          </div>
+        ) : (
+          <div className="experience-list">
+            {experience.map((exp, index) => (
+              <div key={index} className="experience-item">
+                <div className="experience-header">
+                  <h4 className="job-title">{exp.position || exp.title}</h4>
+                  <span className="job-duration">{exp.duration}</span>
+                </div>
+                <div className="company-info">
+                  <span className="company-name">{exp.company}</span>
+                  {exp.location && <span className="job-location">• {exp.location}</span>}
+                </div>
+                {exp.responsibilities && exp.responsibilities.length > 0 && (
+                  <ul className="responsibilities">
+                    {exp.responsibilities.map((resp, idx) => (
+                      <li key={idx}>{resp}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     );
   };
@@ -207,14 +392,47 @@ const ProfilePage = () => {
     const skills = profileData?.skills;
     if (!skills) return null;
 
+    const isEditing = editMode && editingSection === 'skills';
+
     return (
       <div className="profile-section">
-        <h3 className="section-title">
-          <span className="section-icon">
-            <SkillsIcon size={20} />
-          </span>
-          Skills
-        </h3>
+        <div className="section-header">
+          <h3 className="section-title">
+            <span className="section-icon">
+              <SkillsIcon size={20} />
+            </span>
+            Skills
+          </h3>
+          {editMode && !isEditing && (
+            <button 
+              className="edit-section-button"
+              onClick={() => handleEditSection('skills', skills)}
+            >
+              ✏️ Edit
+            </button>
+          )}
+        </div>
+
+        {isEditing ? (
+          <div className="edit-section-form">
+            <div className="edit-actions">
+              <button 
+                className="save-button"
+                onClick={() => handleSaveSection('skills', editData)}
+                disabled={saving}
+              >
+                {saving ? 'Saving...' : 'Save Changes'}
+              </button>
+              <button 
+                className="cancel-button"
+                onClick={handleCancelEdit}
+              >
+                Cancel
+              </button>
+            </div>
+            <p className="edit-note">Skills editing requires advanced tag management. Please use the dashboard for detailed editing.</p>
+          </div>
+        ) : (
         <div className="skills-container">
           {skills.technical && skills.technical.length > 0 && (
             <div className="skill-category">
@@ -238,6 +456,7 @@ const ProfilePage = () => {
           )}
           {/* Languages removed for uploaded/parsing-generated profiles per requirements */}
         </div>
+        )}
       </div>
     );
   };
@@ -274,10 +493,10 @@ const ProfilePage = () => {
                   </div>
                 </div>
               )}
-              {(project.url || project.github_url) && (
+              {(project.url || project.github_url || project.link) && (
                 <div className="project-links">
-                  {project.url && (
-                    <a href={project.url} target="_blank" rel="noopener noreferrer" className="project-link">
+                  {(project.url || project.link) && (
+                    <a href={project.url || project.link} target="_blank" rel="noopener noreferrer" className="project-link">
                       🔗 Live Demo
                     </a>
                   )}
@@ -326,6 +545,40 @@ const ProfilePage = () => {
             </div>
           ))}
         </div>
+      </div>
+    );
+  };
+
+  const renderAchievements = () => {
+    const achievements = profileData?.achievements;
+    if (!achievements || achievements.length === 0) return null;
+
+    return (
+      <div className="profile-section">
+        <h3 className="section-title">
+          <span className="section-icon">
+            <TargetIcon size={20} />
+          </span>
+          Achievements
+        </h3>
+        <ul className="achievements-list">
+          {achievements.map((achievement, index) => (
+            <li key={index} className="achievement-item">
+              <div className="achievement-header">
+                <h4 className="achievement-title">{achievement.title}</h4>
+                {achievement.date && <span className="achievement-date">{formatDate(achievement.date)}</span>}
+              </div>
+              {achievement.description && (
+                <p className="achievement-description">{achievement.description}</p>
+              )}
+              {achievement.issuer && (
+                <div className="achievement-issuer">
+                  <span>Issued by: {achievement.issuer}</span>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
       </div>
     );
   };
@@ -425,12 +678,21 @@ const ProfilePage = () => {
         <div className="profile-container">
           <div className="profile-header">
             <h1 className="profile-title">My Profile</h1>
-            <button 
-              onClick={() => navigate('/dashboard/resume')} 
-              className="edit-profile-button"
-            >
-              ✏️ Edit Profile
-            </button>
+            {!editMode ? (
+              <button 
+                onClick={() => setEditMode(true)} 
+                className="edit-profile-button"
+              >
+                ✏️ Edit Profile
+              </button>
+            ) : (
+              <button 
+                onClick={() => setEditMode(false)} 
+                className="edit-profile-button cancel-edit"
+              >
+                ✖️ Cancel Editing
+              </button>
+            )}
           </div>
 
           <div className="profile-content">
@@ -440,6 +702,7 @@ const ProfilePage = () => {
             {renderSkills()}
             {renderProjects()}
             {renderCertifications()}
+            {renderAchievements()}
             {renderCustomSections()}
           </div>
         </div>
