@@ -14,6 +14,7 @@ import {
   Pie,
   Cell
 } from 'recharts';
+import Navbar from '../navbar';
 import {
   fetchJobList,
   fetchJobAnalysis,
@@ -165,18 +166,20 @@ const JobTrendDashboard = () => {
   const trendIndicator = getTrendIndicator(jobAnalysis.trendiness);
 
   return (
-    <div className="job-trend-dashboard">
-      {/* Header */}
-      <div className="dashboard-header">
-        <div className="header-content">
-          <h1 className="dashboard-title">
-            <span className="title-icon">📊</span>
-            Job Trend Analysis
-          </h1>
-          <p className="dashboard-subtitle">
-            Real-time insights into career opportunities, skill demands, and market trends
-          </p>
-        </div>
+    <>
+      <Navbar />
+      <div className="job-trend-dashboard">
+        {/* Header */}
+        <div className="dashboard-header">
+          <div className="header-content">
+            <h1 className="dashboard-title">
+              <span className="title-icon">📊</span>
+              Job Trend Analysis
+            </h1>
+            <p className="dashboard-subtitle">
+              Real-time insights into career opportunities, skill demands, and market trends
+            </p>
+          </div>
       </div>
 
       {/* Controls */}
@@ -383,6 +386,7 @@ const JobTrendDashboard = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
