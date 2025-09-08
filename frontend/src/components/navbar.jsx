@@ -193,7 +193,6 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
                       className="dropdown-item"
                       onClick={(e) => {
                         e.stopPropagation();
-                        // navigate to job offer evaluator
                         navigate('/job-offer-evaluator');
                         setShowServices(false);
                       }}
@@ -204,7 +203,16 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
                       className="dropdown-item"
                       onClick={(e) => {
                         e.stopPropagation();
-                        // scroll to services section on main page
+                        navigate('/career-path-recommendation');
+                        setShowServices(false);
+                      }}
+                    >
+                      Career Path Recommendation
+                    </button>
+                    <button
+                      className="dropdown-item"
+                      onClick={(e) => {
+                        e.stopPropagation();
                         scrollToServices(e);
                         setShowServices(false);
                       }}

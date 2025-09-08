@@ -142,7 +142,7 @@ def main():
     parser.add_argument('--occ_skills', help='Path to Occupation-Skills mapping file from O*NET (legacy CSV mode)')
     parser.add_argument('--occupations', help='Path to Occupation.txt from O*NET (legacy CSV mode)')
     parser.add_argument('--data-dir', help='Directory containing O*NET Excel/TXT files to auto-discover', default='backend/app/career_data')
-    parser.add_argument('--out', default='onet_jobs.json', help='Output JSON filename')
+    parser.add_argument('--out', default='backend/app/career_data/onet_occupations_data.json', help='Output JSON filename')
     parser.add_argument('--threshold', type=float, default=2.5, help='(legacy) Importance threshold (1-5) for required skills in CSV mode')
     parser.add_argument('--required-fraction', type=float, default=0.5, help='fraction of max aggregated score to mark a skill required when inferring from tasks')
     args = parser.parse_args()

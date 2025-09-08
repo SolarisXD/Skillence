@@ -1,0 +1,105 @@
+.career-path-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.analyze-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.analyze-button:hover {
+  background-color: #0056b3;
+}
+
+.analyze-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.loading-message {
+  color: #666;
+  margin: 20px 0;
+}
+
+.error-message {
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.recommendation-card {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.recommendation-title {
+  color: #007bff;
+  margin: 0 0 5px 0;
+}
+
+.recommendation-score {
+  color: #28a745;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.scores-breakdown {
+  color: #6c757d;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.skills-section {
+  margin-top: 10px;
+}
+
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.skill-tag {
+  background-color: #e9ecef;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+.hot-tech {
+  background-color: #dc3545;
+  color: white;
+}
+
+.skill-required {
+  background-color: #28a745;
+  color: white;
+}
+
+.knowledge-tag {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.skills-section ul {
+  margin: 5px 0 0 20px;
+  padding: 0;
+}
+
+.skills-section li {
+  margin-bottom: 3px;
+  font-size: 14px;
+}
