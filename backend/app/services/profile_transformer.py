@@ -76,37 +76,136 @@ class ProfileTransformer:
         
         return normalized
     
-    def normalize_skills(self, skills_data: Union[List[str], List[Dict], str]) -> List[str]:
+    def normalize_skills(self, skills_data: Union[List[str], List[Dict], Dict[str, Any], str]) -> Dict[str, List[str]]:
         """
-        Normalize skills data.
+        Normalize skills data without losing structure.
+        - If a plain string is provided, return a list[str].
+        - If a list[str] is provided, return a cleaned list[str].
+        - If a list[dict] with category/skills or name fields is provided, return a categorized dict.
+        - If a dict of categories is provided, return a cleaned categorized dict.
+        Categories normalized to keys: technical, soft, languages.
         """
-        if not skills_data:
-            return []
-        
+        if skills_data is None or skills_data == "":
+            return {"technical": [], "soft": [], "languages": []}
+
+        # Helper to clean list-like values into list[str]
+        def _to_list_str(val: Union[str, List[Any]]) -> List[str]:
+            if val is None:
+                return []
+            if isinstance(val, str):
+                return [s for s in [v.strip() for d in ['\n', ',', ';'] for v in ([val] if d not in val else val.split(d))] if s] if any(d in val for d in ['\n', ',', ';']) else ([val.strip()] if val.strip() else [])
+            if isinstance(val, list):
+                out: List[str] = []
+                for item in val:
+                    if isinstance(item, str):
+                        s = item.strip()
+                        if s:
+                            out.append(s)
+                    elif isinstance(item, dict):
+                        # object like { name: "Python" } or { skill: "Python" }
+                        name = str(item.get("name", item.get("skill", ""))).strip()
+                        if name:
+                            out.append(name)
+                    else:
+                        s = str(item).strip()
+                        if s:
+                            out.append(s)
+                return out
+            # Fallback
+            s = str(val).strip()
+            return [s] if s else []
+
+        # 1) String -> list[str]
         if isinstance(skills_data, str):
-            # Handle comma-separated or newline-separated string
-            skills = []
-            for delimiter in ['\n', ',', ';']:
-                if delimiter in skills_data:
-                    skills = [skill.strip() for skill in skills_data.split(delimiter)]
-                    break
-            if not skills:
-                skills = [skills_data.strip()]
-            return [skill for skill in skills if skill]
-        
-        elif isinstance(skills_data, list):
-            normalized_skills = []
-            for skill in skills_data:
-                if isinstance(skill, str):
-                    normalized_skills.append(skill.strip())
-                elif isinstance(skill, dict):
-                    # Handle object format (e.g., {name: "Python", level: "Expert"})
-                    skill_name = skill.get("name", skill.get("skill", "")).strip()
-                    if skill_name:
-                        normalized_skills.append(skill_name)
-            return [skill for skill in normalized_skills if skill]
-        
-        return []
+            return {"technical": _to_list_str(skills_data), "soft": [], "languages": []}
+
+        # 2) Dict of categories -> dict[str, list[str]]
+        if isinstance(skills_data, dict):
+            category_map = {
+                "technical": "technical",
+                "technical skills": "technical",
+                "tech": "technical",
+                "tech skills": "technical",
+                "hard": "technical",
+                "hard skills": "technical",
+                "hard_skills": "technical",
+                "soft": "soft",
+                "soft skills": "soft",
+                "soft_skills": "soft",
+                "languages": "languages",
+                "language": "languages",
+                "language skills": "languages"
+            }
+            out: Dict[str, List[str]] = {"technical": [], "soft": [], "languages": []}
+            for key, val in skills_data.items():
+                if val is None:
+                    continue
+                norm_key = category_map.get(str(key).strip().lower())
+                if not norm_key:
+                    # Unknown bucket: put into technical by default to avoid data loss
+                    norm_key = "technical"
+                out[norm_key].extend(_to_list_str(val))
+            # de-duplicate while preserving order
+            for k in out:
+                seen = set()
+                deduped = []
+                for s in out[k]:
+                    ls = s.strip()
+                    if not ls:
+                        continue
+                    key_ = ls.lower()
+                    if key_ not in seen:
+                        seen.add(key_)
+                        deduped.append(ls)
+                out[k] = deduped
+            return out
+
+        # 3) List case
+        if isinstance(skills_data, list):
+            # If it's list of dicts with categories, convert to categorized dict
+            if any(isinstance(x, dict) and ("category" in x or "skills" in x) for x in skills_data):
+                categorized: Dict[str, List[str]] = {"technical": [], "soft": [], "languages": []}
+                for item in skills_data:
+                    if not isinstance(item, dict):
+                        # treat bare strings in a mixed list as technical
+                        categorized["technical"].extend(_to_list_str(item))
+                        continue
+                    cat_raw = item.get("category")
+                    skills_list = item.get("skills")
+                    if skills_list is None and ("name" in item or "skill" in item):
+                        # object like { name: "Python" }
+                        skills_list = [item.get("name") or item.get("skill")]
+                    norm_cat = str(cat_raw).strip().lower() if cat_raw else "technical"
+                    if norm_cat.startswith("tech") or norm_cat in ("hard", "hard skills", "hard_skills"):
+                        norm_cat = "technical"
+                    elif norm_cat.startswith("soft"):
+                        norm_cat = "soft"
+                    elif norm_cat.startswith("lang"):
+                        norm_cat = "languages"
+                    else:
+                        norm_cat = "technical"
+                    categorized[norm_cat].extend(_to_list_str(skills_list))
+                # de-duplicate preserving order per bucket
+                for k in categorized:
+                    seen = set()
+                    deduped = []
+                    for s in categorized[k]:
+                        ls = s.strip()
+                        if not ls:
+                            continue
+                        key_ = ls.lower()
+                        if key_ not in seen:
+                            seen.add(key_)
+                            deduped.append(ls)
+                    categorized[k] = deduped
+                return categorized
+
+            # Otherwise treat as simple list[str] and return list[str]
+            return {"technical": [s for s in _to_list_str(skills_data) if s], "soft": [], "languages": []}
+
+        # Unknown type: stringify to avoid data loss
+        s = str(skills_data).strip()
+        return {"technical": ([s] if s else []), "soft": [], "languages": []}
     
     def normalize_projects(self, projects_data: Union[List[Dict], List[str]]) -> List[Dict[str, Any]]:
         """
@@ -260,7 +359,7 @@ class ProfileTransformer:
             },
             "experience": [],
             "education": [],
-            "skills": [],
+            "skills": {"technical": [], "soft": [], "languages": []},
             "projects": [],
             "certifications": [],
             "achievements": []

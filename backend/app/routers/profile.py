@@ -190,6 +190,14 @@ async def get_profile(
         if profile:
             # Remove MongoDB ObjectId for JSON serialization
             profile.pop("_id", None)
+            # Backward-compatibility: ensure skills is categorized dict
+            try:
+                pd = profile.get("profile_data", {})
+                skills = pd.get("skills")
+                if isinstance(skills, list):
+                    pd["skills"] = {"technical": skills, "soft": [], "languages": []}
+            except Exception:
+                pass
             
             return {
                 "success": True,
@@ -221,10 +229,11 @@ async def update_profile(
     try:
         db = get_database()
         profiles_collection = db.profiles
-        
-        # Extract profile data from request
-        profile_data = profile_request.get("profile_data", {})
-        
+
+        # Extract and transform profile data from request
+        raw_profile_data = profile_request.get("profile_data", {})
+        profile_data = profile_transformer.transform_profile_data(raw_profile_data)
+
         # Update profile
         result = await profiles_collection.update_one(
             {"user_id": user_id},
