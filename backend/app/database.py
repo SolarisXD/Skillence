@@ -9,8 +9,6 @@ load_dotenv(dotenv_path=env_path)
 
 MONGODB_URI = os.getenv("MONGODB_URI")
 
-print(f"MongoDB URI: {MONGODB_URI}")  # Debug print
-
 # Async MongoDB client for FastAPI
 client = None
 database = None

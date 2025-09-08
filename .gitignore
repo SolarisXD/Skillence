@@ -178,3 +178,8 @@ dmypy.json
 .pyre/
 
 backend/app/career_data/job_trend_data/Job_Dataset_Indeed_India.ldjson
+ONET_README.md
+
+# O*NET skills data (large Excel exports) - ignore Excel/ODS files in skills_data
+backend/app/career_data/skills_data/*.xls*
+backend/app/career_data/skills_data/*.ods
