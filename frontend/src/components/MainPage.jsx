@@ -39,15 +39,6 @@ const MainPage = () => {
           </p>
           <div className="hero-buttons">
             <button className="cta-button primary">Launch AI Assistant</button>
-            <div className="business-widget">
-              <span className="widget-icon">🤖</span>
-              <div className="widget-content">
-                <span className="widget-text">AI Career Analytics - Powered by Machine Learning</span>
-                <div className="progress-indicator">
-                  <div className="progress-line"></div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
