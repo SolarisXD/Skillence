@@ -1144,11 +1144,10 @@ const ProfileBuilder = () => {
 
         // Call the backend API
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:8000/api/resume/parse', {
+        console.log('Token from localStorage:', token ? 'Token exists' : 'No token found');
+        
+        const response = await fetch('http://localhost:8000/api/resume/test-upload', {
           method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          },
           body: formData
         });
 

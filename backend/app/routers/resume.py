@@ -20,6 +20,7 @@ def get_current_user_id(credentials: HTTPAuthorizationCredentials = Depends(secu
     """
     try:
         token = credentials.credentials
+        logger.info(f"Received token: {token[:20]}..." if token else "No token received")
         user_id = verify_token(token)
         if user_id is None:
             logger.error("Token verification returned None")

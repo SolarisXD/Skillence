@@ -39,9 +39,11 @@ def verify_token(token: str):
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id = payload.get("user_id")
         if user_id is None:
+            print(f"Token payload: {payload}")  # Debug log
             raise JWTError("User ID not found in token")
         return user_id
-    except JWTError:
+    except JWTError as e:
+        print(f"JWT Error: {e}")  # Debug log
         return None
 
 def create_reset_token(email: str):

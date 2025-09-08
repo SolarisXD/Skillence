@@ -352,38 +352,173 @@ const ProfilePage = () => {
     const education = profileData?.education;
     if (!education || education.length === 0) return null;
 
+    const isEditing = editMode && editingSection === 'education';
+
     return (
       <div className="profile-section">
-        <h3 className="section-title">
-          <span className="section-icon">
-            <GraduationIcon size={20} />
-          </span>
-          Education
-        </h3>
-        <div className="education-list">
-          {education.map((edu, index) => (
-            <div key={index} className="education-item">
-              <div className="education-header">
-                <h4 className="degree">{edu.degree}</h4>
-                <span className="education-year">{edu.year}</span>
-              </div>
-              <div className="institution-info">
-                <span className="institution">{edu.institution}</span>
-                {edu.location && <span className="edu-location">• {edu.location}</span>}
-              </div>
-              {edu.gpa && (
-                <div className="gpa-info">
-                  <span>GPA: {edu.gpa}</span>
-                </div>
-              )}
-              {edu.details && (
-                <div className="education-details">
-                  <p>{edu.details}</p>
-                </div>
-              )}
-            </div>
-          ))}
+        <div className="section-header">
+          <h3 className="section-title">
+            <span className="section-icon">
+              <GraduationIcon size={20} />
+            </span>
+            Education
+          </h3>
+          {editMode && !isEditing && (
+            <button 
+              className="edit-section-button"
+              onClick={() => handleEditSection('education', education)}
+            >
+              ✏️ Edit
+            </button>
+          )}
         </div>
+
+        {isEditing ? (
+          <div className="edit-section-form">
+            {(editData || []).map((edu, index) => (
+              <div key={index} className="education-edit-item">
+                <h4>Education {index + 1}</h4>
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label>Degree</label>
+                    <input
+                      type="text"
+                      value={edu.degree || ''}
+                      onChange={(e) => {
+                        const newEducation = [...editData];
+                        newEducation[index].degree = e.target.value;
+                        setEditData(newEducation);
+                      }}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Specialization</label>
+                    <input
+                      type="text"
+                      value={edu.specialization || ''}
+                      onChange={(e) => {
+                        const newEducation = [...editData];
+                        newEducation[index].specialization = e.target.value;
+                        setEditData(newEducation);
+                      }}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>University/Institution</label>
+                    <input
+                      type="text"
+                      value={edu.institution || ''}
+                      onChange={(e) => {
+                        const newEducation = [...editData];
+                        newEducation[index].institution = e.target.value;
+                        setEditData(newEducation);
+                      }}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Duration</label>
+                    <input
+                      type="text"
+                      value={edu.year || edu.duration || ''}
+                      onChange={(e) => {
+                        const newEducation = [...editData];
+                        newEducation[index].year = e.target.value;
+                        newEducation[index].duration = e.target.value;
+                        setEditData(newEducation);
+                      }}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Location</label>
+                    <input
+                      type="text"
+                      value={edu.location || ''}
+                      onChange={(e) => {
+                        const newEducation = [...editData];
+                        newEducation[index].location = e.target.value;
+                        setEditData(newEducation);
+                      }}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>GPA</label>
+                    <input
+                      type="text"
+                      value={edu.gpa || ''}
+                      onChange={(e) => {
+                        const newEducation = [...editData];
+                        newEducation[index].gpa = e.target.value;
+                        setEditData(newEducation);
+                      }}
+                    />
+                  </div>
+                </div>
+                <button 
+                  className="remove-item-button"
+                  onClick={() => {
+                    const newEducation = editData.filter((_, i) => i !== index);
+                    setEditData(newEducation);
+                  }}
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+            <button 
+              className="add-item-button"
+              onClick={() => {
+                setEditData([...editData, { degree: '', institution: '', year: '', location: '', gpa: '', specialization: '' }]);
+              }}
+            >
+              Add Education
+            </button>
+            <div className="edit-actions">
+              <button 
+                className="save-button"
+                onClick={() => handleSaveSection('education', editData)}
+                disabled={saving}
+              >
+                {saving ? 'Saving...' : 'Save Changes'}
+              </button>
+              <button 
+                className="cancel-button"
+                onClick={handleCancelEdit}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="education-list">
+            {education.map((edu, index) => (
+              <div key={index} className="education-item">
+                <div className="education-header">
+                  <h4 className="degree">{edu.degree}</h4>
+                  <span className="education-year">{edu.year || edu.duration}</span>
+                </div>
+                <div className="institution-info">
+                  <span className="institution">{edu.institution}</span>
+                  {edu.location && <span className="edu-location">• {edu.location}</span>}
+                </div>
+                {edu.specialization && (
+                  <div className="specialization-info">
+                    <span>Specialization: {edu.specialization}</span>
+                  </div>
+                )}
+                {edu.gpa && (
+                  <div className="gpa-info">
+                    <span>GPA: {edu.gpa}</span>
+                  </div>
+                )}
+                {edu.details && (
+                  <div className="education-details">
+                    <p>{edu.details}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     );
   };
@@ -415,6 +550,42 @@ const ProfilePage = () => {
 
         {isEditing ? (
           <div className="edit-section-form">
+            <div className="form-group">
+              <label>Technical Skills</label>
+              <textarea
+                value={(editData.technical || []).join(', ')}
+                onChange={(e) => setEditData({
+                  ...editData, 
+                  technical: e.target.value.split(',').map(skill => skill.trim()).filter(skill => skill)
+                })}
+                placeholder="Enter technical skills separated by commas"
+                rows="3"
+              />
+            </div>
+            <div className="form-group">
+              <label>Soft Skills</label>
+              <textarea
+                value={(editData.soft || []).join(', ')}
+                onChange={(e) => setEditData({
+                  ...editData, 
+                  soft: e.target.value.split(',').map(skill => skill.trim()).filter(skill => skill)
+                })}
+                placeholder="Enter soft skills separated by commas"
+                rows="3"
+              />
+            </div>
+            <div className="form-group">
+              <label>Tools & Platforms</label>
+              <textarea
+                value={(editData.tools || []).join(', ')}
+                onChange={(e) => setEditData({
+                  ...editData, 
+                  tools: e.target.value.split(',').map(skill => skill.trim()).filter(skill => skill)
+                })}
+                placeholder="Enter tools and platforms separated by commas"
+                rows="3"
+              />
+            </div>
             <div className="edit-actions">
               <button 
                 className="save-button"
@@ -430,7 +601,6 @@ const ProfilePage = () => {
                 Cancel
               </button>
             </div>
-            <p className="edit-note">Skills editing requires advanced tag management. Please use the dashboard for detailed editing.</p>
           </div>
         ) : (
         <div className="skills-container">
@@ -454,6 +624,16 @@ const ProfilePage = () => {
               </div>
             </div>
           )}
+          {skills.tools && skills.tools.length > 0 && (
+            <div className="skill-category">
+              <h4 className="skill-category-title">Tools & Platforms</h4>
+              <div className="skill-tags">
+                {skills.tools.map((skill, index) => (
+                  <span key={index} className="skill-tag tools">{skill}</span>
+                ))}
+              </div>
+            </div>
+          )}
           {/* Languages removed for uploaded/parsing-generated profiles per requirements */}
         </div>
         )}
@@ -465,51 +645,186 @@ const ProfilePage = () => {
     const projects = profileData?.projects;
     if (!projects || projects.length === 0) return null;
 
+    const isEditing = editMode && editingSection === 'projects';
+
     return (
       <div className="profile-section">
-        <h3 className="section-title">
-          <span className="section-icon">
-            <ProjectIcon size={20} />
-          </span>
-          Projects
-        </h3>
-        <div className="projects-list">
-          {projects.map((project, index) => (
-            <div key={index} className="project-item">
-              <div className="project-header">
-                <h4 className="project-title">{project.name}</h4>
-                {project.duration && <span className="project-duration">{project.duration}</span>}
-              </div>
-              {project.description && (
-                <p className="project-description">{project.description}</p>
-              )}
-              {project.technologies && project.technologies.length > 0 && (
-                <div className="project-technologies">
-                  <span className="tech-label">Technologies:</span>
-                  <div className="tech-tags">
-                    {project.technologies.map((tech, idx) => (
-                      <span key={idx} className="tech-tag">{tech}</span>
-                    ))}
+        <div className="section-header">
+          <h3 className="section-title">
+            <span className="section-icon">
+              <ProjectIcon size={20} />
+            </span>
+            Projects
+          </h3>
+          {editMode && !isEditing && (
+            <button 
+              className="edit-section-button"
+              onClick={() => handleEditSection('projects', projects)}
+            >
+              ✏️ Edit
+            </button>
+          )}
+        </div>
+
+        {isEditing ? (
+          <div className="edit-section-form">
+            {(editData || []).map((project, index) => (
+              <div key={index} className="project-edit-item">
+                <h4>Project {index + 1}</h4>
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label>Title</label>
+                    <input
+                      type="text"
+                      value={project.name || project.title || ''}
+                      onChange={(e) => {
+                        const newProjects = [...editData];
+                        newProjects[index].name = e.target.value;
+                        newProjects[index].title = e.target.value;
+                        setEditData(newProjects);
+                      }}
+                    />
+                  </div>
+                  <div className="form-group full-width">
+                    <label>Description</label>
+                    <textarea
+                      value={project.description || ''}
+                      onChange={(e) => {
+                        const newProjects = [...editData];
+                        newProjects[index].description = e.target.value;
+                        setEditData(newProjects);
+                      }}
+                      rows="3"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Technologies Used</label>
+                    <textarea
+                      value={(project.technologies || []).join(', ')}
+                      onChange={(e) => {
+                        const newProjects = [...editData];
+                        newProjects[index].technologies = e.target.value.split(',').map(tech => tech.trim()).filter(tech => tech);
+                        setEditData(newProjects);
+                      }}
+                      placeholder="Enter technologies separated by commas"
+                      rows="2"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Achievements</label>
+                    <textarea
+                      value={project.achievements || ''}
+                      onChange={(e) => {
+                        const newProjects = [...editData];
+                        newProjects[index].achievements = e.target.value;
+                        setEditData(newProjects);
+                      }}
+                      rows="2"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Project URL</label>
+                    <input
+                      type="url"
+                      value={project.url || project.link || ''}
+                      onChange={(e) => {
+                        const newProjects = [...editData];
+                        newProjects[index].url = e.target.value;
+                        newProjects[index].link = e.target.value;
+                        setEditData(newProjects);
+                      }}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>GitHub URL</label>
+                    <input
+                      type="url"
+                      value={project.github_url || ''}
+                      onChange={(e) => {
+                        const newProjects = [...editData];
+                        newProjects[index].github_url = e.target.value;
+                        setEditData(newProjects);
+                      }}
+                    />
                   </div>
                 </div>
-              )}
-              {(project.url || project.github_url || project.link) && (
-                <div className="project-links">
-                  {(project.url || project.link) && (
-                    <a href={project.url || project.link} target="_blank" rel="noopener noreferrer" className="project-link">
-                      🔗 Live Demo
-                    </a>
-                  )}
-                  {project.github_url && (
-                    <a href={project.github_url} target="_blank" rel="noopener noreferrer" className="project-link">
-                      💻 GitHub
-                    </a>
-                  )}
-                </div>
-              )}
+                <button 
+                  className="remove-item-button"
+                  onClick={() => {
+                    const newProjects = editData.filter((_, i) => i !== index);
+                    setEditData(newProjects);
+                  }}
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+            <button 
+              className="add-item-button"
+              onClick={() => {
+                setEditData([...editData, { name: '', description: '', technologies: [], achievements: '', url: '', github_url: '' }]);
+              }}
+            >
+              Add Project
+            </button>
+            <div className="edit-actions">
+              <button 
+                className="save-button"
+                onClick={() => handleSaveSection('projects', editData)}
+                disabled={saving}
+              >
+                {saving ? 'Saving...' : 'Save Changes'}
+              </button>
+              <button 
+                className="cancel-button"
+                onClick={handleCancelEdit}
+              >
+                Cancel
+              </button>
             </div>
-          ))}
-        </div>
+          </div>
+        ) : (
+          <div className="projects-list">
+            {projects.map((project, index) => (
+              <div key={index} className="project-item">
+                <div className="project-header">
+                  <h4 className="project-title">{project.name || project.title}</h4>
+                  {project.duration && <span className="project-duration">{project.duration}</span>}
+                </div>
+                {project.description && (
+                  <p className="project-description">{project.description}</p>
+                )}
+                {project.achievements && (
+                  <p className="project-achievements"><strong>Achievements:</strong> {project.achievements}</p>
+                )}
+                {project.technologies && project.technologies.length > 0 && (
+                  <div className="project-technologies">
+                    <span className="tech-label">Technologies:</span>
+                    <div className="tech-tags">
+                      {project.technologies.map((tech, idx) => (
+                        <span key={idx} className="tech-tag">{tech}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {(project.url || project.github_url || project.link) && (
+                  <div className="project-links">
+                    {(project.url || project.link) && (
+                      <a href={project.url || project.link} target="_blank" rel="noopener noreferrer" className="project-link">
+                        🔗 Live Demo
+                      </a>
+                    )}
+                    {project.github_url && (
+                      <a href={project.github_url} target="_blank" rel="noopener noreferrer" className="project-link">
+                        💻 GitHub
+                      </a>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     );
   };
@@ -518,33 +833,150 @@ const ProfilePage = () => {
     const certifications = profileData?.certifications;
     if (!certifications || certifications.length === 0) return null;
 
+    const isEditing = editMode && editingSection === 'certifications';
+
     return (
       <div className="profile-section">
-        <h3 className="section-title">
-          <span className="section-icon">
-            <CertificateIcon size={20} />
-          </span>
-          Certifications
-        </h3>
-        <div className="certifications-list">
-          {certifications.map((cert, index) => (
-            <div key={index} className="certification-item">
-              <div className="cert-header">
-                <h4 className="cert-name">{cert.name}</h4>
-                {cert.date && <span className="cert-date">{formatDate(cert.date)}</span>}
-              </div>
-              {cert.issuer && <div className="cert-issuer">Issued by: {cert.issuer}</div>}
-              {cert.id && <div className="cert-id">Credential ID: {cert.id}</div>}
-              {cert.url && (
-                <div className="cert-link">
-                  <a href={cert.url} target="_blank" rel="noopener noreferrer">
-                    🔗 View Certificate
-                  </a>
-                </div>
-              )}
-            </div>
-          ))}
+        <div className="section-header">
+          <h3 className="section-title">
+            <span className="section-icon">
+              <CertificateIcon size={20} />
+            </span>
+            Certifications
+          </h3>
+          {editMode && !isEditing && (
+            <button 
+              className="edit-section-button"
+              onClick={() => handleEditSection('certifications', certifications)}
+            >
+              ✏️ Edit
+            </button>
+          )}
         </div>
+
+        {isEditing ? (
+          <div className="edit-section-form">
+            {(editData || []).map((cert, index) => (
+              <div key={index} className="certification-edit-item">
+                <h4>Certification {index + 1}</h4>
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label>Certification Name</label>
+                    <input
+                      type="text"
+                      value={cert.name || ''}
+                      onChange={(e) => {
+                        const newCertifications = [...editData];
+                        newCertifications[index].name = e.target.value;
+                        setEditData(newCertifications);
+                      }}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Issuing Organization</label>
+                    <input
+                      type="text"
+                      value={cert.issuer || ''}
+                      onChange={(e) => {
+                        const newCertifications = [...editData];
+                        newCertifications[index].issuer = e.target.value;
+                        setEditData(newCertifications);
+                      }}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Date Earned</label>
+                    <input
+                      type="date"
+                      value={cert.date || ''}
+                      onChange={(e) => {
+                        const newCertifications = [...editData];
+                        newCertifications[index].date = e.target.value;
+                        setEditData(newCertifications);
+                      }}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Credential ID</label>
+                    <input
+                      type="text"
+                      value={cert.id || ''}
+                      onChange={(e) => {
+                        const newCertifications = [...editData];
+                        newCertifications[index].id = e.target.value;
+                        setEditData(newCertifications);
+                      }}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Certificate URL</label>
+                    <input
+                      type="url"
+                      value={cert.url || ''}
+                      onChange={(e) => {
+                        const newCertifications = [...editData];
+                        newCertifications[index].url = e.target.value;
+                        setEditData(newCertifications);
+                      }}
+                    />
+                  </div>
+                </div>
+                <button 
+                  className="remove-item-button"
+                  onClick={() => {
+                    const newCertifications = editData.filter((_, i) => i !== index);
+                    setEditData(newCertifications);
+                  }}
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+            <button 
+              className="add-item-button"
+              onClick={() => {
+                setEditData([...editData, { name: '', issuer: '', date: '', id: '', url: '' }]);
+              }}
+            >
+              Add Certification
+            </button>
+            <div className="edit-actions">
+              <button 
+                className="save-button"
+                onClick={() => handleSaveSection('certifications', editData)}
+                disabled={saving}
+              >
+                {saving ? 'Saving...' : 'Save Changes'}
+              </button>
+              <button 
+                className="cancel-button"
+                onClick={handleCancelEdit}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="certifications-list">
+            {certifications.map((cert, index) => (
+              <div key={index} className="certification-item">
+                <div className="cert-header">
+                  <h4 className="cert-name">{cert.name}</h4>
+                  {cert.date && <span className="cert-date">{formatDate(cert.date)}</span>}
+                </div>
+                {cert.issuer && <div className="cert-issuer">Issued by: {cert.issuer}</div>}
+                {cert.id && <div className="cert-id">Credential ID: {cert.id}</div>}
+                {cert.url && (
+                  <div className="cert-link">
+                    <a href={cert.url} target="_blank" rel="noopener noreferrer">
+                      🔗 View Certificate
+                    </a>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     );
   };
@@ -553,32 +985,159 @@ const ProfilePage = () => {
     const achievements = profileData?.achievements;
     if (!achievements || achievements.length === 0) return null;
 
+    const isEditing = editMode && editingSection === 'achievements';
+
     return (
       <div className="profile-section">
-        <h3 className="section-title">
-          <span className="section-icon">
-            <TargetIcon size={20} />
-          </span>
-          Achievements
-        </h3>
-        <ul className="achievements-list">
-          {achievements.map((achievement, index) => (
-            <li key={index} className="achievement-item">
-              <div className="achievement-header">
-                <h4 className="achievement-title">{achievement.title}</h4>
-                {achievement.date && <span className="achievement-date">{formatDate(achievement.date)}</span>}
-              </div>
-              {achievement.description && (
-                <p className="achievement-description">{achievement.description}</p>
-              )}
-              {achievement.issuer && (
-                <div className="achievement-issuer">
-                  <span>Issued by: {achievement.issuer}</span>
+        <div className="section-header">
+          <h3 className="section-title">
+            <span className="section-icon">
+              <TargetIcon size={20} />
+            </span>
+            Achievements
+          </h3>
+          {editMode && !isEditing && (
+            <button 
+              className="edit-section-button"
+              onClick={() => handleEditSection('achievements', achievements)}
+            >
+              ✏️ Edit
+            </button>
+          )}
+        </div>
+
+        {isEditing ? (
+          <div className="edit-section-form">
+            {(editData || []).map((achievement, index) => (
+              <div key={index} className="achievement-edit-item">
+                <h4>Achievement {index + 1}</h4>
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label>Achievement Title</label>
+                    <input
+                      type="text"
+                      value={achievement.title || ''}
+                      onChange={(e) => {
+                        const newAchievements = [...editData];
+                        newAchievements[index].title = e.target.value;
+                        setEditData(newAchievements);
+                      }}
+                    />
+                  </div>
+                  <div className="form-group full-width">
+                    <label>Description</label>
+                    <textarea
+                      value={achievement.description || ''}
+                      onChange={(e) => {
+                        const newAchievements = [...editData];
+                        newAchievements[index].description = e.target.value;
+                        setEditData(newAchievements);
+                      }}
+                      rows="3"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Date</label>
+                    <input
+                      type="date"
+                      value={achievement.date || ''}
+                      onChange={(e) => {
+                        const newAchievements = [...editData];
+                        newAchievements[index].date = e.target.value;
+                        setEditData(newAchievements);
+                      }}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Level</label>
+                    <select
+                      value={achievement.level || 'Other'}
+                      onChange={(e) => {
+                        const newAchievements = [...editData];
+                        newAchievements[index].level = e.target.value;
+                        setEditData(newAchievements);
+                      }}
+                    >
+                      <option value="National">National</option>
+                      <option value="University">University</option>
+                      <option value="Regional">Regional</option>
+                      <option value="International">International</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Issuing Organization</label>
+                    <input
+                      type="text"
+                      value={achievement.issuer || ''}
+                      onChange={(e) => {
+                        const newAchievements = [...editData];
+                        newAchievements[index].issuer = e.target.value;
+                        setEditData(newAchievements);
+                      }}
+                    />
+                  </div>
                 </div>
-              )}
-            </li>
-          ))}
-        </ul>
+                <button 
+                  className="remove-item-button"
+                  onClick={() => {
+                    const newAchievements = editData.filter((_, i) => i !== index);
+                    setEditData(newAchievements);
+                  }}
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+            <button 
+              className="add-item-button"
+              onClick={() => {
+                setEditData([...editData, { title: '', description: '', date: '', level: 'Other', issuer: '' }]);
+              }}
+            >
+              Add Achievement
+            </button>
+            <div className="edit-actions">
+              <button 
+                className="save-button"
+                onClick={() => handleSaveSection('achievements', editData)}
+                disabled={saving}
+              >
+                {saving ? 'Saving...' : 'Save Changes'}
+              </button>
+              <button 
+                className="cancel-button"
+                onClick={handleCancelEdit}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <ul className="achievements-list">
+            {achievements.map((achievement, index) => (
+              <li key={index} className="achievement-item">
+                <div className="achievement-header">
+                  <h4 className="achievement-title">{achievement.title}</h4>
+                  {achievement.date && <span className="achievement-date">{formatDate(achievement.date)}</span>}
+                </div>
+                {achievement.description && (
+                  <p className="achievement-description">{achievement.description}</p>
+                )}
+                {achievement.level && (
+                  <div className="achievement-level">
+                    <span className="level-badge">{achievement.level} Level</span>
+                  </div>
+                )}
+                {achievement.issuer && (
+                  <div className="achievement-issuer">
+                    <span>Issued by: {achievement.issuer}</span>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     );
   };
