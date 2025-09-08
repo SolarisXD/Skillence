@@ -4,6 +4,7 @@ import './App.css';
 import MainPage from './components/MainPage';
 import ResumeDashboard from './components/Dashboard/ResumeDashboard';
 import ProfilePage from './components/ProfilePage';
+import JobOfferEvaluator from './components/Job Offer Evaluator/JobOfferEvaluator';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -47,6 +48,7 @@ function App() {
               </ProtectedRoute>
             } 
           />
+          <Route path="/job-offer-evaluator" element={<JobOfferEvaluator />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

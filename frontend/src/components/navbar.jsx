@@ -12,6 +12,7 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
   const [isAtTop, setIsAtTop] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showServices, setShowServices] = useState(false);
   const [user, setUser] = useState(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState('login');
@@ -55,6 +56,9 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
       }
       if (!event.target.closest('.theme-dropdown-container')) {
         setShowThemeSelector(false);
+      }
+      if (!event.target.closest('.services-dropdown')) {
+        setShowServices(false);
       }
     };
 
@@ -176,8 +180,39 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
               <li className="nav-item">
                 <a href="#about-us" className="nav-link" onClick={scrollToAbout}>About Us</a>
               </li>
-              <li className="nav-item">
-                <a href="#advanced-ai-career-intelligence" className="nav-link" onClick={scrollToServices}>Services</a>
+              <li className="nav-item services-dropdown" onClick={() => setShowServices(!showServices)}>
+                <button className="nav-link services-toggle" type="button">
+                  Services
+                  <svg viewBox="0 0 24 24" className="chevron-icon">
+                    <path fill="currentColor" d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
+                  </svg>
+                </button>
+                {showServices && (
+                  <div className="services-menu dropdown-menu">
+                    <button
+                      className="dropdown-item"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // navigate to job offer evaluator
+                        navigate('/job-offer-evaluator');
+                        setShowServices(false);
+                      }}
+                    >
+                      Job Offer Evaluator
+                    </button>
+                    <button
+                      className="dropdown-item"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // scroll to services section on main page
+                        scrollToServices(e);
+                        setShowServices(false);
+                      }}
+                    >
+                      Services Overview
+                    </button>
+                  </div>
+                )}
               </li>
             </ul>
           </div>
@@ -310,6 +345,17 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
               >
                 Services
               </a>
+            </li>
+            <li className="mobile-nav-item">
+              <button
+                className="mobile-nav-link"
+                onClick={() => {
+                  navigate('/job-offer-evaluator');
+                  setMobileMenuOpen(false);
+                }}
+              >
+                Job Offer Evaluator
+              </button>
             </li>
           </ul>
           
