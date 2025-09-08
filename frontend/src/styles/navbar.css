@@ -594,6 +594,49 @@
   animation: dropdownSlideIn 0.2s ease;
 }
 
+/* Services dropdown specific tweaks */
+.services-dropdown .services-toggle {
+  background: transparent; /* match navbar background */
+  border: none;
+  padding: 0.5rem 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+}
+
+.services-dropdown .services-toggle .chevron-icon {
+  width: 16px;
+  height: 16px;
+  transform: rotate(90deg); /* point down visually */
+  transition: transform 0.2s ease;
+  opacity: 0.9;
+}
+
+.services-dropdown .services-toggle.open .chevron-icon {
+  transform: rotate(270deg); /* rotate when open (point up) */
+}
+
+.services-dropdown .services-menu {
+  left: auto;
+  right: 0;
+  min-width: 220px;
+  background: var(--dropdown-bg);
+  border: 1px solid var(--dropdown-border);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+  padding: 0.25rem 0;
+}
+
+.services-dropdown .dropdown-item {
+  padding: 0.6rem 1rem;
+  font-size: 0.95rem;
+}
+
+.services-dropdown .dropdown-item:hover {
+  background: var(--hover-bg);
+  color: var(--accent-color);
+}
+
 .dropdown-item {
   display: flex;
   align-items: center;

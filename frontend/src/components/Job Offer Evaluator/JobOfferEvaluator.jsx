@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../navbar';
 import './JobOfferEvaluator.css';
 
 const JobOfferEvaluator = () => {
@@ -109,42 +110,7 @@ const JobOfferEvaluator = () => {
     return currency ? currency.symbol : '$';
   };
 
-  // Navbar functions
-  useEffect(() => {
-    const checkAuthStatus = () => {
-      const token = localStorage.getItem('token');
-      const userData = localStorage.getItem('user');
-      
-      if (token && userData) {
-        setIsAuthenticated(true);
-        setUser(JSON.parse(userData));
-      } else {
-        setIsAuthenticated(false);
-        setUser(null);
-      }
-    };
-
-    checkAuthStatus();
-
-    // Close dropdowns when clicking outside
-    const handleClickOutside = (event) => {
-      if (!event.target.closest('.profile-dropdown')) {
-        setShowDropdown(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const handleSignOut = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setIsAuthenticated(false);
-    setUser(null);
-    setShowDropdown(false);
-    navigate('/');
-  };
+  // keep authentication/form state in this page if needed
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -154,125 +120,7 @@ const JobOfferEvaluator = () => {
 
   return (
     <>
-      {/* Navbar */}
-      <nav className="job-evaluator-navbar">
-        <div className="navbar-container">
-          {/* Logo */}
-          <div className="navbar-brand" onClick={() => navigate('/')}>
-            <h1>Skillence</h1>
-          </div>
-          
-          {/* Navigation Menu */}
-          <div className="navbar-menu">
-            <ul className="navbar-nav">
-              <li className="nav-item">
-                <span className="nav-link active">Job Offer Evaluator</span>
-              </li>
-            </ul>
-          </div>
-          
-          {/* Mobile Menu Toggle */}
-          <button 
-            className={`mobile-menu-toggle ${mobileMenuOpen ? 'active' : ''}`}
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle mobile menu"
-          >
-            <div className="hamburger-line"></div>
-            <div className="hamburger-line"></div>
-            <div className="hamburger-line"></div>
-          </button>
-          
-          {/* Actions Section */}
-          <div className="navbar-actions">
-            {isAuthenticated ? (
-              <>
-                <button 
-                  className="dashboard-btn"
-                  onClick={() => navigate('/dashboard/resume')}
-                  title="Dashboard"
-                >
-                  <svg viewBox="0 0 24 24" className="dashboard-icon">
-                    <path fill="currentColor" d="M13,3V9H21V3M13,21H21V11H13M3,21H11V15H3M3,13H11V3H3V13Z" />
-                  </svg>
-                  <span>Dashboard</span>
-                </button>
-                
-                <div className="profile-dropdown">
-                  <button 
-                    className="profile-btn"
-                    onClick={() => setShowDropdown(!showDropdown)}
-                  >
-                    <div className="profile-icon">
-                      {user?.name?.charAt(0) || 'U'}
-                    </div>
-                  </button>
-                  {showDropdown && (
-                    <div className="dropdown-menu">
-                      <button 
-                        onClick={() => {
-                          navigate('/profile');
-                          setShowDropdown(false);
-                        }} 
-                        className="dropdown-item"
-                      >
-                        <svg viewBox="0 0 24 24" className="dropdown-icon">
-                          <path fill="currentColor" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
-                        </svg>
-                        Profile
-                      </button>
-                      <button onClick={handleSignOut} className="dropdown-item">
-                        <svg viewBox="0 0 24 24" className="dropdown-icon">
-                          <path fill="currentColor" d="M16,17V14H9V10H16V7L21,12L16,17M14,2A2,2 0 0,1 16,4V6H14V4H5V20H14V18H16V20A2,2 0 0,1 14,22H5A2,2 0 0,1 3,20V4A2,2 0 0,1 5,2H14Z" />
-                        </svg>
-                        Sign Out
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </>
-            ) : (
-              <>
-                <button 
-                  className="btn-secondary"
-                  onClick={() => navigate('/login')}
-                >
-                  Sign In
-                </button>
-                <button 
-                  className="btn-primary"
-                  onClick={() => navigate('/register')}
-                >
-                  Get Started
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      </nav>
-
-      {/* Mobile Navigation Menu */}
-      {mobileMenuOpen && (
-        <div className="mobile-nav active">
-          <ul className="mobile-nav-list">
-            <li className="mobile-nav-item">
-              <span className="mobile-nav-link active">Job Offer Evaluator</span>
-            </li>
-            {isAuthenticated && (
-              <li className="mobile-nav-item">
-                <button 
-                  className="mobile-nav-link" 
-                  onClick={() => {
-                    navigate('/dashboard/resume');
-                    setMobileMenuOpen(false);
-                  }}
-                >
-                  Dashboard
-                </button>
-              </li>
-            )}
-          </ul>
-        </div>
-      )}
+      <Navbar />
 
       <div className="job-offer-evaluator">
       <div className="container">

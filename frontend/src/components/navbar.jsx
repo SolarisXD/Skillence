@@ -181,7 +181,7 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
                 <a href="#about-us" className="nav-link" onClick={scrollToAbout}>About Us</a>
               </li>
               <li className="nav-item services-dropdown" onClick={() => setShowServices(!showServices)}>
-                <button className="nav-link services-toggle" type="button">
+                <button className={`nav-link services-toggle ${showServices ? 'open' : ''}`} type="button">
                   Services
                   <svg viewBox="0 0 24 24" className="chevron-icon">
                     <path fill="currentColor" d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
