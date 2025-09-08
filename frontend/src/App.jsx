@@ -6,6 +6,7 @@ import ResumeDashboard from './components/Dashboard/ResumeDashboard';
 import ProfilePage from './components/ProfilePage';
 import JobOfferEvaluator from './components/Job Offer Evaluator/JobOfferEvaluator';
 import CareerPathRecommendation from './components/Career Path Recommendation/CareerPathRecommendation';
+import JobTrendDashboard from './components/Job Trend/JobTrendDashboardNew';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -50,6 +51,7 @@ function App() {
             } 
           />
           <Route path="/job-offer-evaluator" element={<JobOfferEvaluator />} />
+          <Route path="/job-trends" element={<JobTrendDashboard />} />
           <Route 
             path="/career-path-recommendation" 
             element={

@@ -1,0 +1,362 @@
+/* Job Trend Navigation Styles */
+.job-trend-navigation {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  padding: 2rem 1rem;
+}
+
+.navigation-header {
+  text-align: center;
+  margin-bottom: 4rem;
+  padding: 3rem 0;
+  background: var(--card-gradient);
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+}
+
+.navigation-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.title-icon {
+  font-size: 2.5rem;
+}
+
+.navigation-subtitle {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Features Showcase */
+.features-showcase {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.feature-showcase-card {
+  background: var(--card-gradient);
+  border: 2px solid var(--border-color);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  transition: var(--transition-base);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-showcase-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--accent-color);
+}
+
+.feature-showcase-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.feature-showcase-card:hover::before {
+  left: 100%;
+}
+
+.feature-showcase-icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  display: block;
+}
+
+.feature-showcase-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.feature-showcase-description {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.feature-highlights {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 2rem;
+}
+
+.feature-highlights li {
+  color: var(--text-secondary);
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.feature-highlights li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--success-color);
+  font-weight: bold;
+}
+
+.feature-cta {
+  background: var(--accent-gradient);
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-base);
+  width: 100%;
+}
+
+.feature-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Demo Section */
+.demo-section {
+  margin-bottom: 4rem;
+}
+
+.demo-card {
+  background: var(--accent-gradient);
+  color: white;
+  border-radius: 20px;
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: var(--shadow-xl);
+}
+
+.demo-title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.demo-icon {
+  font-size: 1.8rem;
+}
+
+.demo-description {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.demo-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.demo-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.demo-cta {
+  background: white;
+  color: var(--accent-color);
+  border: none;
+  padding: 1rem 3rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.demo-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(255, 255, 255, 0.2);
+}
+
+/* Insights Preview */
+.insights-preview {
+  text-align: center;
+}
+
+.preview-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2rem;
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.insight-preview {
+  background: var(--card-gradient);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem 1rem;
+  transition: var(--transition-base);
+}
+
+.insight-preview:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--accent-color);
+}
+
+.insight-metric {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--accent-color);
+  margin-bottom: 0.5rem;
+}
+
+.insight-label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .job-trend-navigation {
+    padding: 1rem 0.5rem;
+  }
+  
+  .navigation-title {
+    font-size: 2rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .features-showcase {
+    grid-template-columns: 1fr;
+  }
+  
+  .demo-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .insights-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .navigation-title {
+    font-size: 1.5rem;
+  }
+  
+  .feature-showcase-card {
+    padding: 1.5rem;
+  }
+  
+  .demo-card {
+    padding: 2rem 1rem;
+  }
+  
+  .insights-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .demo-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Dark mode enhancements */
+[data-theme="dark"] .demo-card {
+  background: var(--accent-gradient);
+}
+
+[data-theme="dark"] .feature-showcase-card::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+}
+
+/* Animation for the navigation cards */
+.feature-showcase-card {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.feature-showcase-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.feature-showcase-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.feature-showcase-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Pulse animation for insights */
+.insight-preview {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}

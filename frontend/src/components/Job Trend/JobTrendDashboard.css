@@ -1,0 +1,550 @@
+/* Job Trend Dashboard Styles */
+.job-trend-dashboard {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  padding: 2rem 1rem;
+  transition: var(--transition-base);
+}
+
+/* Loading and Error States */
+.loading-container, .error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid var(--border-color);
+  border-top: 4px solid var(--accent-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-container p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.error-container h2 {
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.error-container p {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+
+.retry-button {
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.retry-button:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+/* Header */
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem 0;
+  background: var(--card-gradient);
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+}
+
+.header-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.dashboard-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.title-icon {
+  font-size: 2rem;
+}
+
+.dashboard-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Controls */
+.controls-section {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.control-group label {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.control-select {
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: var(--transition-base);
+  min-width: 200px;
+}
+
+.control-select:hover {
+  border-color: var(--accent-color);
+}
+
+.control-select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.metric-card {
+  background: var(--card-gradient);
+  border: 2px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: var(--transition-base);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-card:hover {
+  border-color: var(--accent-color);
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+
+.metric-card.selected {
+  border-color: var(--accent-color);
+  box-shadow: var(--shadow-glow);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--card-gradient) 100%);
+}
+
+.metric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.metric-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.trend-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.trend-icon {
+  font-size: 1.2rem;
+}
+
+.metric-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.stat-value {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.trend-score {
+  color: var(--accent-color);
+  font-size: 1.1rem;
+}
+
+.growth {
+  color: var(--success-color);
+}
+
+.salary {
+  color: var(--text-accent);
+}
+
+.hot-skills {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.skills-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.skills-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skill-tag {
+  background: var(--accent-color);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Charts Section */
+.charts-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.chart-container {
+  background: var(--card-gradient);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-base);
+}
+
+.chart-container:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.chart-header {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.chart-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.chart-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Single column layout for trend chart */
+.trend-chart {
+  grid-column: 1 / -1;
+}
+
+/* Experience Chart Specific */
+.experience-content {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.experience-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.experience-item {
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.experience-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.experience-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+}
+
+.experience-level {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.experience-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.experience-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Insights Section */
+.insights-section {
+  margin-top: 3rem;
+  text-align: center;
+}
+
+.insights-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2rem;
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.insight-card {
+  background: var(--card-gradient);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  transition: var(--transition-base);
+  box-shadow: var(--shadow);
+}
+
+.insight-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--accent-color);
+}
+
+.insight-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.insight-card h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.insight-card p {
+  color: var(--text-secondary);
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .job-trend-dashboard {
+    padding: 1rem 0.5rem;
+  }
+  
+  .dashboard-title {
+    font-size: 2rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .controls-section {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .charts-section {
+    grid-template-columns: 1fr;
+  }
+  
+  .experience-content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .insights-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .metric-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+  
+  .skills-tags {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-title {
+    font-size: 1.5rem;
+  }
+  
+  .chart-container {
+    padding: 1rem;
+  }
+  
+  .metric-card {
+    padding: 1rem;
+  }
+  
+  .insight-card {
+    padding: 1.5rem 1rem;
+  }
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .chart-container {
+  background: var(--card-gradient);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .control-select {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .experience-item {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+}
+
+/* Loading states and animations */
+.chart-container {
+  position: relative;
+}
+
+.chart-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s;
+  pointer-events: none;
+}
+
+.chart-container:hover::before {
+  transform: translateX(100%);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus styles for accessibility */
+.metric-card:focus,
+.control-select:focus {
+  outline: 3px solid var(--accent-glow);
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  .job-trend-dashboard {
+    background: white;
+    color: black;
+  }
+  
+  .chart-container,
+  .metric-card,
+  .insight-card {
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: none;
+  }
+  
+  .controls-section {
+    display: none;
+  }
+}
