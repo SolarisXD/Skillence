@@ -337,6 +337,24 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
           placeholder="https://linkedin.com/in/yourprofile"
         />
       </div>
+      <div className="form-group">
+        <label>GitHub Profile</label>
+        <input
+          type="url"
+          value={editedContent.github || ''}
+          onChange={(e) => updateField('github', e.target.value)}
+          placeholder="https://github.com/yourusername"
+        />
+      </div>
+      <div className="form-group">
+        <label>Website</label>
+        <input
+          type="url"
+          value={editedContent.website || ''}
+          onChange={(e) => updateField('website', e.target.value)}
+          placeholder="https://yourwebsite.com"
+        />
+      </div>
     </div>
   );
 
@@ -1225,7 +1243,16 @@ const ProfileBuilder = () => {
                     <button className="confirm-upload-button" onClick={() => startUpload(selectedFile)}>
                       Confirm Upload
                     </button>
-                    <button className="replace-button" onClick={() => { fileInputRef.current?.click(); }}>
+                    <button 
+                      className="replace-button" 
+                      onClick={(e) => { 
+                        e.stopPropagation(); 
+                        if (uploadState === 'idle') {
+                          fileInputRef.current?.click(); 
+                        }
+                      }}
+                      disabled={uploadState !== 'idle'}
+                    >
                       Replace File
                     </button>
                     <button className="remove-button" onClick={() => {
@@ -2512,27 +2539,31 @@ const ProfileBuilder = () => {
       <div className="profile-editor">
         {!activeProfile || Object.keys(activeProfile).length === 0 ? (
           <div className="editor-loading">
-            <h2>🔄 Loading Profile Editor...</h2>
+            <h2>
+              <LoadingSpinner size={20} />
+              Loading Profile Editor...
+            </h2>
             <p>Setting up your profile for editing...</p>
           </div>
         ) : (
           <>
             <div className="editor-header">
-              <h2>📝 Profile Editor</h2>
+              <h2>
+                <DocumentIcon size={20} />
+                Profile Editor
+              </h2>
               <p>Review and edit your profile sections. You can modify any information or add custom sections.</p>
               
-              <div className="editor-info">
-                <span>Profile Source: {activeProfile.source || 'AI Upload'}</span>
-                <span>Last Updated: {new Date().toLocaleDateString()}</span>
-                <span>Sections: {Object.keys(activeProfile).length + Object.keys(customSections).length}</span>
-              </div>
+
               
               <div className="editor-actions">
                 <button className="save-button primary" onClick={handleSaveProfile}>
-                  💾 Save Profile
+                  <SaveIcon size={16} />
+                  Save Profile
                 </button>
                 <button className="restart-button secondary" onClick={handleRestart}>
-                  🔄 Start Over
+                  <RetryIcon size={16} />
+                  Start Over
                 </button>
               </div>
             </div>
@@ -2569,7 +2600,7 @@ const ProfileBuilder = () => {
               key={sectionName}
               title={sectionName}
               content={content}
-              icon="📋"
+              icon={<DocumentIcon size={16} />}
               onEdit={(newContent) => handleCustomSectionEdit(sectionName, newContent)}
               onDelete={() => handleCustomSectionDelete(sectionName)}
               isCustom={true}
@@ -2584,7 +2615,7 @@ const ProfileBuilder = () => {
                   className="add-section-button"
                   onClick={() => setShowAddSection(true)}
                 >
-                  ➕ Add Custom Section
+                  Add Custom Section
                 </button>
               ) : (
                 <div className="add-section-form">
@@ -2616,7 +2647,7 @@ const ProfileBuilder = () => {
                       onClick={handleAddCustomSection}
                       disabled={!newSectionName.trim() || activeProfile[newSectionName] || customSections[newSectionName]}
                     >
-                      ✅ Add Section
+                      Add Section
                     </button>
                     <button 
                       className="cancel-add-button"
@@ -2625,7 +2656,7 @@ const ProfileBuilder = () => {
                         setNewSectionName('');
                       }}
                     >
-                      ❌ Cancel
+                      Cancel
                     </button>
                   </div>
                 </div>
@@ -2634,13 +2665,7 @@ const ProfileBuilder = () => {
           )}
         </div>
 
-        {saveStatus && (
-          <div className={`save-notification ${saveStatus}`}>
-            {saveStatus === 'saving' && 'Saving profile...'}
-            {saveStatus === 'saved' && 'Profile saved successfully!'}
-            {saveStatus === 'error' && 'Failed to save profile'}
-          </div>
-        )}
+
           </>
         )}
       </div>
@@ -2669,6 +2694,13 @@ const ProfileBuilder = () => {
       <div className="profile-builder-container">
         {renderCurrentView()}
       </div>
+      {saveStatus && (
+        <div className={`save-notification ${saveStatus}`}>
+          {saveStatus === 'saving' && 'Saving profile...'}
+          {saveStatus === 'saved' && 'Profile saved successfully!'}
+          {saveStatus === 'error' && 'Failed to save profile'}
+        </div>
+      )}
     </>
   );
 };
