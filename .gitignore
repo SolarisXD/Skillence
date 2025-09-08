@@ -176,3 +176,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+backend\app\career_data\job_trend_data\Job_Dataset_Indeed_India.ldjson
+backend/app/career_data/job_trend_data/Job_Dataset_Indeed_India.ldjson
