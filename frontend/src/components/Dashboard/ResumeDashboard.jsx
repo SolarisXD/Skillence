@@ -351,7 +351,7 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
               className="remove-item" 
               onClick={() => removeArrayItem(index)}
             >
-              ❌ Remove
+              Remove
             </button>
           </div>
           <div className="form-group">
@@ -412,7 +412,7 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
         </div>
       ))}
       <button type="button" className="add-item" onClick={addArrayItem}>
-        ➕ Add Experience
+        Add Experience
       </button>
     </div>
   );
@@ -428,7 +428,7 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
               className="remove-item" 
               onClick={() => removeArrayItem(index)}
             >
-              ❌ Remove
+              Remove
             </button>
           </div>
           <div className="form-group">
@@ -503,7 +503,7 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
         </div>
       ))}
       <button type="button" className="add-item" onClick={addArrayItem}>
-        ➕ Add Education
+        Add Education
       </button>
     </div>
   );
@@ -536,7 +536,7 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
               className="remove-item" 
               onClick={() => removeArrayItem(index)}
             >
-              ❌ Remove
+              Remove
             </button>
           </div>
           <div className="form-group">
@@ -630,7 +630,7 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
         </div>
       ))}
       <button type="button" className="add-item" onClick={addArrayItem}>
-        ➕ Add Project
+        Add Project
       </button>
     </div>
   );
@@ -646,7 +646,7 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
               className="remove-item" 
               onClick={() => removeArrayItem(index)}
             >
-              ❌ Remove
+              Remove
             </button>
           </div>
           <div className="form-group">
@@ -709,7 +709,7 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
         </div>
       ))}
       <button type="button" className="add-item" onClick={addArrayItem}>
-        ➕ Add Certification
+        Add Certification
       </button>
     </div>
   );
@@ -725,7 +725,7 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
               className="remove-item" 
               onClick={() => removeArrayItem(index)}
             >
-              ❌ Remove
+              Remove
             </button>
           </div>
           <div className="form-group">
@@ -775,7 +775,7 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
         </div>
       ))}
       <button type="button" className="add-item" onClick={addArrayItem}>
-        ➕ Add Achievement
+        Add Achievement
       </button>
     </div>
   );
@@ -918,6 +918,8 @@ const ProfileBuilder = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [processingStep, setProcessingStep] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFileURL, setSelectedFileURL] = useState(null);
   const [manualFormStep, setManualFormStep] = useState(0);
   const [manualFormData, setManualFormData] = useState({
     personalInfo: {},
@@ -935,6 +937,15 @@ const ProfileBuilder = () => {
 
   const fileInputRef = useRef(null);
   const dropZoneRef = useRef(null);
+
+  // Revoke object URL when component unmounts or when selectedFileURL changes
+  useEffect(() => {
+    return () => {
+      if (selectedFileURL) {
+        try { URL.revokeObjectURL(selectedFileURL); } catch (e) { /* ignore */ }
+      }
+    };
+  }, [selectedFileURL]);
 
   // Form Steps Configuration
   const formSteps = [
@@ -1004,19 +1015,19 @@ const ProfileBuilder = () => {
       dropZoneRef.current?.classList.remove('drag-over');
       const files = Array.from(e.dataTransfer.files);
       if (files.length > 0) {
-        handleFileUpload(files[0]);
+        handleFileChosen(files[0]);
       }
     };
 
     const handleFileSelect = (e) => {
       const file = e.target.files[0];
       if (file) {
-        handleFileUpload(file);
+        handleFileChosen(file);
       }
     };
 
-    const handleFileUpload = async (file) => {
-      // Validate file type
+    const handleFileChosen = (file) => {
+      // Validate file type and size but do NOT start upload yet
       const allowedTypes = [
         'application/pdf',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -1029,13 +1040,27 @@ const ProfileBuilder = () => {
         return;
       }
 
-      // Validate file size (10MB limit)
       if (file.size > 10 * 1024 * 1024) {
         setUploadState('error');
         setErrorMessage('File size too large. Please upload a file smaller than 10MB.');
         return;
       }
 
+      // Clean up previous object URL if any
+      if (selectedFileURL) {
+        URL.revokeObjectURL(selectedFileURL);
+      }
+
+      const url = file.type === 'application/pdf' ? URL.createObjectURL(file) : null;
+      setSelectedFile(file);
+      setSelectedFileURL(url);
+      setUploadProgress(0);
+      setErrorMessage('');
+      // stay in 'idle' state but show preview / confirm
+    };
+
+    const startUpload = async (file) => {
+      if (!file) return;
       setUploadState('uploading');
       setUploadProgress(0);
 
@@ -1155,20 +1180,66 @@ const ProfileBuilder = () => {
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
             >
-              <div className="drop-zone-content">
-                <div className="upload-icon">
-                  <UploadIcon size={48} />
+              {!selectedFile && (
+                <div className="drop-zone-content">
+                  <div className="upload-icon">
+                    <UploadIcon size={48} />
+                  </div>
+                  <h3>Drag & Drop Your Resume</h3>
+                  <p>or click to browse files</p>
+                  
+                  <div className="file-requirements">
+                    <span>PDF</span>
+                    <span>DOCX</span>
+                    <span>DOC</span>
+                    <span>Max 10MB</span>
+                  </div>
                 </div>
-                <h3>Drag & Drop Your Resume</h3>
-                <p>or click to browse files</p>
-                
-                <div className="file-requirements">
-                  <span>PDF</span>
-                  <span>DOCX</span>
-                  <span>DOC</span>
-                  <span>Max 10MB</span>
+              )}
+
+              {selectedFile && (
+                <div className="selected-file-preview">
+                  <div className="preview-metadata">
+                    <div className="preview-icon">
+                      <DocumentIcon size={36} />
+                    </div>
+                    <div className="file-info">
+                      <div className="file-name">{selectedFile.name}</div>
+                      <div className="file-size">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</div>
+                    </div>
+                  </div>
+
+                  {selectedFileURL ? (
+                    <div className="pdf-preview">
+                      <object data={selectedFileURL} type="application/pdf" width="100%" height="320">
+                        <p>PDF preview is not available. You can still confirm upload.</p>
+                      </object>
+                    </div>
+                  ) : (
+                    <div className="file-placeholder">
+                      <p>Preview not available for this file type. You can still confirm upload.</p>
+                    </div>
+                  )}
+
+                  <div className="selected-file-actions">
+                    <button className="confirm-upload-button" onClick={() => startUpload(selectedFile)}>
+                      Confirm Upload
+                    </button>
+                    <button className="replace-button" onClick={() => { fileInputRef.current?.click(); }}>
+                      Replace File
+                    </button>
+                    <button className="remove-button" onClick={() => {
+                      if (selectedFileURL) URL.revokeObjectURL(selectedFileURL);
+                      setSelectedFile(null);
+                      setSelectedFileURL(null);
+                      setUploadProgress(0);
+                      setErrorMessage('');
+                    }}>
+                      Remove File
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
             
             <input
@@ -1178,10 +1249,6 @@ const ProfileBuilder = () => {
               onChange={handleFileSelect}
               style={{ display: 'none' }}
             />
-            
-            <button className="confirm-upload-button" onClick={() => console.log('Confirm upload')}>
-              Confirm Upload
-            </button>
           </div>
         </div>
       );
@@ -2165,7 +2232,7 @@ const ProfileBuilder = () => {
             </div>
 
             <div className="preview-section">
-              <h4>👤 Personal Information</h4>
+              <h4>Personal Information</h4>
               <div className="preview-content">
                 <p><strong>Name:</strong> {manualFormData.personalInfo.fullName || 'Not provided'}</p>
                 <p><strong>Email:</strong> {manualFormData.personalInfo.email || 'Not provided'}</p>
@@ -2175,7 +2242,7 @@ const ProfileBuilder = () => {
             </div>
 
             <div className="preview-section">
-              <h4>🎯 Career Overview</h4>
+              <h4>Career Overview</h4>
               <div className="preview-content">
                 <p><strong>Title:</strong> {manualFormData.careerOverview.title || 'Not provided'}</p>
                 <p><strong>Experience:</strong> {manualFormData.careerOverview.experience || 'Not provided'}</p>
@@ -2197,12 +2264,12 @@ const ProfileBuilder = () => {
               )}
               {saveStatus === 'saved' && (
                 <>
-                  <span>✅ Profile saved successfully!</span>
+                  <span>Profile saved successfully!</span>
                 </>
               )}
               {saveStatus === 'error' && (
                 <>
-                  <span>❌ Failed to save profile. Please try again.</span>
+                  <span>Failed to save profile. Please try again.</span>
                 </>
               )}
             </div>
@@ -2274,12 +2341,13 @@ const ProfileBuilder = () => {
               Next →
             </button>
           ) : (
-            <button 
+            <button
               className="nav-button primary"
               onClick={handleSaveProfile}
               disabled={saveStatus === 'saving' || !canProceed()}
             >
-              💾 Save Profile
+              <SaveIcon size={16} />
+              Save Profile
             </button>
           )}
         </div>
@@ -2428,16 +2496,16 @@ const ProfileBuilder = () => {
     };
 
     const getSectionIcon = (sectionName) => {
-      const icons = {
-        personalInfo: '👤',
-        careerOverview: '🎯',
-        education: '🎓',
-        workExperience: '💼',
-        skills: '⚡',
-        projects: '🚀',
-        certifications: '📜'
+      const iconComponents = {
+        personalInfo: <UserIcon size={16} />,
+        careerOverview: <TargetIcon size={16} />,
+        education: <GraduationIcon size={16} />,
+        workExperience: <BriefcaseIcon size={16} />,
+        skills: <SkillsIcon size={16} />,
+        projects: <ProjectIcon size={16} />,
+        certifications: <CertificateIcon size={16} />
       };
-      return icons[sectionName] || '📋';
+      return iconComponents[sectionName] || <DocumentIcon size={16} />;
     };
 
     return (

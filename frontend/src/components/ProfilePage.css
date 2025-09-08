@@ -66,8 +66,14 @@
 }
 
 .profile-section:hover {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+.profile-section:hover .section-icon {
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  border-color: var(--text-primary);
 }
 
 .section-title {
@@ -83,16 +89,17 @@
 }
 
 .section-icon {
-  font-size: 1.25rem;
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
   padding: 0.5rem;
   border-radius: 8px;
-  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   min-width: 2.5rem;
   height: 2.5rem;
+  transition: all 0.2s ease;
 }
 
 /* Contact Information Styles */

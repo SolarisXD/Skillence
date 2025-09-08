@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './navbar';
+import { 
+  UserIcon, 
+  BriefcaseIcon, 
+  GraduationIcon,
+  SkillsIcon,
+  ProjectIcon,
+  CertificateIcon,
+  TargetIcon,
+  DocumentIcon
+} from './Icons/ProfessionalIcons';
 import './ProfilePage.css';
 
 const ProfilePage = () => {
@@ -61,7 +71,9 @@ const ProfilePage = () => {
     return (
       <div className="profile-section">
         <h3 className="section-title">
-          <span className="section-icon">👤</span>
+          <span className="section-icon">
+            <UserIcon size={20} />
+          </span>
           Contact Information
         </h3>
         <div className="contact-grid">
@@ -121,7 +133,9 @@ const ProfilePage = () => {
     return (
       <div className="profile-section">
         <h3 className="section-title">
-          <span className="section-icon">💼</span>
+          <span className="section-icon">
+            <BriefcaseIcon size={20} />
+          </span>
           Work Experience
         </h3>
         <div className="experience-list">
@@ -156,7 +170,9 @@ const ProfilePage = () => {
     return (
       <div className="profile-section">
         <h3 className="section-title">
-          <span className="section-icon">🎓</span>
+          <span className="section-icon">
+            <GraduationIcon size={20} />
+          </span>
           Education
         </h3>
         <div className="education-list">
@@ -194,7 +210,9 @@ const ProfilePage = () => {
     return (
       <div className="profile-section">
         <h3 className="section-title">
-          <span className="section-icon">🛠️</span>
+          <span className="section-icon">
+            <SkillsIcon size={20} />
+          </span>
           Skills
         </h3>
         <div className="skills-container">
@@ -231,7 +249,9 @@ const ProfilePage = () => {
     return (
       <div className="profile-section">
         <h3 className="section-title">
-          <span className="section-icon">🚀</span>
+          <span className="section-icon">
+            <ProjectIcon size={20} />
+          </span>
           Projects
         </h3>
         <div className="projects-list">
@@ -282,7 +302,9 @@ const ProfilePage = () => {
     return (
       <div className="profile-section">
         <h3 className="section-title">
-          <span className="section-icon">🏆</span>
+          <span className="section-icon">
+            <CertificateIcon size={20} />
+          </span>
           Certifications
         </h3>
         <div className="certifications-list">
@@ -315,7 +337,9 @@ const ProfilePage = () => {
     return Object.entries(customSections).map(([sectionName, sectionData]) => (
       <div key={sectionName} className="profile-section">
         <h3 className="section-title">
-          <span className="section-icon">📋</span>
+          <span className="section-icon">
+            <DocumentIcon size={20} />
+          </span>
           {sectionName}
         </h3>
         <div className="custom-section-content">

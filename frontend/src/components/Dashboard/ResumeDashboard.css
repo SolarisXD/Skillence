@@ -44,10 +44,10 @@
 
 .profile-options {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
   gap: 30px;
   margin-bottom: 40px;
-  max-width: 800px;
+  max-width: 900px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -56,19 +56,19 @@
   background: var(--card-gradient);
   backdrop-filter: blur(10px);
   border-radius: 16px;
-  padding: 32px;
+  padding: 36px;
   cursor: pointer;
   transition: all 0.3s ease;
   border: 1px solid var(--border-color);
   text-align: center;
-  min-height: 280px;
+  min-height: 320px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
 .profile-option:hover {
-  transform: translateY(-4px);
+  transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   border-color: var(--text-secondary);
 }
@@ -243,18 +243,22 @@
 .file-drop-zone {
   border: 3px dashed var(--border-color);
   border-radius: 20px;
-  padding: 60px 40px;
+  padding: 32px 24px;
   text-align: center;
   cursor: pointer;
   transition: var(--transition-base);
   background: var(--bg-secondary);
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .file-drop-zone:hover,
 .file-drop-zone.drag-over {
   border-color: var(--accent-color);
   background: var(--bg-primary);
-  transform: scale(1.02);
+  transform: translateY(-1px);
 }
 
 .drop-zone-content {
@@ -1002,20 +1006,44 @@
 }
 
 .save-button.primary {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  border: none;
 }
 
 .restart-button.secondary {
-  background: rgba(108, 117, 125, 0.1);
-  border: 1px solid #6c757d;
-  color: #6c757d;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
 }
 
 .save-button:hover,
 .restart-button:hover {
-  transform: scale(1.05);
+  transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.edit-button:hover {
+  background: var(--bg-primary);
+  border-color: var(--text-secondary);
+  transform: translateY(-1px);
+}
+
+.delete-button:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  transform: translateY(-1px);
+}
+
+.save-section-button:hover {
+  background: var(--text-secondary);
+  transform: translateY(-1px);
+}
+
+.cancel-button:hover {
+  background: var(--bg-primary);
+  border-color: var(--text-secondary);
+  transform: translateY(-1px);
 }
 
 .editor-sections {
@@ -1025,16 +1053,17 @@
 }
 
 .editable-section {
-  background: rgba(247, 250, 252, 0.8);
-  border: 1px solid #e2e8f0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 25px;
   transition: all 0.3s ease;
 }
 
 .editable-section:hover {
-  border-color: #cbd5e0;
+  border-color: var(--text-secondary);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
 }
 
 .section-header {
@@ -1045,7 +1074,7 @@
 }
 
 .section-header h3 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-weight: 700;
   margin: 0;
   display: flex;
@@ -1072,23 +1101,27 @@
 }
 
 .edit-button {
-  background: rgba(102, 126, 234, 0.1);
-  color: #667eea;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
 }
 
 .delete-button {
-  background: rgba(245, 101, 101, 0.1);
-  color: #f56565;
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 .save-section-button {
-  background: linear-gradient(135deg, #4fd1c7, #06b6d4);
-  color: white;
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  border: none;
 }
 
 .cancel-button {
-  background: rgba(108, 117, 125, 0.1);
-  color: #6c757d;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
 }
 
 .edit-button:hover,
@@ -1431,9 +1464,122 @@
   background: var(--bg-primary);
 }
 
-.confirm-upload-button {
+/* Legacy button styles - these are overridden by the new styles above */
+
+.continue-button:hover {
+  background: var(--text-secondary);
+  transform: translateY(-1px);
+}
+
+/* Selected File Preview Styles */
+.selected-file-preview {
   width: 100%;
-  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  background: var(--bg-primary);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.preview-metadata {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+}
+
+.preview-icon {
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+.file-info {
+  flex: 1;
+}
+
+.file-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.file-size {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.pdf-preview {
+  width: 100%;
+  height: 300px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.pdf-preview object {
+  width: 100%;
+  height: 100%;
+}
+
+.file-placeholder {
+  width: 100%;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px dashed var(--border-color);
+}
+
+.file-placeholder p {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.selected-file-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.replace-button,
+.remove-button {
+  flex: 1;
+  min-width: 120px;
+  padding: 12px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.replace-button:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--text-secondary);
+  transform: translateY(-1px);
+}
+
+.remove-button:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #dc2626;
+  transform: translateY(-1px);
+}
+
+.confirm-upload-button {
+  flex: 2;
+  min-width: 200px;
+  padding: 14px 20px;
   background: var(--text-primary);
   color: var(--bg-primary);
   border: none;
@@ -1442,7 +1588,6 @@
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin-top: 20px;
 }
 
 .confirm-upload-button:hover {
