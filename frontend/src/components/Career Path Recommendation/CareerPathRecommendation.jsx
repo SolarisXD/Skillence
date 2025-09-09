@@ -38,7 +38,6 @@ const LoadingSpinner = () => (
 const CareerPathRecommendation = () => {
   const navigate = useNavigate();
   const [recommendations, setRecommendations] = useState([]);
-  const [normalizedRecommendations, setNormalizedRecommendations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [profileSummary, setProfileSummary] = useState('');
@@ -80,19 +79,9 @@ const CareerPathRecommendation = () => {
     }
   };
 
-  const normalizeScores = (recommendations) => {
-    if (!recommendations || recommendations.length === 0) return [];
-    
-    const scores = recommendations.map(rec => rec.score);
-    const minScore = Math.min(...scores);
-    const maxScore = Math.max(...scores);
-    const range = maxScore - minScore;
-    
-    // Normalize to 30-100 range to ensure visible differences
-    return recommendations.map(rec => ({
-      ...rec,
-      normalizedScore: range > 0 ? 30 + ((rec.score - minScore) / range) * 70 : 85
-    }));
+  // Convert backend scores (0-1 range) to percentage (0-100)
+  const convertToPercentage = (score) => {
+    return Math.max(5, Math.min(100, score * 100)); // Ensure minimum 5% and maximum 100%
   };
 
   const analyzeCareerPath = async () => {
@@ -130,7 +119,6 @@ const CareerPathRecommendation = () => {
       if (data.success) {
         const topRecommendations = (data.recommendations || []).slice(0, 5);
         setRecommendations(topRecommendations);
-        setNormalizedRecommendations(normalizeScores(topRecommendations));
         setProfileSummary(data.profile_summary || '');
         setHasAnalyzed(true);
       } else {
@@ -161,7 +149,7 @@ const CareerPathRecommendation = () => {
           occupation_code: career.occupation_code,
           title: career.title,
           score: career.score,
-          explanation: career.explanation || `This role matches your skills with a ${(career.score * 100).toFixed(1)}% compatibility rating.`
+          explanation: career.explanation || `This role matches your skills with a ${convertToPercentage(career.score).toFixed(1)}% compatibility rating.`
         })
       });
 
@@ -229,7 +217,7 @@ const CareerPathRecommendation = () => {
               <div className="current-career-info">
                 <h4>{currentCareerPath.title}</h4>
                 <p className="compatibility-score">
-                  {(currentCareerPath.score * 100).toFixed(1)}% Compatible
+                  {convertToPercentage(currentCareerPath.score).toFixed(1)}% Compatible
                 </p>
                 <p className="career-explanation">{currentCareerPath.explanation}</p>
               </div>
@@ -260,7 +248,7 @@ const CareerPathRecommendation = () => {
         )}
 
         {/* Results Section */}
-        {hasAnalyzed && normalizedRecommendations.length > 0 && (
+        {hasAnalyzed && recommendations.length > 0 && (
           <div className="results-section">
             <div className="results-header">
               <h2 className="results-title">Top 5 Career Matches</h2>
@@ -270,7 +258,7 @@ const CareerPathRecommendation = () => {
             </div>
             
             <div className="recommendations-grid">
-              {normalizedRecommendations.map((rec, index) => (
+              {recommendations.map((rec, index) => (
                 <div key={rec.occupation_code} className="recommendation-card">
                   <div className="card-header">
                     <div className="card-rank">#{index + 1}</div>
@@ -281,13 +269,13 @@ const CareerPathRecommendation = () => {
                     <div className="compatibility-label">
                       <span>Compatibility Score</span>
                       <span className="compatibility-percentage">
-                        {rec.normalizedScore.toFixed(0)}%
+                        {convertToPercentage(rec.score).toFixed(1)}%
                       </span>
                     </div>
                     <div className="progress-bar">
                       <div 
                         className="progress-fill" 
-                        style={{ width: `${rec.normalizedScore}%` }}
+                        style={{ width: `${convertToPercentage(rec.score)}%` }}
                       ></div>
                     </div>
                   </div>
@@ -308,10 +296,9 @@ const CareerPathRecommendation = () => {
                         <div className="match-analysis">
                           <h4>Match Analysis</h4>
                           <p className="match-explanation">
-                            This role demonstrates strong alignment with your professional profile, 
-                            matching {rec.hot_tech_matches?.length || 0} critical technologies and 
-                            {rec.regular_tech_matches?.length || 0} additional technical competencies 
-                            from your skill portfolio.
+                            Based on your profile analysis, this role matches {rec.hot_tech_matches?.length || 0} high-demand 
+                            technologies and {rec.regular_tech_matches?.length || 0} additional technical skills from your portfolio. 
+                            Overall compatibility: {convertToPercentage(rec.score).toFixed(1)}%
                           </p>
                         </div>
 
