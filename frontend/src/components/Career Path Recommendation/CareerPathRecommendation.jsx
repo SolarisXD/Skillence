@@ -169,9 +169,8 @@ const CareerPathRecommendation = () => {
         const data = await response.json();
         if (data.success) {
           setCurrentCareerPath(data.career_path);
-          // Clear the recommendations to show only the selected career
-          setRecommendations([]);
-          setNormalizedRecommendations([]);
+          // Hide the current recommendations when a career is selected
+          setHasAnalyzed(false);
           setExpandedCard(null);
         }
       }
@@ -198,22 +197,6 @@ const CareerPathRecommendation = () => {
           </p>
         </div>
 
-        {/* Current Career Path Display */}
-        {currentCareerPath && (
-          <div className="current-career-path">
-            <h3 className="current-career-title">Your Selected Career Path</h3>
-            <div className="current-career-card">
-              <div className="current-career-info">
-                <h4>{currentCareerPath.title}</h4>
-                <p className="compatibility-score">
-                  {(currentCareerPath.score * 100).toFixed(1)}% Compatible
-                </p>
-                <p className="career-explanation">{currentCareerPath.explanation}</p>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Action Section */}
         <div className="analyze-section">
           <button 
@@ -237,6 +220,22 @@ const CareerPathRecommendation = () => {
             Fetch your profile data and receive personalized career recommendations powered by industry analysis.
           </p>
         </div>
+
+        {/* Current Career Path Display */}
+        {currentCareerPath && (
+          <div className="current-career-path">
+            <h3 className="current-career-title">Your Selected Career Path</h3>
+            <div className="current-career-card">
+              <div className="current-career-info">
+                <h4>{currentCareerPath.title}</h4>
+                <p className="compatibility-score">
+                  {(currentCareerPath.score * 100).toFixed(1)}% Compatible
+                </p>
+                <p className="career-explanation">{currentCareerPath.explanation}</p>
+              </div>
+            </div>
+          </div>
+        )}
         
         {/* Loading State */}
         {loading && (
@@ -261,7 +260,7 @@ const CareerPathRecommendation = () => {
         )}
 
         {/* Results Section */}
-        {hasAnalyzed && normalizedRecommendations.length > 0 && !currentCareerPath && (
+        {hasAnalyzed && normalizedRecommendations.length > 0 && (
           <div className="results-section">
             <div className="results-header">
               <h2 className="results-title">Top 5 Career Matches</h2>
