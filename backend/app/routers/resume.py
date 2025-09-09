@@ -21,11 +21,12 @@ def get_current_user_id(credentials: HTTPAuthorizationCredentials = Depends(secu
     try:
         token = credentials.credentials
         logger.info(f"Received token: {token[:20]}..." if token else "No token received")
-        user_id = verify_token(token)
-        if user_id is None:
+        payload = verify_token(token)
+        if payload is None:
             logger.error("Token verification returned None")
             raise HTTPException(status_code=401, detail="Invalid authentication token")
-        logger.info(f"Extracted user_id: {user_id}")
+        user_id = payload.get("user_id")
+        logger.info(f"Extracted user_id from token payload: {user_id}")
         return user_id
     except Exception as e:
         logger.error(f"Token verification failed: {e}")

@@ -399,20 +399,53 @@ body {
   font-weight: 800;
   color: var(--text-primary);
   margin-bottom: 1rem;
-  text-align: center;
+  text-align: center; /* ensure centered */
   line-height: 1.2;
+  /* subtle text shadow to improve readability on complex/dark backgrounds */
+  text-shadow: 0 1px 0 rgba(0,0,0,0.02);
 }
 
 .section-subtitle {
   font-size: 1.2rem;
-  color: var(--text-primary);
-  opacity: 0.7;
-  text-align: center;
+  color: var(--text-secondary);
+  opacity: 0.85;
+  text-align: center; /* ensure centered */
   margin-bottom: 4rem;
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
   line-height: 1.6;
+}
+
+/* Stronger contrast overrides for dark theme on main feature-like sections */
+[data-theme="dark"] .features-section .section-title,
+[data-theme="dark"] .learning-section .section-title,
+[data-theme="dark"] .business-section .section-title,
+[data-theme="dark"] .analytics-section .section-title {
+  color: var(--text-primary);
+  text-shadow: 0 2px 8px rgba(0,0,0,0.45);
+}
+
+[data-theme="dark"] .features-section .section-subtitle,
+[data-theme="dark"] .learning-section .section-subtitle,
+[data-theme="dark"] .business-section .section-subtitle,
+[data-theme="dark"] .analytics-section .section-subtitle {
+  color: var(--text-secondary);
+  opacity: 0.95;
+}
+
+/* Explicitly target main page section titles to avoid conflicts from other component CSS
+   (e.g., ProfilePage's .section-title uses flex layout). These selectors are more specific
+   so they will win and ensure headings are centered and readable. */
+.features-section .section-title,
+.learning-section .section-title,
+.business-section .section-title,
+.analytics-section .section-title {
+  display: block !important;
+  margin: 0 auto !important;
+  text-align: center !important;
+  align-items: unset !important;
+  gap: 0 !important;
 }
 
 .features-grid {

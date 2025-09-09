@@ -111,7 +111,12 @@ def get_current_user_id(credentials: HTTPAuthorizationCredentials = Depends(secu
     """
     try:
         token = credentials.credentials
-        user_id = verify_token(token)
+        payload = verify_token(token)
+        if payload is None:
+            logger.error("Token verification returned None")
+            raise HTTPException(status_code=401, detail="Invalid authentication token")
+        user_id = payload.get("user_id")
+        logger.info(f"Extracted user_id from token payload: {user_id}")
         return user_id
     except Exception as e:
         logger.error(f"Token verification failed: {e}")
@@ -183,10 +188,14 @@ async def get_profile(
     try:
         db = get_database()
         profiles_collection = db.profiles
-        
+
+        logger.info(f"Fetching profile for user_id: {user_id}")
+
         # Find profile by user ID
         profile = await profiles_collection.find_one({"user_id": user_id})
-        
+
+        logger.info(f"DB query result for user_id {user_id}: {profile}")
+
         if profile:
             # Remove MongoDB ObjectId for JSON serialization
             profile.pop("_id", None)
@@ -196,23 +205,27 @@ async def get_profile(
                 skills = pd.get("skills")
                 if isinstance(skills, list):
                     pd["skills"] = {"technical": skills, "soft": [], "languages": []}
-            except Exception:
-                pass
-            
+                profile["profile_data"] = pd
+            except Exception as e:
+                logger.warning(f"Skills normalization failed: {e}")
+
+            logger.info(f"Returning profile for user_id {user_id}: {profile}")
+
             return {
                 "success": True,
                 "message": "Profile retrieved successfully",
                 "profile": profile
             }
         else:
+            logger.warning(f"No profile found for user_id: {user_id}")
             return {
                 "success": False,
                 "message": "No profile found for user",
                 "profile": None
             }
-            
+
     except Exception as e:
-        logger.error(f"Profile retrieval failed: {e}")
+        logger.error(f"Profile retrieval failed for user_id {user_id}: {e}")
         raise HTTPException(
             status_code=500,
             detail="Failed to retrieve profile data"

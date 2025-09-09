@@ -1418,7 +1418,7 @@
   padding: 15px 25px;
   border-radius: 8px;
   font-weight: 600;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 25px var(--shadow-medium, rgba(0, 0, 0, 0.15));
   z-index: 1000;
   animation: slideInUp 0.5s ease-out;
   max-width: 90vw;
@@ -1437,8 +1437,12 @@
 }
 
 .save-notification.saving {
-  background: rgba(255, 193, 7, 0.95);
-  color: var(--warning-color, #856404);
+  /* Use themed background and text so saving notification follows light/dark modes */
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  /* Accent the notification with a visible warning color stripe */
+  border-left: 6px solid var(--warning-color, #d97706);
 }
 
 .save-notification.saved {
