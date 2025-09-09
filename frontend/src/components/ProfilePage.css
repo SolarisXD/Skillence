@@ -1,4 +1,4 @@
-/* Profile Page Styles with Dark/Light Theme Support */
+/* Professional Profile Page Styles with Dark/Light Theme Support */
 .profile-page {
   min-height: 100vh;
   background: var(--bg-primary);
@@ -19,7 +19,7 @@
   align-items: center;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 2px solid var(--border-primary);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .profile-title {
@@ -27,27 +27,24 @@
   font-weight: 700;
   color: var(--text-primary);
   margin: 0;
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .edit-profile-button {
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  background: var(--accent-color);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 12px;
+  border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--shadow-light);
 }
 
 .edit-profile-button:hover {
-  transform: translateY(-2px);
+  background: var(--accent-hover);
+  transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
@@ -64,19 +61,24 @@
 }
 
 .edit-section-button {
-  background: var(--accent-primary);
+  background: var(--accent-color);
   color: white;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 8px;
-  font-size: 0.9rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .edit-section-button:hover {
-  background: var(--accent-secondary);
+  background: var(--accent-hover);
   transform: translateY(-1px);
+  box-shadow: 0 2px 8px var(--shadow-light);
 }
 
 /* Edit Form Styles */
@@ -185,22 +187,49 @@
   border-color: var(--text-secondary);
 }
 
-/* Add/Remove Item Buttons */
+/* Add/Remove Item Buttons - Completely Remade for Better Visibility */
 .add-item-button {
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-  margin-bottom: 1rem;
-  transition: all 0.3s ease;
+  /* Reset all inherited styles */
+  all: unset;
+  /* Apply new clean styles */
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding: 12px 20px !important;
+  background: #ffffff !important;
+  color: #1f2937 !important;
+  border: 2px solid #d1d5db !important;
+  border-radius: 6px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  font-family: 'Inter', sans-serif !important;
+  cursor: pointer !important;
+  margin-bottom: 16px !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
 .add-item-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background: #1e40af !important;
+  color: #ffffff !important;
+  border-color: #1e40af !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Dark mode specific overrides */
+[data-theme="dark"] .add-item-button {
+  background: #1f2937 !important;
+  color: #f9fafb !important;
+  border-color: #374151 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme="dark"] .add-item-button:hover {
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
 }
 
 .remove-item-button {

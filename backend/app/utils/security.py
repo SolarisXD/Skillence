@@ -41,7 +41,7 @@ def verify_token(token: str):
         if user_id is None:
             print(f"Token payload: {payload}")  # Debug log
             raise JWTError("User ID not found in token")
-        return user_id
+        return payload  # Return the full payload, not just user_id
     except JWTError as e:
         print(f"JWT Error: {e}")  # Debug log
         return None

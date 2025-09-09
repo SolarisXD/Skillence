@@ -9,7 +9,9 @@ import {
   ProjectIcon,
   CertificateIcon,
   TargetIcon,
-  DocumentIcon
+  DocumentIcon,
+  EditIcon,
+  PlusIcon
 } from './Icons/ProfessionalIcons';
 import './ProfilePage.css';
 
@@ -23,6 +25,13 @@ const ProfilePage = () => {
   const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
 
+  // Helper function to clean up URLs (remove localhost prefix if present)
+  const cleanUrl = (url) => {
+    if (!url) return url;
+    // Remove localhost prefixes that might have been added incorrectly
+    return url.replace(/^http:\/\/localhost:\d+\//, '').replace(/^https:\/\/localhost:\d+\//, '');
+  };
+
   useEffect(() => {
     fetchProfileData();
   }, []);
@@ -30,6 +39,7 @@ const ProfilePage = () => {
   const fetchProfileData = async () => {
     try {
       setLoading(true);
+      setError('');
       const token = localStorage.getItem('token');
       
       if (!token) {
@@ -37,6 +47,25 @@ const ProfilePage = () => {
         return;
       }
 
+      // First verify the token is valid and get current user info
+      const authResponse = await fetch('http://localhost:8000/api/auth/verify', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!authResponse.ok) {
+        // Token is invalid, clear it and redirect
+        localStorage.removeItem('token');
+        navigate('/');
+        return;
+      }
+
+      const authData = await authResponse.json();
+      console.log('Current authenticated user:', authData.email);
+
+      // Now fetch the profile
       const response = await fetch('http://localhost:8000/api/profile/', {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -44,16 +73,29 @@ const ProfilePage = () => {
         }
       });
 
+      if (!response.ok) {
+        if (response.status === 401) {
+          // Unauthorized, clear token and redirect
+          localStorage.removeItem('token');
+          navigate('/');
+          return;
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
       
       if (data.success && data.profile) {
+        console.log('Loaded profile for user:', data.profile.user_email || 'unknown');
         setProfileData(data.profile.profile_data);
       } else {
         setProfileData(null);
+        setError('No profile data found');
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
       setError('Failed to load profile data');
+      // If there's a network error or other issue, don't auto-redirect
     } finally {
       setLoading(false);
     }
@@ -70,14 +112,27 @@ const ProfilePage = () => {
 
   const handleEditSection = (sectionName, data) => {
     setEditingSection(sectionName);
-    setEditData(data);
+    
+    // Special handling for skills to ensure they're in the right format
+    if (sectionName === 'skills' && data) {
+      const processedSkills = {
+        technical: Array.isArray(data.technical) ? data.technical : [],
+        soft: Array.isArray(data.soft) ? data.soft : [],
+        tools: Array.isArray(data.tools) ? data.tools : [],
+        languages: Array.isArray(data.languages) ? data.languages : []
+      };
+      setEditData(processedSkills);
+    } else {
+      setEditData(data);
+    }
+    
     setEditMode(true);
   };
 
   const handleCancelEdit = () => {
     setEditingSection(null);
     setEditData({});
-    setEditMode(false);
+    // Do not exit major edit mode here
   };
 
   const handleSaveSection = async (sectionName, updatedData) => {
@@ -89,7 +144,7 @@ const ProfilePage = () => {
         [sectionName]: updatedData
       };
 
-      const response = await fetch('http://localhost:8000/api/profile/', {
+      const response = await fetch('http://localhost:8000/api/profile/update', {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -102,7 +157,7 @@ const ProfilePage = () => {
         setProfileData(updatedProfile);
         setEditingSection(null);
         setEditData({});
-        setEditMode(false);
+        // Do not exit major edit mode here
       } else {
         throw new Error('Failed to save changes');
       }
@@ -134,7 +189,8 @@ const ProfilePage = () => {
               className="edit-section-button"
               onClick={() => handleEditSection('contact_info', contact)}
             >
-              ✏️ Edit
+              <EditIcon size={16} />
+              <span>Edit</span>
             </button>
           )}
         </div>
@@ -245,8 +301,8 @@ const ProfilePage = () => {
               <div className="contact-item">
                 <span className="contact-label">Website:</span>
                 <span className="contact-value">
-                  <a href={contact.website} target="_blank" rel="noopener noreferrer">
-                    {contact.website}
+                  <a href={cleanUrl(contact.website)} target="_blank" rel="noopener noreferrer">
+                    {cleanUrl(contact.website)}
                   </a>
                 </span>
               </div>
@@ -255,8 +311,8 @@ const ProfilePage = () => {
               <div className="contact-item">
                 <span className="contact-label">LinkedIn:</span>
                 <span className="contact-value">
-                  <a href={contact.linkedin} target="_blank" rel="noopener noreferrer">
-                    {contact.linkedin}
+                  <a href={cleanUrl(contact.linkedin)} target="_blank" rel="noopener noreferrer">
+                    {cleanUrl(contact.linkedin)}
                   </a>
                 </span>
               </div>
@@ -265,8 +321,8 @@ const ProfilePage = () => {
               <div className="contact-item">
                 <span className="contact-label">GitHub:</span>
                 <span className="contact-value">
-                  <a href={contact.github} target="_blank" rel="noopener noreferrer">
-                    {contact.github}
+                  <a href={cleanUrl(contact.github)} target="_blank" rel="noopener noreferrer">
+                    {cleanUrl(contact.github)}
                   </a>
                 </span>
               </div>
@@ -297,7 +353,8 @@ const ProfilePage = () => {
               className="edit-section-button"
               onClick={() => handleEditSection('experience', experience)}
             >
-              ✏️ Edit
+              <EditIcon size={16} />
+              <span>Edit</span>
             </button>
           )}
         </div>
@@ -368,7 +425,8 @@ const ProfilePage = () => {
               className="edit-section-button"
               onClick={() => handleEditSection('education', education)}
             >
-              ✏️ Edit
+              <EditIcon size={16} />
+              <span>Edit</span>
             </button>
           )}
         </div>
@@ -470,7 +528,8 @@ const ProfilePage = () => {
                 setEditData([...editData, { degree: '', institution: '', year: '', location: '', gpa: '', specialization: '' }]);
               }}
             >
-              Add Education
+              <PlusIcon size={16} />
+              <span>Add Education</span>
             </button>
             <div className="edit-actions">
               <button 
@@ -543,7 +602,8 @@ const ProfilePage = () => {
               className="edit-section-button"
               onClick={() => handleEditSection('skills', skills)}
             >
-              ✏️ Edit
+              <EditIcon size={16} />
+              <span>Edit</span>
             </button>
           )}
         </div>
@@ -661,7 +721,8 @@ const ProfilePage = () => {
               className="edit-section-button"
               onClick={() => handleEditSection('projects', projects)}
             >
-              ✏️ Edit
+              <EditIcon size={16} />
+              <span>Edit</span>
             </button>
           )}
         </div>
@@ -765,7 +826,8 @@ const ProfilePage = () => {
                 setEditData([...editData, { name: '', description: '', technologies: [], achievements: '', url: '', github_url: '' }]);
               }}
             >
-              Add Project
+              <PlusIcon size={16} />
+              <span>Add Project</span>
             </button>
             <div className="edit-actions">
               <button 
@@ -810,12 +872,12 @@ const ProfilePage = () => {
                 {(project.url || project.github_url || project.link) && (
                   <div className="project-links">
                     {(project.url || project.link) && (
-                      <a href={project.url || project.link} target="_blank" rel="noopener noreferrer" className="project-link">
+                      <a href={cleanUrl(project.url || project.link)} target="_blank" rel="noopener noreferrer" className="project-link">
                         🔗 Live Demo
                       </a>
                     )}
                     {project.github_url && (
-                      <a href={project.github_url} target="_blank" rel="noopener noreferrer" className="project-link">
+                      <a href={cleanUrl(project.github_url)} target="_blank" rel="noopener noreferrer" className="project-link">
                         💻 GitHub
                       </a>
                     )}
@@ -849,7 +911,8 @@ const ProfilePage = () => {
               className="edit-section-button"
               onClick={() => handleEditSection('certifications', certifications)}
             >
-              ✏️ Edit
+              <EditIcon size={16} />
+              <span>Edit</span>
             </button>
           )}
         </div>
@@ -938,7 +1001,8 @@ const ProfilePage = () => {
                 setEditData([...editData, { name: '', issuer: '', date: '', id: '', url: '' }]);
               }}
             >
-              Add Certification
+              <PlusIcon size={16} />
+              <span>Add Certification</span>
             </button>
             <div className="edit-actions">
               <button 
@@ -968,7 +1032,7 @@ const ProfilePage = () => {
                 {cert.id && <div className="cert-id">Credential ID: {cert.id}</div>}
                 {cert.url && (
                   <div className="cert-link">
-                    <a href={cert.url} target="_blank" rel="noopener noreferrer">
+                    <a href={cleanUrl(cert.url)} target="_blank" rel="noopener noreferrer">
                       🔗 View Certificate
                     </a>
                   </div>
@@ -1001,7 +1065,8 @@ const ProfilePage = () => {
               className="edit-section-button"
               onClick={() => handleEditSection('achievements', achievements)}
             >
-              ✏️ Edit
+              <EditIcon size={16} />
+              <span>Edit</span>
             </button>
           )}
         </div>
@@ -1095,7 +1160,8 @@ const ProfilePage = () => {
                 setEditData([...editData, { title: '', description: '', date: '', level: 'Other', issuer: '' }]);
               }}
             >
-              Add Achievement
+              <PlusIcon size={16} />
+              <span>Add Achievement</span>
             </button>
             <div className="edit-actions">
               <button 
@@ -1242,14 +1308,16 @@ const ProfilePage = () => {
                 onClick={() => setEditMode(true)} 
                 className="edit-profile-button"
               >
-                ✏️ Edit Profile
+                <EditIcon size={16} />
+                <span>Edit Profile</span>
               </button>
             ) : (
               <button 
                 onClick={() => setEditMode(false)} 
                 className="edit-profile-button cancel-edit"
               >
-                ✖️ Cancel Editing
+                <span>✖</span>
+                <span>Cancel Editing</span>
               </button>
             )}
           </div>
