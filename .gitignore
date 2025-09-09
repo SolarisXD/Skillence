@@ -182,4 +182,4 @@ ONET_README.md
 
 # O*NET skills data (large Excel exports) - ignore Excel/ODS files in skills_data
 backend/app/career_data/skills_data/*.xls*
-backend/app/career_data/skills_data/*.ods
+backend/app/career_data/skills_data/*.ods.

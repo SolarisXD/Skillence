@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 from pymongo import MongoClient
 import requests
 import logging
+from datetime import datetime
 from app.utils.security import verify_token
 
 router = APIRouter()
@@ -55,7 +56,12 @@ def get_current_user_id(credentials: HTTPAuthorizationCredentials = Depends(secu
     """
     try:
         token = credentials.credentials
-        user_id = verify_token(token)
+        payload = verify_token(token)
+        if payload is None:
+            raise HTTPException(status_code=401, detail="Invalid authentication token")
+        user_id = payload.get("user_id")
+        if not user_id:
+            raise HTTPException(status_code=401, detail="User ID not found in token")
         return user_id
     except Exception as e:
         logger.error(f"Token verification failed: {e}")
@@ -130,7 +136,7 @@ def extract_profile_tokens(profile):
 
 def load_technology_skills():
     """Load technology skills from O*NET data"""
-    data_dir = os.path.join(os.path.dirname(__file__), '..', 'career_data')
+    data_dir = os.path.join(os.path.dirname(__file__), '..', 'career_data', 'skills_data')
     tech_file = os.path.join(data_dir, 'Technology Skills.xlsx')
     
     if not os.path.exists(tech_file):
@@ -448,3 +454,117 @@ async def get_career_recommendations(user_id: str = Depends(get_current_user_id)
     except Exception as e:
         logger.error(f"Error generating career recommendations: {str(e)}")
         raise HTTPException(status_code=500, detail="Internal server error")
+
+# Pydantic models for career path saving
+class CareerPathSave(BaseModel):
+    occupation_code: str
+    title: str
+    score: float
+    explanation: str
+
+class CareerPathResponse(BaseModel):
+    success: bool
+    message: str
+    career_path: Optional[dict] = None
+
+@router.post("/save-career-path")
+async def save_career_path(
+    career_path_data: CareerPathSave,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """
+    Save selected career path for the authenticated user
+    """
+    try:
+        # Verify token and get user_id
+        payload = verify_token(credentials.credentials)
+        user_id = payload.get("user_id")
+        
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        # Connect to MongoDB
+        from app.database import get_database
+        db = get_database()
+        profiles_collection = db.profiles
+        
+        # Create career path document
+        career_path_doc = {
+            "occupation_code": career_path_data.occupation_code,
+            "title": career_path_data.title,
+            "score": career_path_data.score,
+            "explanation": career_path_data.explanation,
+            "saved_at": datetime.utcnow().isoformat()
+        }
+        
+        # Update user profile with career path
+        result = await profiles_collection.update_one(
+            {"user_id": user_id},
+            {
+                "$set": {
+                    "career_path": career_path_doc,
+                    "updated_at": datetime.utcnow().isoformat()
+                }
+            },
+            upsert=True
+        )
+        
+        if result.acknowledged:
+            return CareerPathResponse(
+                success=True,
+                message="Career path saved successfully",
+                career_path=career_path_doc
+            )
+        else:
+            raise HTTPException(status_code=500, detail="Failed to save career path")
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error saving career path: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to save career path")
+
+@router.get("/get-career-path")
+async def get_career_path(
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """
+    Get saved career path for the authenticated user
+    """
+    try:
+        # Verify token and get user_id
+        payload = verify_token(credentials.credentials)
+        user_id = payload.get("user_id")
+        
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        # Connect to MongoDB
+        from app.database import get_database
+        db = get_database()
+        profiles_collection = db.profiles
+        
+        # Find user profile with career path
+        profile = await profiles_collection.find_one(
+            {"user_id": user_id},
+            {"career_path": 1, "_id": 0}
+        )
+        
+        if profile and "career_path" in profile:
+            return CareerPathResponse(
+                success=True,
+                message="Career path retrieved successfully",
+                career_path=profile["career_path"]
+            )
+        else:
+            return CareerPathResponse(
+                success=True,
+                message="No career path found",
+                career_path=None
+            )
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error retrieving career path: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve career path")
