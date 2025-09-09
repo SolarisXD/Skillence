@@ -523,7 +523,7 @@ const ProfilePage = () => {
               </div>
             ))}
             <button 
-              className="add-item-button"
+              className="profile-add-action-btn"
               onClick={() => {
                 setEditData([...editData, { degree: '', institution: '', year: '', location: '', gpa: '', specialization: '' }]);
               }}
@@ -821,7 +821,7 @@ const ProfilePage = () => {
               </div>
             ))}
             <button 
-              className="add-item-button"
+              className="profile-add-action-btn"
               onClick={() => {
                 setEditData([...editData, { name: '', description: '', technologies: [], achievements: '', url: '', github_url: '' }]);
               }}
@@ -996,7 +996,7 @@ const ProfilePage = () => {
               </div>
             ))}
             <button 
-              className="add-item-button"
+              className="profile-add-action-btn"
               onClick={() => {
                 setEditData([...editData, { name: '', issuer: '', date: '', id: '', url: '' }]);
               }}
@@ -1155,7 +1155,7 @@ const ProfilePage = () => {
               </div>
             ))}
             <button 
-              className="add-item-button"
+              className="profile-add-action-btn"
               onClick={() => {
                 setEditData([...editData, { title: '', description: '', date: '', level: 'Other', issuer: '' }]);
               }}

@@ -805,24 +805,33 @@
   box-shadow: 0 4px 12px rgba(245, 101, 101, 0.3);
 }
 
-.add-button {
-  background: linear-gradient(135deg, var(--accent-color), var(--accent-hover)) !important;
-  color: white !important;
-  border: none !important;
-  padding: 15px 30px;
-  border-radius: 10px;
-  font-size: 1.1rem;
+.profile-add-action-btn {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 1rem;
   font-weight: 600;
+  color: #fff;
+  background: #1e293b;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 20px;
+  margin: 8px 0 16px 0;
   cursor: pointer;
-  transition: all 0.3s ease;
-  width: 100%;
-  margin-top: 20px;
-  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(30,41,59,0.08);
+  outline: none;
+  letter-spacing: 0.02em;
 }
 
-.add-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(79, 209, 199, 0.3);
+/* Remove legacy button classes to prevent conflicts */
+.add-item-button,
+.add-button,
+.add-section-button,
+.confirm-add-button,
+.cancel-add-button {
+  display: none !important;
 }
 
 .remove-item {
@@ -1357,51 +1366,12 @@
   justify-content: center;
 }
 
-.confirm-add-button,
-.cancel-add-button,
-.add-section-button {
-  padding: 10px 20px;
-  border: none !important;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  color: white !important;
-}
+/* Removed old button classes: .confirm-add-button, .cancel-add-button, .add-section-button */
 
-.confirm-add-button {
-  background: linear-gradient(135deg, var(--success-color), #10b981) !important;
-  color: white !important;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-}
 
-.cancel-add-button {
-  background: var(--bg-secondary);
-  color: var(--text-secondary);
-  border: 1px solid var(--border-color);
-}
 
-.add-section-button {
-  background: linear-gradient(135deg, var(--accent-color), var(--accent-hover)) !important;
-  color: white !important;
-  border: none !important;
-  padding: 15px 30px;
-  font-size: 1.1rem;
-  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-}
 
-.confirm-add-button:hover,
-.cancel-add-button:hover,
-.add-section-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
 
-.confirm-add-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-}
 
 .error-message {
   color: var(--error-color, #f56565);

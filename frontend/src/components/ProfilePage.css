@@ -188,48 +188,56 @@
 }
 
 /* Add/Remove Item Buttons - Completely Remade for Better Visibility */
-.add-item-button {
-  /* Reset all inherited styles */
-  all: unset;
-  /* Apply new clean styles */
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 0.5rem !important;
-  padding: 12px 20px !important;
-  background: #ffffff !important;
-  color: #1f2937 !important;
-  border: 2px solid #d1d5db !important;
-  border-radius: 6px !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
-  font-family: 'Inter', sans-serif !important;
-  cursor: pointer !important;
-  margin-bottom: 16px !important;
-  transition: all 0.2s ease !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+.profile-add-action-btn {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background: #1e293b;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 20px;
+  margin: 8px 0 16px 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(30,41,59,0.08);
+  outline: none;
+  letter-spacing: 0.02em;
 }
 
-.add-item-button:hover {
-  background: #1e40af !important;
-  color: #ffffff !important;
-  border-color: #1e40af !important;
-  transform: translateY(-1px) !important;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+/* Remove legacy button classes to prevent conflicts */
+.add-item-button,
+.add-button,
+.add-section-button,
+.confirm-add-button,
+.cancel-add-button {
+  display: none !important;
+}
+
+.profile-add-action-btn:hover {
+  background: #1e40af;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(30,64,175,0.12);
+  transform: translateY(-1px);
+  border-color: #1e40af;
 }
 
 /* Dark mode specific overrides */
-[data-theme="dark"] .add-item-button {
-  background: #1f2937 !important;
-  color: #f9fafb !important;
-  border-color: #374151 !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+[data-theme="dark"] .profile-add-action-btn {
+  background: #fff;
+  color: #1e293b;
+  border: 1px solid #1e293b;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-[data-theme="dark"] .add-item-button:hover {
-  background: #3b82f6 !important;
-  color: #ffffff !important;
-  border-color: #3b82f6 !important;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+[data-theme="dark"] .profile-add-action-btn:hover {
+  background: #3b82f6;
+  color: #fff;
+  border-color: #3b82f6;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 .remove-item-button {

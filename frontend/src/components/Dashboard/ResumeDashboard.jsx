@@ -429,7 +429,7 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
           </div>
         </div>
       ))}
-      <button type="button" className="add-item" onClick={addArrayItem}>
+      <button type="button" className="profile-add-action-btn" onClick={addArrayItem}>
         Add Experience
       </button>
     </div>
@@ -520,7 +520,7 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
           )}
         </div>
       ))}
-      <button type="button" className="add-item" onClick={addArrayItem}>
+      <button type="button" className="profile-add-action-btn" onClick={addArrayItem}>
         Add Education
       </button>
     </div>
@@ -647,7 +647,7 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
           </div>
         </div>
       ))}
-      <button type="button" className="add-item" onClick={addArrayItem}>
+      <button type="button" className="profile-add-action-btn" onClick={addArrayItem}>
         Add Project
       </button>
     </div>
@@ -726,7 +726,7 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
           )}
         </div>
       ))}
-      <button type="button" className="add-item" onClick={addArrayItem}>
+      <button type="button" className="profile-add-action-btn" onClick={addArrayItem}>
         Add Certification
       </button>
     </div>
@@ -792,7 +792,7 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
           )}
         </div>
       ))}
-      <button type="button" className="add-item" onClick={addArrayItem}>
+      <button type="button" className="profile-add-action-btn" onClick={addArrayItem}>
         Add Achievement
       </button>
     </div>
@@ -1797,7 +1797,7 @@ const ProfileBuilder = () => {
         ))}
         
         <button 
-          className="add-button"
+          className="profile-add-action-btn"
           onClick={() => addArrayItem('education', {
             institution: '',
             degree: '',
@@ -1942,7 +1942,7 @@ const ProfileBuilder = () => {
         ))}
         
         <button 
-          className="add-button"
+          className="profile-add-action-btn"
           onClick={() => addArrayItem('workExperience', {
             title: '',
             company: '',
@@ -2093,7 +2093,7 @@ const ProfileBuilder = () => {
         ))}
         
         <button 
-          className="add-button"
+          className="profile-add-action-btn"
           onClick={() => addArrayItem('projects', {
             name: '',
             technologies: '',
@@ -2218,7 +2218,7 @@ const ProfileBuilder = () => {
         ))}
         
         <button 
-          className="add-button"
+          className="profile-add-action-btn"
           onClick={() => addArrayItem('certifications', {
             name: '',
             issuer: '',
@@ -2634,7 +2634,7 @@ const ProfileBuilder = () => {
             <div className="add-section-container">
               {!showAddSection ? (
                 <button 
-                  className="add-section-button"
+                  className="profile-add-action-btn"
                   onClick={() => setShowAddSection(true)}
                 >
                   Add Custom Section
@@ -2665,14 +2665,14 @@ const ProfileBuilder = () => {
                   
                   <div className="add-section-actions">
                     <button 
-                      className="confirm-add-button"
+                      className="profile-add-action-btn"
                       onClick={handleAddCustomSection}
                       disabled={!newSectionName.trim() || activeProfile[newSectionName] || customSections[newSectionName]}
                     >
                       Add Section
                     </button>
                     <button 
-                      className="cancel-add-button"
+                      className="profile-add-action-btn"
                       onClick={() => {
                         setShowAddSection(false);
                         setNewSectionName('');
