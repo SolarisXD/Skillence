@@ -32,9 +32,9 @@ const MainPage = () => {
         <NeuralBg />
         <div className="hero-content">
           <h1 className="hero-title">AI-Powered Career Intelligence Platform</h1>
-          <p className="hero-subtitle">
-            Leverage advanced machine learning algorithms to discover personalized career pathways, 
-            intelligent skill assessments, and data-driven learning roadmaps tailored to your unique 
+          <p className="main-hero-subtitle">
+            Leverage advanced machine learning algorithms to discover personalized career pathways,
+            intelligent skill assessments, and data-driven learning roadmaps tailored to your unique
             professional profile and emerging market trends.
           </p>
           <div className="hero-buttons">

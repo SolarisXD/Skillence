@@ -622,7 +622,7 @@ const JobOfferEvaluator = () => {
         <div className="hero-section">
           <div className="hero-content">
             <h1 className="hero-title">Discover your earning potential</h1>
-            <p className="hero-subtitle">
+            <p className="joboffer-hero-subtitle">
               Evaluate job offers, compare salaries and benefits by industry and location.
             </p>
           </div>

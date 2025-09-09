@@ -301,8 +301,8 @@ const ProfilePage = () => {
               <div className="contact-item">
                 <span className="contact-label">Website:</span>
                 <span className="contact-value">
-                  <a href={cleanUrl(contact.website)} target="_blank" rel="noopener noreferrer">
-                    {cleanUrl(contact.website)}
+                  <a href={contact.website} target="_blank" rel="noopener noreferrer">
+                    {contact.website}
                   </a>
                 </span>
               </div>
@@ -311,8 +311,8 @@ const ProfilePage = () => {
               <div className="contact-item">
                 <span className="contact-label">LinkedIn:</span>
                 <span className="contact-value">
-                  <a href={cleanUrl(contact.linkedin)} target="_blank" rel="noopener noreferrer">
-                    {cleanUrl(contact.linkedin)}
+                  <a href={contact.linkedin} target="_blank" rel="noopener noreferrer">
+                    {contact.linkedin}
                   </a>
                 </span>
               </div>
@@ -321,8 +321,8 @@ const ProfilePage = () => {
               <div className="contact-item">
                 <span className="contact-label">GitHub:</span>
                 <span className="contact-value">
-                  <a href={cleanUrl(contact.github)} target="_blank" rel="noopener noreferrer">
-                    {cleanUrl(contact.github)}
+                  <a href={contact.github} target="_blank" rel="noopener noreferrer">
+                    {contact.github}
                   </a>
                 </span>
               </div>
@@ -872,12 +872,12 @@ const ProfilePage = () => {
                 {(project.url || project.github_url || project.link) && (
                   <div className="project-links">
                     {(project.url || project.link) && (
-                      <a href={cleanUrl(project.url || project.link)} target="_blank" rel="noopener noreferrer" className="project-link">
+                      <a href={project.url || project.link} target="_blank" rel="noopener noreferrer" className="project-link">
                         🔗 Live Demo
                       </a>
                     )}
                     {project.github_url && (
-                      <a href={cleanUrl(project.github_url)} target="_blank" rel="noopener noreferrer" className="project-link">
+                      <a href={project.github_url} target="_blank" rel="noopener noreferrer" className="project-link">
                         💻 GitHub
                       </a>
                     )}
@@ -1032,7 +1032,7 @@ const ProfilePage = () => {
                 {cert.id && <div className="cert-id">Credential ID: {cert.id}</div>}
                 {cert.url && (
                   <div className="cert-link">
-                    <a href={cleanUrl(cert.url)} target="_blank" rel="noopener noreferrer">
+                    <a href={cert.url} target="_blank" rel="noopener noreferrer">
                       🔗 View Certificate
                     </a>
                   </div>

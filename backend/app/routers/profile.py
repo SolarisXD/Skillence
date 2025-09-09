@@ -115,8 +115,10 @@ def get_current_user_id(credentials: HTTPAuthorizationCredentials = Depends(secu
         if payload is None:
             logger.error("Token verification returned None")
             raise HTTPException(status_code=401, detail="Invalid authentication token")
+
         user_id = payload.get("user_id")
-        logger.info(f"Extracted user_id from token payload: {user_id}")
+        # Keep authentication log short to avoid leaking user identifiers in INFO logs
+        logger.info("Accessing profile - authenticated")
         return user_id
     except Exception as e:
         logger.error(f"Token verification failed: {e}")
@@ -189,16 +191,18 @@ async def get_profile(
         db = get_database()
         profiles_collection = db.profiles
 
-        logger.info(f"Fetching profile for user_id: {user_id}")
+        logger.info("Fetching profile")
 
         # Find profile by user ID
         profile = await profiles_collection.find_one({"user_id": user_id})
 
-        logger.info(f"DB query result for user_id {user_id}: {profile}")
+        # Avoid logging the full profile at INFO level; keep detailed info at DEBUG
+        logger.debug("DB query executed")
 
         if profile:
             # Remove MongoDB ObjectId for JSON serialization
             profile.pop("_id", None)
+
             # Backward-compatibility: ensure skills is categorized dict
             try:
                 pd = profile.get("profile_data", {})
@@ -209,7 +213,7 @@ async def get_profile(
             except Exception as e:
                 logger.warning(f"Skills normalization failed: {e}")
 
-            logger.info(f"Returning profile for user_id {user_id}: {profile}")
+            logger.info("Profile retrieved successfully")
 
             return {
                 "success": True,
@@ -217,7 +221,7 @@ async def get_profile(
                 "profile": profile
             }
         else:
-            logger.warning(f"No profile found for user_id: {user_id}")
+            logger.warning("No profile found for user")
             return {
                 "success": False,
                 "message": "No profile found for user",

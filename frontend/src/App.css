@@ -172,7 +172,7 @@ body {
   }
 }
 
-.hero-subtitle {
+.main-hero-subtitle {
   font-size: clamp(1.1rem, 2.5vw, 1.4rem);
   margin-bottom: 3rem;
   color: var(--text-primary);
