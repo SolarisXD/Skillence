@@ -10,6 +10,12 @@ const ADZUNA_CONFIG = {
   APP_ID: import.meta.env.VITE_ADZUNA_APP_ID,
 };
 
+// Gemini API configuration
+const GEMINI_CONFIG = {
+  API_KEY: import.meta.env.VITE_GEMINI_API_KEY,
+  BASE_URL: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent',
+};
+
 // Country code mapping for Adzuna API
 const COUNTRY_CODES = {
   'United States': 'us',
@@ -178,6 +184,164 @@ const adzunaAPI = {
   }
 };
 
+// Gemini API functions for cost of living analysis
+const geminiAPI = {
+  // Get cost of living analysis for a specific city
+  getCostOfLivingAnalysis: async (city, country, salary, currency) => {
+    try {
+      console.log('🏙️ Fetching cost of living data from Gemini API for:', city, country);
+      
+      if (!GEMINI_CONFIG.API_KEY || GEMINI_CONFIG.API_KEY === 'your_gemini_api_key') {
+        throw new Error('Gemini API key not configured properly');
+      }
+
+      const prompt = `Provide ONLY numerical cost of living data for ${city}, ${country} in INR (Indian Rupees) for a SINGLE PERSON in ${new Date().getFullYear()}.
+
+FORMAT YOUR RESPONSE EXACTLY AS FOLLOWS (numbers only, no explanations):
+
+Monthly Rent: 25000
+Monthly Food: 8000  
+Monthly Transport: 3000
+Total Monthly Cost: 45000
+
+Use current market rates for a SINGLE PERSON:
+- Monthly Rent: Average 1-bedroom apartment or shared accommodation for one person
+- Monthly Food: Basic groceries + some dining out for one person
+- Monthly Transport: Public transport + occasional taxi for one person
+- Total Monthly Cost: All basic living expenses including utilities for one person
+
+RESPOND WITH ONLY THE 4 NUMBERS IN INR AS SHOWN ABOVE FOR A SINGLE PERSON.`;
+
+      const requestBody = {
+        contents: [{
+          parts: [{
+            text: prompt
+          }]
+        }],
+        generationConfig: {
+          temperature: 0.1,
+          topP: 0.8,
+          topK: 40,
+          maxOutputTokens: 2048,
+        }
+      };
+
+      const url = `${GEMINI_CONFIG.BASE_URL}?key=${GEMINI_CONFIG.API_KEY}`;
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Gemini API error: ${response.status} - ${errorText}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+        const analysisText = data.candidates[0].content.parts[0].text;
+        console.log('✅ Cost of living analysis received:', analysisText);
+        
+        // Parse the response to extract structured data
+        const parsedData = parseGeminiCostAnalysis(analysisText, city, country);
+        return parsedData;
+      } else {
+        throw new Error('Invalid response format from Gemini API');
+      }
+    } catch (error) {
+      console.error('❌ Cost of living analysis error:', error);
+      throw error;
+    }
+  }
+};
+
+// Helper function to parse Gemini's cost of living analysis
+const parseGeminiCostAnalysis = (analysisText, city, country) => {
+  console.log('🔍 Parsing Gemini response:', analysisText);
+  
+  // Create a structured object from the Gemini response
+  const costData = {
+    city,
+    country,
+    currency: 'INR',
+    monthlyBreakdown: {
+      rent: 0,
+      food: 0,
+      transport: 0,
+      total: 0
+    },
+    analysis: analysisText.trim(),
+    insights: []
+  };
+
+  try {
+    // Extract numerical values from the structured response
+    const lines = analysisText.split('\n').filter(line => line.trim());
+    
+    for (const line of lines) {
+      const cleanLine = line.trim();
+      
+      if (cleanLine.includes('Monthly Rent:')) {
+        const rentMatch = cleanLine.match(/(\d+)/);
+        if (rentMatch) {
+          costData.monthlyBreakdown.rent = parseInt(rentMatch[1]);
+        }
+      } else if (cleanLine.includes('Monthly Food:')) {
+        const foodMatch = cleanLine.match(/(\d+)/);
+        if (foodMatch) {
+          costData.monthlyBreakdown.food = parseInt(foodMatch[1]);
+        }
+      } else if (cleanLine.includes('Monthly Transport:')) {
+        const transportMatch = cleanLine.match(/(\d+)/);
+        if (transportMatch) {
+          costData.monthlyBreakdown.transport = parseInt(transportMatch[1]);
+        }
+      } else if (cleanLine.includes('Total Monthly Cost:')) {
+        const totalMatch = cleanLine.match(/(\d+)/);
+        if (totalMatch) {
+          costData.monthlyBreakdown.total = parseInt(totalMatch[1]);
+        }
+      }
+    }
+
+    // If structured parsing didn't work, try to extract any numbers
+    if (costData.monthlyBreakdown.total === 0) {
+      console.log('⚠️ Structured parsing failed, trying fallback extraction');
+      const numbers = analysisText.match(/\d+/g);
+      if (numbers && numbers.length >= 4) {
+        costData.monthlyBreakdown.rent = parseInt(numbers[0]);
+        costData.monthlyBreakdown.food = parseInt(numbers[1]);
+        costData.monthlyBreakdown.transport = parseInt(numbers[2]);
+        costData.monthlyBreakdown.total = parseInt(numbers[3]);
+      }
+    }
+
+    // Add some basic insights based on costs
+    const totalCost = costData.monthlyBreakdown.total;
+    if (totalCost > 50000) {
+      costData.insights.push('High cost of living area');
+    } else if (totalCost < 25000) {
+      costData.insights.push('Budget-friendly location');
+    } else {
+      costData.insights.push('Moderate cost of living');
+    }
+
+    console.log('✅ Parsed cost data:', costData);
+    return costData;
+  } catch (parseError) {
+    console.error('❌ Error parsing cost data:', parseError);
+    return {
+      ...costData,
+      error: 'Could not parse cost data from response'
+    };
+  }
+};
+
 const JobOfferEvaluator = () => {
   const navigate = useNavigate();
   
@@ -206,6 +370,7 @@ const JobOfferEvaluator = () => {
   const [evaluationResults, setEvaluationResults] = useState(null);
   const [apiError, setApiError] = useState(null);
   const [marketData, setMarketData] = useState(null);
+  const [costOfLivingData, setCostOfLivingData] = useState(null);
 
   const [showJobSuggestions, setShowJobSuggestions] = useState(false);
   const [showCitySuggestions, setShowCitySuggestions] = useState(false);
@@ -320,6 +485,7 @@ const JobOfferEvaluator = () => {
     setIsEvaluating(true);
     setApiError(null);
     setEvaluationResults(null);
+    setCostOfLivingData(null);
 
     try {
       let marketData;
@@ -384,8 +550,36 @@ const JobOfferEvaluator = () => {
 
       setMarketData(marketData);
 
+      // Fetch cost of living analysis using Gemini API
+      let costOfLivingAnalysis = null;
+      try {
+        if (formData.city && GEMINI_CONFIG.API_KEY && GEMINI_CONFIG.API_KEY !== 'your_gemini_api_key') {
+          console.log('✅ Using Gemini API - Fetching cost of living data for:', formData.city, formData.country);
+          costOfLivingAnalysis = await geminiAPI.getCostOfLivingAnalysis(
+            formData.city,
+            formData.country,
+            formData.salary,
+            formData.currency
+          );
+          setCostOfLivingData(costOfLivingAnalysis);
+          console.log('Cost of living analysis completed:', costOfLivingAnalysis);
+        } else if (!formData.city) {
+          console.log('⚠️ City not specified - skipping cost of living analysis');
+        } else {
+          console.log('⚠️ Gemini API key not configured - skipping cost of living analysis');
+        }
+      } catch (costError) {
+        console.error('❌ Cost of living analysis failed:', costError);
+        // Don't fail the entire evaluation if cost of living fails
+        setCostOfLivingData({
+          error: `Cost of living analysis failed: ${costError.message}`,
+          city: formData.city,
+          country: formData.country
+        });
+      }
+
       // Perform evaluation
-      const evaluation = evaluateJobOffer(formData, marketData);
+      const evaluation = evaluateJobOffer(formData, marketData, costOfLivingAnalysis);
       setEvaluationResults(evaluation);
 
       console.log('Evaluation completed:', evaluation);
@@ -399,13 +593,14 @@ const JobOfferEvaluator = () => {
   };
 
   // Job offer evaluation logic with proper Indian salary filtering
-  const evaluateJobOffer = (offerData, marketData) => {
+  const evaluateJobOffer = (offerData, marketData, costOfLivingData) => {
     const offerSalary = parseFloat(offerData.salary);
     let evaluation = {
       overall_score: 0,
       salary_analysis: {},
       benefits_score: 0,
       market_insights: {},
+      cost_of_living: costOfLivingData || null,
       recommendations: []
     };
 
@@ -600,6 +795,24 @@ const JobOfferEvaluator = () => {
 
     if (evaluation.benefits_score < 18) {
       recommendations.push('Consider negotiating for additional benefits like health insurance, remote work options, or learning budget.');
+    }
+
+    // Add cost of living recommendations
+    if (evaluation.cost_of_living && !evaluation.cost_of_living.error) {
+      if (evaluation.cost_of_living.insights && evaluation.cost_of_living.insights.length > 0) {
+        if (evaluation.cost_of_living.insights.includes('High cost of living area')) {
+          recommendations.push('This is a high cost of living area. Ensure your salary covers living expenses comfortably.');
+        }
+        if (evaluation.cost_of_living.insights.includes('Budget-friendly location')) {
+          recommendations.push('This location offers good value for money with reasonable living costs.');
+        }
+        if (evaluation.cost_of_living.insights.includes('Good public transportation available')) {
+          recommendations.push('Take advantage of good public transportation to save on commuting costs.');
+        }
+      }
+      
+      // Add general cost of living advice
+      recommendations.push('Review the detailed cost of living breakdown to plan your budget effectively.');
     }
 
     if (evaluation.overall_score >= 80) {
@@ -862,22 +1075,9 @@ const JobOfferEvaluator = () => {
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '1rem' }}>
-                <button 
-                  type="button" 
-                  onClick={async () => {
-                    console.log('🧪 Testing API...');
-                    await adzunaAPI.testConnection();
-                  }}
-                  className="secondary-button"
-                  style={{ padding: '0.75rem 1rem', borderRadius: '8px', border: '2px solid #e5e7eb', background: '#f8f9fa' }}
-                >
-                  Test API
-                </button>
-                <button type="submit" className="search-button" disabled={isEvaluating}>
-                  {isEvaluating ? 'Evaluating...' : 'Evaluate'}
-                </button>
-              </div>
+              <button type="submit" className="search-button" disabled={isEvaluating}>
+                {isEvaluating ? 'Evaluating...' : 'Evaluate'}
+              </button>
             </form>
 
             {/* API Error Display */}
@@ -991,37 +1191,107 @@ const JobOfferEvaluator = () => {
                   </div>
                 </div>
 
-                {/* Market Insights */}
-                {marketData && (
+                {/* Cost of Living Analysis */}
+                {costOfLivingData && (
                   <div className="analysis-section">
-                    <h3>📈 Market Insights</h3>
-                    <div className="market-insights">
-                      {marketData.jobs && (
-                        <div className="insight-item">
-                          <strong>Job Market:</strong> Found {marketData.jobs.count || marketData.jobs.results?.length} job listings for "{formData.jobTitle}" in {formData.country}
-                          {!marketData.isRealData && (
-                            <div style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: '#2563eb' }}>
-                              💡 <strong>Demo Mode:</strong> This data is simulated. Check console for API configuration details.
-                            </div>
-                          )}
-                          {marketData.isRealData && (
-                            <div style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: '#059669' }}>
-                              ✅ <strong>Live Data:</strong> Using real market data from Adzuna API
-                            </div>
-                          )}
+                    <h3>🏙️ Cost of Living Analysis</h3>
+                    {costOfLivingData.error ? (
+                      <div className="cost-error">
+                        <p>⚠️ {costOfLivingData.error}</p>
+                        {!GEMINI_CONFIG.API_KEY && (
+                          <p className="config-note">
+                            💡 Configure VITE_GEMINI_API_KEY environment variable for cost of living analysis
+                          </p>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="cost-analysis">
+                        <div className="cost-location">
+                          <strong>📍 Location:</strong> {costOfLivingData.city}, {costOfLivingData.country}
                         </div>
-                      )}
-                      {marketData.errors.length > 0 && (
-                        <div className="api-warnings">
-                          <h4>{marketData.isRealData ? '⚠️ API Notes:' : 'ℹ️ Data Information:'}</h4>
-                          <ul>
-                            {marketData.errors.map((error, index) => (
-                              <li key={index}>{error}</li>
-                            ))}
-                          </ul>
+                        
+                        {costOfLivingData.insights && costOfLivingData.insights.length > 0 && (
+                          <div className="cost-insights">
+                            <strong>💡 Key Insights:</strong>
+                            <ul>
+                              {costOfLivingData.insights.map((insight, index) => (
+                                <li key={index}>{insight}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        <div className="cost-breakdown">
+                          <h4>💰 Monthly Cost Breakdown (INR)</h4>
+                          <div className="cost-columns">
+                            <div className="cost-column">
+                              <div className="cost-icon">🏠</div>
+                              <div className="cost-label">Monthly Rent</div>
+                              <div className="cost-value">
+                                ₹{costOfLivingData.monthlyBreakdown.rent > 0 
+                                  ? costOfLivingData.monthlyBreakdown.rent.toLocaleString() 
+                                  : 'N/A'
+                                }
+                              </div>
+                            </div>
+                            <div className="cost-column">
+                              <div className="cost-icon">🍽️</div>
+                              <div className="cost-label">Monthly Food</div>
+                              <div className="cost-value">
+                                ₹{costOfLivingData.monthlyBreakdown.food > 0 
+                                  ? costOfLivingData.monthlyBreakdown.food.toLocaleString() 
+                                  : 'N/A'
+                                }
+                              </div>
+                            </div>
+                            <div className="cost-column">
+                              <div className="cost-icon">🚗</div>
+                              <div className="cost-label">Monthly Transport</div>
+                              <div className="cost-value">
+                                ₹{costOfLivingData.monthlyBreakdown.transport > 0 
+                                  ? costOfLivingData.monthlyBreakdown.transport.toLocaleString() 
+                                  : 'N/A'
+                                }
+                              </div>
+                            </div>
+                            <div className="cost-column total-column">
+                              <div className="cost-icon">📊</div>
+                              <div className="cost-label">Total Monthly Cost</div>
+                              <div className="cost-value total-value">
+                                ₹{costOfLivingData.monthlyBreakdown.total > 0 
+                                  ? costOfLivingData.monthlyBreakdown.total.toLocaleString() 
+                                  : 'N/A'
+                                }
+                              </div>
+                            </div>
+                          </div>
+                          <div className="cost-note">
+                            <small>* Cost estimates are for a single person only</small>
+                          </div>
                         </div>
-                      )}
-                    </div>
+
+                        {/* Show raw response for debugging if needed */}
+                        {costOfLivingData.analysis && costOfLivingData.monthlyBreakdown.total === 0 && (
+                          <div className="cost-debug">
+                            <h4>� Raw Response (for debugging)</h4>
+                            <div className="cost-breakdown-text">
+                              <pre style={{ 
+                                whiteSpace: 'pre-wrap', 
+                                fontFamily: 'inherit', 
+                                fontSize: '0.8rem',
+                                lineHeight: '1.4',
+                                background: '#f8f9fa',
+                                padding: '0.5rem',
+                                borderRadius: '4px',
+                                border: '1px solid #e5e7eb'
+                              }}>
+                                {costOfLivingData.analysis}
+                              </pre>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -1041,7 +1311,10 @@ const JobOfferEvaluator = () => {
                 {/* Action Buttons */}
                 <div className="results-actions">
                   <button 
-                    onClick={() => setEvaluationResults(null)} 
+                    onClick={() => {
+                      setEvaluationResults(null);
+                      setCostOfLivingData(null);
+                    }} 
                     className="secondary-button"
                   >
                     Evaluate Another Offer
