@@ -1,7 +1,19 @@
-// Job Trend API Service - Real Backend Integration
+// Job Trend API Service - Real Backend Integration with Advanced Features
 const API_BASE_URL = 'http://localhost:8000/api/job-trends';
 
 class JobTrendAPIService {
+  
+  // Build query string from filters object
+  buildQueryString(filters) {
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && value !== '') {
+        params.append(key, value);
+      }
+    });
+    return params.toString();
+  }
+
   async fetchJobList() {
     try {
       const response = await fetch(`${API_BASE_URL}/jobs`);
@@ -16,11 +28,16 @@ class JobTrendAPIService {
     }
   }
 
-  async fetchJobAnalysis(jobTitle, timeRange = '6m') {
+  async fetchJobAnalysis(jobTitle, timeRange = '6m', filters = {}) {
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/analysis/${encodeURIComponent(jobTitle)}?time_range=${timeRange}`
-      );
+      const queryParams = {
+        time_range: timeRange,
+        ...filters
+      };
+      const queryString = this.buildQueryString(queryParams);
+      const url = `${API_BASE_URL}/analysis/${encodeURIComponent(jobTitle)}${queryString ? '?' + queryString : ''}`;
+      
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -38,7 +55,9 @@ class JobTrendAPIService {
         locations: data.locations,
         industries: data.industries,
         companySizes: data.company_sizes,
-        timeRange: data.time_range
+        remoteWork: data.remote_work,
+        timeRange: data.time_range,
+        filtersApplied: data.filters_applied
       };
     } catch (error) {
       console.error('Error fetching job analysis:', error);
@@ -178,17 +197,156 @@ class JobTrendAPIService {
     if (olderAvg === 0) return 0;
     return Math.round(((recentAvg - olderAvg) / olderAvg) * 100);
   }
+
+  // New enhanced methods for advanced functionality
+  async fetchCacheInfo() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/cache-info`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching cache info:', error);
+      throw new Error('Failed to fetch cache information');
+    }
+  }
+
+  async clearCache() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/clear-cache`, {
+        method: 'POST'
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error clearing cache:', error);
+      throw new Error('Failed to clear cache');
+    }
+  }
+
+  async fetchFilterOptions() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/filter-options`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching filter options:', error);
+      throw new Error('Failed to fetch filter options');
+    }
+  }
+
+  async exportData(format = 'csv', filters = {}) {
+    try {
+      const queryString = this.buildQueryString(filters);
+      const url = `${API_BASE_URL}/export/${format}${queryString ? '?' + queryString : ''}`;
+      
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Handle file download
+      const blob = await response.blob();
+      const filename = response.headers.get('Content-Disposition')?.split('filename=')[1] || `job_data.${format}`;
+      
+      // Create download link
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = filename.replace(/"/g, ''); // Remove quotes
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+      
+      return { success: true, filename };
+    } catch (error) {
+      console.error('Error exporting data:', error);
+      throw new Error(`Failed to export data as ${format.toUpperCase()}`);
+    }
+  }
+
+  // Chart export functionality
+  async exportChart(chartRef, filename = 'chart') {
+    try {
+      if (!chartRef.current) {
+        throw new Error('Chart reference not available');
+      }
+
+      // Using html2canvas for chart export (will need to install)
+      const { default: html2canvas } = await import('html2canvas');
+      const canvas = await html2canvas(chartRef.current);
+      
+      // Create download link
+      const link = document.createElement('a');
+      link.download = `${filename}.png`;
+      link.href = canvas.toDataURL();
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      return { success: true, filename: `${filename}.png` };
+    } catch (error) {
+      console.error('Error exporting chart:', error);
+      throw new Error('Failed to export chart');
+    }
+  }
+
+  // Generate AI insights from job data
+  async generateAIInsights(jobData, filters) {
+    try {
+      console.log('🌐 Making AI insights API call...');
+      console.log('📤 Request data:', { data: jobData, filters });
+      
+      const response = await fetch(`${API_BASE_URL}/ai-insights`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          data: jobData,
+          filters: filters
+        })
+      });
+      
+      console.log('📡 Response status:', response.status, response.statusText);
+      
+      if (!response.ok) {
+        throw new Error(`AI insights request failed: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      console.log('📥 Response data:', result);
+      return result;
+    } catch (error) {
+      console.error('💥 Error generating AI insights:', error);
+      return { error: 'Failed to generate insights' };
+    }
+  }
 }
 
 // Create singleton instance
 const jobTrendService = new JobTrendAPIService();
 
-// Export the service functions
+// Export the service functions (existing)
 export const fetchJobList = () => jobTrendService.fetchJobList();
-export const fetchJobAnalysis = (jobTitle, timeRange) => jobTrendService.fetchJobAnalysis(jobTitle, timeRange);
+export const fetchJobAnalysis = (jobTitle, timeRange, filters) => jobTrendService.fetchJobAnalysis(jobTitle, timeRange, filters);
 export const fetchSkillDemand = (jobTitle, limit) => jobTrendService.fetchSkillDemand(jobTitle, limit);
 export const fetchExperienceDistribution = (jobTitle) => jobTrendService.fetchExperienceDistribution(jobTitle);
 export const fetchJobTrends = (jobTitle, metric) => jobTrendService.fetchJobTrends(jobTitle, metric);
 export const fetchMarketOverview = (filters) => jobTrendService.fetchMarketOverview(filters);
+
+// Export new enhanced functions
+export const fetchCacheInfo = () => jobTrendService.fetchCacheInfo();
+export const clearCache = () => jobTrendService.clearCache();
+export const fetchFilterOptions = () => jobTrendService.fetchFilterOptions();
+export const exportData = (format, filters) => jobTrendService.exportData(format, filters);
+export const exportChart = (chartRef, filename) => jobTrendService.exportChart(chartRef, filename);
+export const generateAIInsights = (jobData, filters) => jobTrendService.generateAIInsights(jobData, filters);
 
 export default jobTrendService;

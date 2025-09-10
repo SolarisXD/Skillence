@@ -17,6 +17,28 @@ class JobTrendService:
         self._cache_timestamp = None
         self._cache_duration = 3600  # 1 hour cache
         
+    def clear_cache(self):
+        """Manually clear the data cache"""
+        self._data_cache = None
+        self._cache_timestamp = None
+        logger.info("Data cache cleared manually")
+        
+    def get_cache_info(self) -> Dict[str, Any]:
+        """Get cache status information"""
+        if self._cache_timestamp is None:
+            return {"cached": False, "last_updated": None, "expires_in": 0}
+        
+        current_time = datetime.now()
+        age_seconds = (current_time - self._cache_timestamp).total_seconds()
+        expires_in = max(0, self._cache_duration - age_seconds)
+        
+        return {
+            "cached": self._data_cache is not None,
+            "last_updated": self._cache_timestamp.isoformat(),
+            "expires_in": int(expires_in),
+            "age_seconds": int(age_seconds)
+        }
+        
     async def _load_data(self) -> pd.DataFrame:
         """Load and cache job trend data from CSV files"""
         current_time = datetime.now()
@@ -100,8 +122,8 @@ class JobTrendService:
         # Return jobs with at least 5 postings
         return job_titles[job_titles >= 5].index.tolist()
     
-    async def get_job_analysis(self, job_title: str, time_range: str = "6m") -> Dict[str, Any]:
-        """Get comprehensive analysis for a specific job title"""
+    async def get_job_analysis(self, job_title: str, time_range: str = "6m", filters: Dict[str, Any] = None) -> Dict[str, Any]:
+        """Get comprehensive analysis for a specific job title with advanced filtering"""
         df = await self._load_data()
         
         # Filter by job title (case-insensitive)
@@ -112,6 +134,12 @@ class JobTrendService:
         
         # Apply time range filter
         job_data = self._apply_time_filter(job_data, time_range)
+        
+        # Apply advanced filters
+        job_data = self._apply_advanced_filters(job_data, filters)
+        
+        if job_data.empty:
+            return None
         
         # Calculate metrics
         total_postings = len(job_data)
@@ -140,6 +168,9 @@ class JobTrendService:
         # Company size distribution
         company_sizes = job_data['company_size'].value_counts().to_dict()
         
+        # Remote work statistics
+        remote_stats = self._calculate_remote_stats(job_data)
+        
         return {
             "job_title": job_title,
             "total_postings": int(total_postings),
@@ -157,7 +188,9 @@ class JobTrendService:
             "locations": {k: int(v) for k, v in top_locations.items()},
             "industries": {k: int(v) for k, v in top_industries.items()},
             "company_sizes": {k: int(v) for k, v in company_sizes.items()},
-            "time_range": time_range
+            "remote_work": remote_stats,
+            "time_range": time_range,
+            "filters_applied": filters or {}
         }
     
     async def get_skill_demand(self, job_title: str, limit: int = 10) -> List[Dict[str, Any]]:
@@ -366,3 +399,145 @@ class JobTrendService:
             return 0.0
         except Exception:
             return 0.0
+    
+    def _apply_advanced_filters(self, df: pd.DataFrame, filters: Dict[str, Any]) -> pd.DataFrame:
+        """Apply advanced filtering to the dataframe"""
+        if not filters:
+            return df
+        
+        filtered_df = df.copy()
+        
+        # Location filtering
+        if 'location' in filters and filters['location']:
+            filtered_df = filtered_df[filtered_df['company_location'].str.contains(
+                filters['location'], case=False, na=False
+            )]
+        
+        # Industry filtering
+        if 'industry' in filters and filters['industry']:
+            filtered_df = filtered_df[filtered_df['industry'].str.contains(
+                filters['industry'], case=False, na=False
+            )]
+        
+        # Experience level filtering
+        if 'experience_level' in filters and filters['experience_level']:
+            filtered_df = filtered_df[filtered_df['experience_level'] == filters['experience_level']]
+        
+        # Company size filtering
+        if 'company_size' in filters and filters['company_size']:
+            filtered_df = filtered_df[filtered_df['company_size'] == filters['company_size']]
+        
+        # Salary range filtering
+        if 'salary_min' in filters and filters['salary_min']:
+            try:
+                salary_min = float(filters['salary_min'])
+                filtered_df = filtered_df[filtered_df['salary_usd'] >= salary_min]
+            except (ValueError, TypeError):
+                pass
+        
+        if 'salary_max' in filters and filters['salary_max']:
+            try:
+                salary_max = float(filters['salary_max'])
+                filtered_df = filtered_df[filtered_df['salary_usd'] <= salary_max]
+            except (ValueError, TypeError):
+                pass
+        
+        # Employment type filtering (remote/onsite)
+        if 'employment_type' in filters and filters['employment_type']:
+            filtered_df = filtered_df[filtered_df['employment_type'] == filters['employment_type']]
+        
+        # Years of experience filtering
+        if 'experience_min' in filters and filters['experience_min']:
+            try:
+                exp_min = float(filters['experience_min'])
+                filtered_df = filtered_df[filtered_df['years_experience'] >= exp_min]
+            except (ValueError, TypeError):
+                pass
+        
+        if 'experience_max' in filters and filters['experience_max']:
+            try:
+                exp_max = float(filters['experience_max'])
+                filtered_df = filtered_df[filtered_df['years_experience'] <= exp_max]
+            except (ValueError, TypeError):
+                pass
+        
+        return filtered_df
+    
+    def _calculate_remote_stats(self, job_data: pd.DataFrame) -> Dict[str, Any]:
+        """Calculate remote work statistics"""
+        total_jobs = len(job_data)
+        if total_jobs == 0:
+            return {"remote_percentage": 0, "distribution": {}}
+        
+        # Count employment types
+        employment_dist = job_data['employment_type'].value_counts().to_dict()
+        
+        # Calculate remote percentage (assuming remote/hybrid types contain 'remote' or 'hybrid')
+        remote_keywords = ['remote', 'hybrid', 'work from home', 'wfh']
+        remote_count = 0
+        
+        for emp_type, count in employment_dist.items():
+            if any(keyword in str(emp_type).lower() for keyword in remote_keywords):
+                remote_count += count
+        
+        remote_percentage = (remote_count / total_jobs) * 100
+        
+        return {
+            "remote_percentage": round(float(remote_percentage), 1),
+            "distribution": {k: int(v) for k, v in employment_dist.items()},
+            "remote_count": int(remote_count),
+            "total_count": int(total_jobs)
+        }
+    
+    async def get_filter_options(self) -> Dict[str, Any]:
+        """Get available filter options from the dataset"""
+        df = await self._load_data()
+        
+        return {
+            "locations": sorted(df['company_location'].dropna().unique().tolist()),
+            "industries": sorted(df['industry'].dropna().unique().tolist()),
+            "experience_levels": sorted(df['experience_level'].dropna().unique().tolist()),
+            "company_sizes": sorted(df['company_size'].dropna().unique().tolist()),
+            "employment_types": sorted(df['employment_type'].dropna().unique().tolist()),
+            "salary_range": {
+                "min": float(df['salary_usd'].min()) if not df['salary_usd'].isna().all() else 0,
+                "max": float(df['salary_usd'].max()) if not df['salary_usd'].isna().all() else 0
+            },
+            "experience_range": {
+                "min": float(df['years_experience'].min()) if not df['years_experience'].isna().all() else 0,
+                "max": float(df['years_experience'].max()) if not df['years_experience'].isna().all() else 0
+            }
+        }
+    
+    async def export_job_data(self, job_title: str = None, filters: Dict[str, Any] = None, 
+                            time_range: str = "all") -> pd.DataFrame:
+        """Export filtered job data for download"""
+        df = await self._load_data()
+        
+        # Apply job title filter if specified
+        if job_title:
+            df = df[df['job_title_normalized'].str.contains(job_title, case=False, na=False)]
+        
+        # Apply time range filter
+        df = self._apply_time_filter(df, time_range)
+        
+        # Apply advanced filters
+        df = self._apply_advanced_filters(df, filters)
+        
+        # Select and rename columns for export
+        export_columns = [
+            'job_title', 'company_location', 'industry', 'salary_usd', 
+            'years_experience', 'experience_level', 'employment_type',
+            'company_size', 'benefits_score', 'required_skills',
+            'posting_date', 'days_since_posting'
+        ]
+        
+        # Filter to existing columns
+        available_columns = [col for col in export_columns if col in df.columns]
+        export_df = df[available_columns].copy()
+        
+        # Clean up data for export
+        export_df['posting_date'] = export_df['posting_date'].dt.strftime('%Y-%m-%d')
+        export_df = export_df.fillna('')
+        
+        return export_df

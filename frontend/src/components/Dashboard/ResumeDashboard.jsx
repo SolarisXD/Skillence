@@ -2,6 +2,26 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../navbar';
 import './ResumeDashboard.css';
+
+// Utility function to check if token is expired
+const isTokenExpired = (token) => {
+  if (!token) return true;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const now = Date.now() / 1000;
+    return payload.exp < now;
+  } catch (error) {
+    return true;
+  }
+};
+
+// Utility function to handle authentication errors
+const handleAuthError = (navigate) => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  alert('Your session has expired. Please log in again.');
+  navigate('/');
+};
 import { 
   UploadIcon, 
   DocumentIcon, 
@@ -929,6 +949,9 @@ const EditableSection = ({ title, content, icon, onEdit, onDelete, isCustom = fa
 
 // Main ProfileBuilder Component
 const ProfileBuilder = () => {
+  // Initialize navigation hook
+  const navigate = useNavigate();
+  
   // State Management
   const [currentView, setCurrentView] = useState('selection'); // selection, upload, manual, editor
   const [profileData, setProfileData] = useState({});
@@ -953,6 +976,7 @@ const ProfileBuilder = () => {
   const [newSectionName, setNewSectionName] = useState('');
   const [saveStatus, setSaveStatus] = useState(''); // saving, saved, error
   const [showGoToProfile, setShowGoToProfile] = useState(false);
+  const [redirectCountdown, setRedirectCountdown] = useState(0);
 
   const fileInputRef = useRef(null);
   const dropZoneRef = useRef(null);
@@ -973,10 +997,28 @@ const ProfileBuilder = () => {
       const timer = setTimeout(() => {
         setSaveStatus('');
         setShowGoToProfile(false);
-      }, 5000);
+        setRedirectCountdown(0);
+      }, 15000); // Clear notification after 15 seconds
       return () => clearTimeout(timer);
+    } else {
+      // Reset countdown when status changes
+      setRedirectCountdown(0);
     }
   }, [saveStatus]);
+
+  // Handle countdown timer for redirection
+  useEffect(() => {
+    if (redirectCountdown > 0) {
+      const timer = setTimeout(() => {
+        if (redirectCountdown === 1) {
+          navigate('/profile');
+        } else {
+          setRedirectCountdown(prev => prev - 1);
+        }
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [redirectCountdown, navigate]);
 
   // Form Steps Configuration
   const formSteps = [
@@ -1485,6 +1527,14 @@ const ProfileBuilder = () => {
       
       try {
         const token = localStorage.getItem('token');
+        
+        // Check if token is expired
+        if (!token || isTokenExpired(token)) {
+          handleAuthError(navigate);
+          setSaveStatus('');
+          return;
+        }
+        
         const profilePayload = {
           ...manualFormData,
           customSections,
@@ -1504,9 +1554,10 @@ const ProfileBuilder = () => {
         if (response.ok) {
           setSaveStatus('saved');
           setProfileData(profilePayload);
-          setTimeout(() => {
-            navigate('/profile');
-          }, 2000);
+          setRedirectCountdown(10);
+        } else if (response.status === 401) {
+          handleAuthError(navigate);
+          setSaveStatus('');
         } else {
           throw new Error('Failed to save profile');
         }
@@ -2312,9 +2363,24 @@ const ProfileBuilder = () => {
                 </>
               )}
               {saveStatus === 'saved' && (
-                <>
-                  <span>Profile saved successfully!</span>
-                </>
+                <div className="save-success-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <div>Profile saved successfully!</div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginTop: '5px' }}>
+                    {redirectCountdown > 0 && (
+                      <div className="redirect-countdown" style={{ fontSize: '0.85em', fontWeight: 'normal' }}>
+                        Redirecting in {redirectCountdown} seconds...
+                      </div>
+                    )}
+                    {showGoToProfile && (
+                      <button 
+                        className="goto-profile-button"
+                        onClick={() => navigate('/profile')}
+                      >
+                        View my profile
+                      </button>
+                    )}
+                  </div>
+                </div>
               )}
               {saveStatus === 'error' && (
                 <>
@@ -2467,6 +2533,14 @@ const ProfileBuilder = () => {
       
       try {
         const token = localStorage.getItem('token');
+        
+        // Check if token is expired
+        if (!token || isTokenExpired(token)) {
+          handleAuthError(navigate);
+          setSaveStatus('');
+          return;
+        }
+        
         // Sanitize profile for saving: strip hidden fields if profile is parsed
         const isParsedUpload = activeProfile.source === 'azure_ai' || activeProfile.parsing_confidence;
         const hiddenFieldsBySection = {
@@ -2525,9 +2599,10 @@ const ProfileBuilder = () => {
 
         if (response.ok) {
           setSaveStatus('saved');
-          setTimeout(() => {
-            navigate('/profile');
-          }, 2000);
+          setRedirectCountdown(10);
+        } else if (response.status === 401) {
+          handleAuthError(navigate);
+          setSaveStatus('');
         } else {
           throw new Error('Failed to save profile');
         }
@@ -2720,16 +2795,23 @@ const ProfileBuilder = () => {
         <div className={`save-notification ${saveStatus}`}>
           {saveStatus === 'saving' && 'Saving profile...'}
           {saveStatus === 'saved' && (
-            <div className="save-success-content">
-              <span>Profile saved successfully!</span>
-              {showGoToProfile && (
-                <button 
-                  className="goto-profile-button"
-                  onClick={() => navigate('/profile')}
-                >
-                  View My Profile
-                </button>
-              )}
+            <div className="save-success-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div>Profile saved successfully!</div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginTop: '5px' }}>
+                {redirectCountdown > 0 && (
+                  <div className="redirect-countdown" style={{ fontSize: '0.85em', fontWeight: 'normal' }}>
+                    Redirecting in {redirectCountdown} seconds...
+                  </div>
+                )}
+                {showGoToProfile && (
+                  <button 
+                    className="goto-profile-button"
+                    onClick={() => navigate('/profile')}
+                  >
+                    View my profile
+                  </button>
+                )}
+              </div>
             </div>
           )}
           {saveStatus === 'error' && 'Failed to save profile'}

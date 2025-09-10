@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './JobTrendNavigation.css';
+import '../JobTrendNavigation.css';
 
 const JobTrendNavigation = () => {
   const navigate = useNavigate();

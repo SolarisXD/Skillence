@@ -6,7 +6,7 @@ import ResumeDashboard from './components/Dashboard/ResumeDashboard';
 import ProfilePage from './components/ProfilePage';
 import JobOfferEvaluator from './components/Job Offer Evaluator/JobOfferEvaluator';
 import CareerPathRecommendation from './components/Career Path Recommendation/CareerPathRecommendation';
-import JobTrendDashboard from './components/Job Trend/JobTrendDashboardNew';
+import JobTrendDashboard from './components/Job Trend/current/JobTrendDashboard';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
