@@ -6,6 +6,8 @@ import logging
 import pandas as pd
 import io
 import json
+import google.generativeai as genai
+import os
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -362,3 +364,91 @@ async def get_job_analysis_detailed(job_title: str):
     except Exception as e:
         logger.error(f"Error fetching detailed job analysis for {job_title}: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to analyze {job_title}")
+
+
+@router.post("/ai-insights-gemini")
+async def generate_ai_insights_gemini(request: Dict[str, Any]):
+    """Generate AI-powered insights using Google Gemini API"""
+    try:
+        # Configure Gemini API
+        genai.configure(api_key=os.getenv('GEMINI_API'))
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        
+        # Extract request data
+        job_title = request.get('jobTitle', 'Software Engineer')
+        location = request.get('location', 'Remote')
+        experience_level = request.get('experience_level', 'Mid-level')
+        industry = request.get('industry', 'Technology')
+        
+        # Create a concise prompt for Gemini
+        prompt = f"""
+        As a career advisor, provide brief, actionable insights for:
+        
+        Job: {job_title} | Location: {location} | Level: {experience_level}
+        
+        Return as JSON with short, clear responses:
+        {{
+            "marketOverview": "1-2 sentences about current demand and market outlook",
+            "careerAdvice": [
+                "Short tip 1 (max 10 words)",
+                "Short tip 2 (max 10 words)", 
+                "Short tip 3 (max 10 words)"
+            ],
+            "skillsRecommendations": [
+                "Key skill 1",
+                "Key skill 2",
+                "Key skill 3",
+                "Key skill 4"
+            ],
+            "salaryInsights": "1-2 sentences about salary range and factors"
+        }}
+        
+        Keep responses concise, practical, and easy to scan. Use simple language.
+        """
+        
+        # Generate content using Gemini
+        response = model.generate_content(prompt)
+        
+        if not response.text:
+            raise Exception("No response from Gemini API")
+        
+        # Clean up the response text to extract JSON
+        response_text = response.text.strip()
+        
+        # Remove markdown code blocks if present
+        if response_text.startswith('```json'):
+            response_text = response_text[7:-3]
+        elif response_text.startswith('```'):
+            response_text = response_text[3:-3]
+        
+        # Parse the JSON response
+        try:
+            insights = json.loads(response_text)
+        except json.JSONDecodeError:
+            # If JSON parsing fails, create a fallback response
+            insights = {
+                "marketOverview": f"{job_title} market shows steady growth with good opportunities in {location}.",
+                "careerAdvice": [
+                    "Learn trending technologies",
+                    "Build professional network", 
+                    "Get relevant certifications"
+                ],
+                "skillsRecommendations": ["Python", "Communication", "Problem Solving", "Teamwork"],
+                "salaryInsights": f"Competitive salaries available. Experience and skills drive compensation."
+            }
+        
+        return insights
+        
+    except Exception as e:
+        logger.error(f"Error generating Gemini AI insights: {str(e)}")
+        return {
+            "error": "AI insights temporarily unavailable",
+            "marketOverview": f"Market analysis for {request.get('jobTitle', 'this role')} unavailable.",
+            "careerAdvice": [
+                "Develop core skills",
+                "Network actively",
+                "Stay market-aware"
+            ],
+            "skillsRecommendations": ["Communication", "Problem Solving", "Technical Skills", "Leadership"],
+            "salaryInsights": "Research industry standards for your role and location."
+        }

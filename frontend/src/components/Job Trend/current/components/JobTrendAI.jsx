@@ -1,143 +1,184 @@
 import React, { useState, useCallback } from 'react';
 import { isFeatureEnabled } from '../utils/featureFlags';
-import { generateAIInsights } from '../services/jobTrendAPIService';
 
-// ✅ SAFE: AI-powered insights component - isolated in your Job Trend folder
-const JobTrendAI = ({ jobData, selectedFilters }) => {
+const JobTrendAI = ({ selectedFilters }) => {
   const [insights, setInsights] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const generateInsights = useCallback(async () => {
-    // Feature flag guard - safe exit if disabled
     if (!isFeatureEnabled('AI_INSIGHTS')) {
       return;
     }
 
     setLoading(true);
-    console.log('🤖 Starting AI insights generation...');
-    console.log(' Filters:', selectedFilters);
     
     try {
-      // ✅ Create proper data structure for AI insights API
-      // The backend expects job postings with job_title field
-      const formattedData = [
-        {
-          job_title: selectedFilters?.selectedJob || "Software Engineer",
-          location: selectedFilters?.location || "Remote", 
+      const response = await fetch('http://localhost:8000/api/job-trends/ai-insights-gemini', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          jobTitle: selectedFilters?.selectedJob || "Software Engineer",
+          location: selectedFilters?.location || "Remote",
           experience_level: selectedFilters?.experience_level || "Mid-level",
           industry: selectedFilters?.industry || "Technology",
-          company_size: selectedFilters?.company_size || "Medium"
-        }
-      ];
+          filters: selectedFilters
+        })
+      });
       
-      console.log('📤 Formatted data for AI:', formattedData);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       
-      // ✅ SAFE: Use the API service for consistent error handling
-      const aiInsights = await generateAIInsights(
-        formattedData, // Use formatted data instead of raw trend data
-        selectedFilters
-      );
-      
-      console.log('📈 AI insights response:', aiInsights);
+      const aiInsights = await response.json();
       
       if (aiInsights && !aiInsights.error) {
-        console.log('✅ Setting insights:', aiInsights);
         setInsights(aiInsights);
       } else {
-        console.error('❌ AI insights error:', aiInsights?.error);
-        setInsights({ error: aiInsights?.error || 'Unknown error' });
+        setInsights({ error: aiInsights?.error || 'Failed to generate insights' });
       }
     } catch (error) {
-      console.error('💥 AI insights failed:', error);
-      setInsights({ error: 'Failed to generate insights' });
-      // ✅ SAFE: Graceful failure doesn't affect other features
+      console.error('AI insights failed:', error);
+      setInsights({ error: 'Failed to generate insights. Please try again.' });
     } finally {
-      console.log('🏁 AI insights generation completed');
       setLoading(false);
     }
-  }, [selectedFilters]); // Removed jobData dependency since we create our own formatted data
+  }, [selectedFilters]);
 
-  // Removed automatic useEffect - make it manual only for better user control
-  // useEffect(() => {
-  //   if (jobData && jobData.length > 0) {
-  //     generateInsights();
-  //   }
-  // }, [jobData, selectedFilters, generateInsights]);
-
-  // Feature flag guard - safe exit if disabled
   if (!isFeatureEnabled('AI_INSIGHTS')) {
-    console.log('JobTrendAI: Feature disabled via flag');
     return null;
   }
 
-  console.log('JobTrendAI: Rendering with jobData:', jobData, 'selectedFilters:', selectedFilters);
-
   return (
     <div className="job-trend-ai-insights" style={{
-      padding: '20px',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      borderRadius: '12px',
-      color: 'white',
+      padding: '24px',
+      background: 'var(--card-bg)',
+      borderRadius: '16px',
+      border: '1px solid var(--border-color)',
       margin: '20px 0',
-      border: '3px solid #00ff00' // DEBUG: Green border to make it visible
+      boxShadow: 'var(--shadow-lg)'
     }}>
-      <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-        🤖 AI Insights (DEBUG: WORKING!)
-        {loading && <div style={{
-          width: '20px',
-          height: '20px',
-          border: '2px solid rgba(255,255,255,0.3)',
-          borderTop: '2px solid white',
-          borderRadius: '50%',
-          animation: 'spin 1s linear infinite'
-        }} />}
-      </h3>
-      <p>DEBUG: Selected job: {selectedFilters?.selectedJob || 'None'}, Filters: {JSON.stringify(selectedFilters)}</p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+        <h3 style={{ 
+          color: 'var(--text-primary)', 
+          margin: '0',
+          fontSize: '1.4rem',
+          fontWeight: '600'
+        }}>
+          AI Market Insights
+        </h3>
+        {loading && (
+          <div style={{
+            width: '24px',
+            height: '24px',
+            border: '3px solid var(--border-color)',
+            borderTop: '3px solid var(--accent-color)',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite'
+          }} />
+        )}
+      </div>
 
       {insights ? (
-        <div style={{ marginTop: '15px' }}>
-          <div style={{ marginBottom: '15px', padding: '10px', background: 'rgba(255,255,255,0.1)', borderRadius: '5px' }}>
-            <h4>🔍 DEBUG: Insights Data</h4>
-            <pre style={{ fontSize: '12px', overflow: 'auto' }}>
-              {JSON.stringify(insights, null, 2)}
-            </pre>
-          </div>
-          
+        <div style={{ marginTop: '20px' }}>
           {insights.error ? (
-            <div style={{ marginBottom: '15px', padding: '10px', background: 'rgba(255,0,0,0.2)', borderRadius: '5px' }}>
-              <h4>❌ Error</h4>
-              <p>{insights.error}</p>
+            <div style={{ 
+              padding: '16px', 
+              background: 'var(--error-bg)', 
+              borderRadius: '8px',
+              border: '1px solid var(--error-border)'
+            }}>
+              <h4 style={{ color: 'var(--error-text)', margin: '0 0 8px 0' }}>Unable to Generate Insights</h4>
+              <p style={{ color: 'var(--error-text)', margin: '0' }}>{insights.error}</p>
             </div>
           ) : (
-            <>
-              {insights.trends && (
-                <div style={{ marginBottom: '15px' }}>
-                  <h4>📈 Market Trends</h4>
-                  <p>{insights.trends}</p>
+            <div style={{ display: 'grid', gap: '20px' }}>
+              {insights.marketOverview && (
+                <div style={{ 
+                  padding: '20px',
+                  background: 'var(--bg-secondary)',
+                  borderRadius: '12px',
+                  border: '1px solid var(--border-color)'
+                }}>
+                  <h4 style={{ 
+                    color: 'var(--text-primary)', 
+                    margin: '0 0 12px 0',
+                    fontSize: '1.1rem',
+                    fontWeight: '600'
+                  }}>
+                    Market Overview
+                  </h4>
+                  <p style={{ 
+                    color: 'var(--text-secondary)', 
+                    margin: '0',
+                    lineHeight: '1.6'
+                  }}>
+                    {insights.marketOverview}
+                  </p>
                 </div>
               )}
               
-              {insights.recommendations && Array.isArray(insights.recommendations) && (
-                <div style={{ marginBottom: '15px' }}>
-                  <h4>💡 Recommendations</h4>
-                  <ul style={{ paddingLeft: '20px' }}>
-                    {insights.recommendations.map((rec, index) => (
-                      <li key={index} style={{ marginBottom: '5px' }}>{rec}</li>
+              {insights.careerAdvice && insights.careerAdvice.length > 0 && (
+                <div style={{ 
+                  padding: '20px',
+                  background: 'var(--bg-secondary)',
+                  borderRadius: '12px',
+                  border: '1px solid var(--border-color)'
+                }}>
+                  <h4 style={{ 
+                    color: 'var(--text-primary)', 
+                    margin: '0 0 16px 0',
+                    fontSize: '1.1rem',
+                    fontWeight: '600'
+                  }}>
+                    Career Recommendations
+                  </h4>
+                  <ul style={{ 
+                    margin: '0', 
+                    paddingLeft: '20px',
+                    color: 'var(--text-secondary)'
+                  }}>
+                    {insights.careerAdvice.map((advice, index) => (
+                      <li key={index} style={{ 
+                        marginBottom: '8px',
+                        lineHeight: '1.5'
+                      }}>
+                        {advice}
+                      </li>
                     ))}
                   </ul>
                 </div>
               )}
               
-              {insights.skills && Array.isArray(insights.skills) && (
-                <div>
-                  <h4>🎯 In-Demand Skills</h4>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '10px' }}>
-                    {insights.skills.map((skill, index) => (
+              {insights.skillsRecommendations && insights.skillsRecommendations.length > 0 && (
+                <div style={{ 
+                  padding: '20px',
+                  background: 'var(--bg-secondary)',
+                  borderRadius: '12px',
+                  border: '1px solid var(--border-color)'
+                }}>
+                  <h4 style={{ 
+                    color: 'var(--text-primary)', 
+                    margin: '0 0 16px 0',
+                    fontSize: '1.1rem',
+                    fontWeight: '600'
+                  }}>
+                    Skills to Focus On
+                  </h4>
+                  <div style={{ 
+                    display: 'flex', 
+                    flexWrap: 'wrap', 
+                    gap: '10px' 
+                  }}>
+                    {insights.skillsRecommendations.map((skill, index) => (
                       <span key={index} style={{
-                        background: 'rgba(255,255,255,0.2)',
-                        padding: '4px 12px',
+                        background: 'var(--accent-color)',
+                        color: 'white',
+                        padding: '6px 14px',
                         borderRadius: '20px',
-                        fontSize: '14px'
+                        fontSize: '0.9rem',
+                        fontWeight: '500'
                       }}>
                         {skill}
                       </span>
@@ -145,34 +186,70 @@ const JobTrendAI = ({ jobData, selectedFilters }) => {
                   </div>
                 </div>
               )}
-            </>
+
+              {insights.salaryInsights && (
+                <div style={{ 
+                  padding: '20px',
+                  background: 'var(--bg-secondary)',
+                  borderRadius: '12px',
+                  border: '1px solid var(--border-color)'
+                }}>
+                  <h4 style={{ 
+                    color: 'var(--text-primary)', 
+                    margin: '0 0 12px 0',
+                    fontSize: '1.1rem',
+                    fontWeight: '600'
+                  }}>
+                    Salary Insights
+                  </h4>
+                  <p style={{ 
+                    color: 'var(--text-secondary)', 
+                    margin: '0',
+                    lineHeight: '1.6'
+                  }}>
+                    {insights.salaryInsights}
+                  </p>
+                </div>
+              )}
+            </div>
           )}
         </div>
       ) : !loading && (
-        <p style={{ opacity: 0.8 }}>Click "Generate AI Insights" to get intelligent analysis of current job trends.</p>
+        <div style={{ 
+          textAlign: 'center', 
+          padding: '40px 20px',
+          background: 'var(--bg-secondary)',
+          borderRadius: '12px',
+          border: '1px solid var(--border-color)'
+        }}>
+          <p style={{ 
+            color: 'var(--text-secondary)', 
+            margin: '0 0 20px 0',
+            fontSize: '1rem'
+          }}>
+            Get AI-powered insights about market trends, career advice, and skill recommendations for your selected job role.
+          </p>
+        </div>
       )}
 
       <button
         onClick={generateInsights}
-        disabled={loading || !jobData?.length}
+        disabled={loading}
         style={{
-          background: loading ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.2)',
-          border: '1px solid rgba(255,255,255,0.5)',
-          color: 'white',
-          padding: '10px 20px',
-          borderRadius: '6px',
-          marginTop: '15px',
+          background: loading ? 'var(--bg-secondary)' : 'var(--accent-color)',
+          border: '1px solid var(--border-color)',
+          color: loading ? 'var(--text-secondary)' : 'white',
+          padding: '12px 24px',
+          borderRadius: '8px',
+          marginTop: '20px',
           cursor: loading ? 'not-allowed' : 'pointer',
-          transition: 'all 0.3s ease'
-        }}
-        onMouseEnter={(e) => {
-          if (!loading) e.target.style.background = 'rgba(255,255,255,0.3)';
-        }}
-        onMouseLeave={(e) => {
-          if (!loading) e.target.style.background = 'rgba(255,255,255,0.2)';
+          transition: 'all 0.3s ease',
+          fontSize: '0.95rem',
+          fontWeight: '500',
+          width: '100%'
         }}
       >
-        {loading ? 'Generating...' : '🔄 Generate AI Insights'}
+        {loading ? 'Generating AI Insights...' : 'Generate AI Insights'}
       </button>
 
       <style jsx>{`

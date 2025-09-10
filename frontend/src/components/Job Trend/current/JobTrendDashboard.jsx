@@ -221,10 +221,10 @@ const JobTrendDashboardEnhanced = () => {
   };
 
   const getTrendIndicator = (score) => {
-    if (score >= 90) return { icon: '🔥', label: 'Hot', color: '#EF4444' };
-    if (score >= 80) return { icon: '📈', label: 'Trending', color: '#F59E0B' };
-    if (score >= 70) return { icon: '📊', label: 'Stable', color: '#10B981' };
-    return { icon: '📉', label: 'Cooling', color: '#6B7280' };
+    if (score >= 90) return { icon: '', label: 'Hot', color: '#EF4444' };
+    if (score >= 80) return { icon: '', label: 'Trending', color: '#F59E0B' };
+    if (score >= 70) return { icon: '', label: 'Stable', color: '#10B981' };
+    return { icon: '', label: 'Cooling', color: '#6B7280' };
   };
 
   if (loading) {
@@ -268,7 +268,6 @@ const JobTrendDashboardEnhanced = () => {
         <div className="dashboard-header">
           <div className="header-content">
             <h1 className="dashboard-title">
-              <span className="title-icon">📊</span>
               Enhanced Job Trend Analysis
             </h1>
             <p className="dashboard-subtitle">
@@ -312,25 +311,23 @@ const JobTrendDashboardEnhanced = () => {
 
           <div className="action-controls">
             <button 
-              onClick={() => setShowFilters(!showFilters)} 
+              onClick={() => setShowFilters(!showFilters)}
               className={`filter-toggle-btn ${showFilters ? 'active' : ''}`}
             >
-              🔍 Advanced Filters
+              Advanced Filters
             </button>
             
             <button 
               onClick={() => setShowExportPanel(!showExportPanel)} 
               className="export-btn"
             >
-              📥 Export
-            </button>
-            
-            <button 
+              Export
+            </button>            <button 
               onClick={refreshData} 
               className="refresh-btn"
               disabled={loading}
             >
-              {loading ? 'Loading...' : '🔄 Refresh'}
+              {loading ? 'Loading...' : 'Refresh'}
             </button>
           </div>
         </div>
@@ -341,7 +338,7 @@ const JobTrendDashboardEnhanced = () => {
             <div className="cache-status">
               {cacheInfo.cached ? (
                 <>
-                  <span className="cache-indicator cached">📦 Cached Data</span>
+                  <span className="cache-indicator cached">Cached Data</span>
                   <span className="cache-time">
                     Updated: {new Date(cacheInfo.last_updated).toLocaleString()}
                   </span>
@@ -350,7 +347,7 @@ const JobTrendDashboardEnhanced = () => {
                   </span>
                 </>
               ) : (
-                <span className="cache-indicator not-cached">🔄 Live Data</span>
+                <span className="cache-indicator not-cached">Live Data</span>
               )}
             </div>
             <div className="cache-actions">
@@ -523,10 +520,10 @@ const JobTrendDashboardEnhanced = () => {
                 <h4>Data Export</h4>
                 <div className="export-buttons">
                   <button onClick={() => handleExport('csv')} className="export-option-btn">
-                    📊 Export CSV
+                    Export CSV
                   </button>
                   <button onClick={() => handleExport('json')} className="export-option-btn">
-                    📋 Export JSON
+                    Export JSON
                   </button>
                 </div>
               </div>
@@ -538,19 +535,19 @@ const JobTrendDashboardEnhanced = () => {
                     onClick={() => handleChartExport(trendChartRef, 'trends')} 
                     className="export-option-btn"
                   >
-                    📈 Trend Chart
+                    Trend Chart
                   </button>
                   <button 
                     onClick={() => handleChartExport(skillsChartRef, 'skills')} 
                     className="export-option-btn"
                   >
-                    🎯 Skills Chart
+                    Skills Chart
                   </button>
                   <button 
                     onClick={() => handleChartExport(experienceChartRef, 'experience')} 
                     className="export-option-btn"
                   >
-                    👥 Experience Chart
+                    Experience Chart
                   </button>
                 </div>
               </div>
@@ -741,7 +738,7 @@ const JobTrendDashboardEnhanced = () => {
               borderRadius: '8px',
               backgroundColor: '#f8f9fa'
             }}>
-              <h3 style={{ color: '#4CAF50', margin: '0 0 15px 0' }}>🔄 Job Comparison Tool</h3>
+              <h3 style={{ color: '#4CAF50', margin: '0 0 15px 0' }}>Job Comparison Tool</h3>
               <JobComparison availableJobs={availableJobs} />
             </div>
           )}

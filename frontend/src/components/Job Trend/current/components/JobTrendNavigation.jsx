@@ -9,21 +9,21 @@ const JobTrendNavigation = () => {
     {
       title: 'Job Trend Analysis',
       description: 'Comprehensive analysis of AI job market trends',
-      icon: '📊',
+      icon: '',
       path: '/job-trends',
       highlights: ['Real-time trend scoring', 'Salary analysis', 'Skill demand tracking']
     },
     {
       title: 'Market Intelligence',
       description: 'Deep insights into job market dynamics',
-      icon: '📈',
+      icon: '',
       path: '/job-trends',
       highlights: ['Geographic trends', 'Industry growth', 'Experience level demand']
     },
     {
       title: 'Career Guidance',
       description: 'Data-driven career decision support',
-      icon: '🎯',
+      icon: '',
       path: '/job-trends',
       highlights: ['Skill gap analysis', 'Growth opportunities', 'Salary benchmarks']
     }
@@ -33,7 +33,6 @@ const JobTrendNavigation = () => {
     <div className="job-trend-navigation">
       <div className="navigation-header">
         <h1 className="navigation-title">
-          <span className="title-icon">🚀</span>
           AI Career Intelligence Hub
         </h1>
         <p className="navigation-subtitle">
