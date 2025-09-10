@@ -2,6 +2,33 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../navbar';
 import './JobOfferEvaluator.css';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  ArcElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+} from 'chart.js';
+import { Line, Doughnut, Bar } from 'react-chartjs-2';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  ArcElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
 // Adzuna API configuration
 const ADZUNA_CONFIG = {
@@ -757,6 +784,7 @@ const JobOfferEvaluator = () => {
     // Cap the score at 100
     evaluation.overall_score = Math.min(evaluation.overall_score, 100);
 
+    console.log('✅ Final evaluation result:', evaluation);
     return evaluation;
   };
 
@@ -1100,230 +1128,366 @@ const JobOfferEvaluator = () => {
 
             {/* Evaluation Results */}
             {evaluationResults && (
-              <div className="evaluation-results">
-                <div className="results-header">
-                  <h2>📊 Job Offer Evaluation Results</h2>
-                  <div className="overall-score">
-                    <span className="score-label">Overall Score:</span>
-                    <span className={`score-value ${getScoreClass(evaluationResults.overall_score)}`}>
-                      {evaluationResults.overall_score}/100
-                    </span>
-                  </div>
-                </div>
-
-                {/* Salary Analysis */}
-                {evaluationResults.salary_analysis.offer_salary && (
-                  <div className="analysis-section">
-                    <h3>💰 Salary Analysis</h3>
-                    <div className="salary-stats">
-                      <div className="stat-item">
-                        <span className="stat-label">Your Offer:</span>
-                        <span className="stat-value">
-                          {getCurrentCurrencySymbol()}{evaluationResults.salary_analysis.offer_salary.toLocaleString()}
-                        </span>
-                      </div>
-                      <div className="stat-item">
-                        <span className="stat-label">Market Average:</span>
-                        <span className="stat-value">
-                          {getCurrentCurrencySymbol()}{evaluationResults.salary_analysis.market_average?.toLocaleString()}
-                        </span>
-                      </div>
-                      <div className="stat-item">
-                        <span className="stat-label">Market Range:</span>
-                        <span className="stat-value">
-                          {getCurrentCurrencySymbol()}{evaluationResults.salary_analysis.market_min?.toLocaleString()} - {getCurrentCurrencySymbol()}{evaluationResults.salary_analysis.market_max?.toLocaleString()}
-                        </span>
-                      </div>
-                      <div className="stat-item">
-                        <span className="stat-label">Percentile:</span>
-                        <span className={`stat-value ${getPercentileClass(evaluationResults.salary_analysis.percentile)}`}>
-                          {evaluationResults.salary_analysis.percentile}th percentile
-                        </span>
-                      </div>
-                      {evaluationResults.salary_analysis.difference_from_average !== undefined && (
-                        <div className="stat-item">
-                          <span className="stat-label">Difference from Average:</span>
-                          <span className={`stat-value ${evaluationResults.salary_analysis.difference_from_average >= 0 ? 'positive' : 'negative'}`}>
-                            {evaluationResults.salary_analysis.difference_from_average >= 0 ? '+' : ''}
-                            {getCurrentCurrencySymbol()}{Math.abs(evaluationResults.salary_analysis.difference_from_average).toLocaleString()} 
-                            ({evaluationResults.salary_analysis.difference_percentage >= 0 ? '+' : ''}{evaluationResults.salary_analysis.difference_percentage}%)
-                          </span>
+              <div className="results-dashboard">
+                {/* Hero Results Section */}
+                <div className="results-hero">
+                  <div className="results-hero-content">
+                    <div className="score-showcase">
+                      <div className="score-circle">
+                        <div className="score-inner">
+                          <span className="score-number">{evaluationResults.overall_score || 0}</span>
                         </div>
-                      )}
-                    </div>
-                    <div className="data-source">
-                      <small>
-                        Based on {evaluationResults.salary_analysis.total_jobs_analyzed} similar job listings
-                        {evaluationResults.salary_analysis.filtered_jobs_count > 0 && (
-                          <span style={{ color: '#2563eb' }}>
-                            {' '}(filtered {evaluationResults.salary_analysis.filtered_jobs_count} outliers for accuracy)
-                          </span>
-                        )}
-                      </small>
-                    </div>
-                  </div>
-                )}
-
-                {/* Benefits Analysis */}
-                <div className="analysis-section">
-                  <h3>🎁 Benefits Analysis</h3>
-                  <div className="benefits-analysis">
-                    <div className="benefits-score-display">
-                      <span>Benefits Score: <strong>{evaluationResults.benefits_score}/30</strong></span>
-                    </div>
-                    <div className="benefits-list">
-                      <div className={`benefit-status ${formData.healthInsurance ? 'included' : 'missing'}`}>
-                        Health Insurance {formData.healthInsurance ? '✅' : '❌'}
                       </div>
-                      <div className={`benefit-status ${formData.remoteWork ? 'included' : 'missing'}`}>
-                        Remote Work {formData.remoteWork ? '✅' : '❌'}
-                      </div>
-                      <div className={`benefit-status ${formData.esops ? 'included' : 'missing'}`}>
-                        ESOPs {formData.esops ? '✅' : '❌'}
-                      </div>
-                      <div className={`benefit-status ${formData.learningBudget ? 'included' : 'missing'}`}>
-                        Learning Budget {formData.learningBudget ? '✅' : '❌'}
-                      </div>
-                      <div className={`benefit-status ${formData.otherInsurance ? 'included' : 'missing'}`}>
-                        Other Insurance {formData.otherInsurance ? '✅' : '❌'}
+                      <div className="score-details">
+                        <h2>Job Offer Evaluation</h2>
+                        <p className="score-description">
+                          {evaluationResults.overall_score >= 80 ? '🎉 Excellent offer!' :
+                           evaluationResults.overall_score >= 60 ? '👍 Good offer!' :
+                           evaluationResults.overall_score >= 40 ? '⚖️ Average offer' :
+                           '⚠️ Consider negotiating'}
+                        </p>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Cost of Living Analysis */}
-                {costOfLivingData && (
-                  <div className="analysis-section">
-                    <h3>🏙️ Cost of Living Analysis</h3>
-                    {costOfLivingData.error ? (
-                      <div className="cost-error">
-                        <p>⚠️ {costOfLivingData.error}</p>
-                        {!GEMINI_CONFIG.API_KEY && (
-                          <p className="config-note">
-                            💡 Configure VITE_GEMINI_API_KEY environment variable for cost of living analysis
-                          </p>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="cost-analysis">
-                        <div className="cost-location">
-                          <strong>📍 Location:</strong> {costOfLivingData.city}, {costOfLivingData.country}
-                        </div>
-                        
-                        {costOfLivingData.insights && costOfLivingData.insights.length > 0 && (
-                          <div className="cost-insights">
-                            <strong>💡 Key Insights:</strong>
-                            <ul>
-                              {costOfLivingData.insights.map((insight, index) => (
-                                <li key={index}>{insight}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-
-                        <div className="cost-breakdown">
-                          <h4>💰 Monthly Cost Breakdown (INR)</h4>
-                          <div className="cost-columns">
-                            <div className="cost-column">
-                              <div className="cost-icon">🏠</div>
-                              <div className="cost-label">Monthly Rent</div>
-                              <div className="cost-value">
-                                ₹{costOfLivingData.monthlyBreakdown.rent > 0 
-                                  ? costOfLivingData.monthlyBreakdown.rent.toLocaleString() 
-                                  : 'N/A'
-                                }
-                              </div>
-                            </div>
-                            <div className="cost-column">
-                              <div className="cost-icon">🍽️</div>
-                              <div className="cost-label">Monthly Food</div>
-                              <div className="cost-value">
-                                ₹{costOfLivingData.monthlyBreakdown.food > 0 
-                                  ? costOfLivingData.monthlyBreakdown.food.toLocaleString() 
-                                  : 'N/A'
-                                }
-                              </div>
-                            </div>
-                            <div className="cost-column">
-                              <div className="cost-icon">🚗</div>
-                              <div className="cost-label">Monthly Transport</div>
-                              <div className="cost-value">
-                                ₹{costOfLivingData.monthlyBreakdown.transport > 0 
-                                  ? costOfLivingData.monthlyBreakdown.transport.toLocaleString() 
-                                  : 'N/A'
-                                }
-                              </div>
-                            </div>
-                            <div className="cost-column total-column">
-                              <div className="cost-icon">📊</div>
-                              <div className="cost-label">Total Monthly Cost</div>
-                              <div className="cost-value total-value">
-                                ₹{costOfLivingData.monthlyBreakdown.total > 0 
-                                  ? costOfLivingData.monthlyBreakdown.total.toLocaleString() 
-                                  : 'N/A'
-                                }
-                              </div>
-                            </div>
-                          </div>
-                          <div className="cost-note">
-                            <small>* Cost estimates are for a single person only</small>
+                {/* Analytics Dashboard */}
+                <div className="analytics-dashboard">
+                  <div className="dashboard-container">
+                    
+                    {/* Salary Analytics Card */}
+                    {evaluationResults.salary_analysis.offer_salary && (
+                      <div className="analytics-card salary-card">
+                        <div className="card-header">
+                          <h3>💰 Salary Analysis</h3>
+                          <div className="percentile-badge">
+                            {evaluationResults.salary_analysis.percentile}th percentile
                           </div>
                         </div>
-
-                        {/* Show raw response for debugging if needed */}
-                        {costOfLivingData.analysis && costOfLivingData.monthlyBreakdown.total === 0 && (
-                          <div className="cost-debug">
-                            <h4>� Raw Response (for debugging)</h4>
-                            <div className="cost-breakdown-text">
-                              <pre style={{ 
-                                whiteSpace: 'pre-wrap', 
-                                fontFamily: 'inherit', 
-                                fontSize: '0.8rem',
-                                lineHeight: '1.4',
-                                background: '#f8f9fa',
-                                padding: '0.5rem',
-                                borderRadius: '4px',
-                                border: '1px solid #e5e7eb'
-                              }}>
-                                {costOfLivingData.analysis}
-                              </pre>
-                            </div>
+                        <div className="card-content">
+                          <div className="salary-chart-container">
+                            <Bar
+                              data={{
+                                labels: ['Market Min', 'Your Offer', 'Market Avg', 'Market Max'],
+                                datasets: [{
+                                  data: [
+                                    evaluationResults.salary_analysis.market_min || 0,
+                                    evaluationResults.salary_analysis.offer_salary,
+                                    evaluationResults.salary_analysis.market_average || 0,
+                                    evaluationResults.salary_analysis.market_max || 0
+                                  ],
+                                  backgroundColor: ['#ef4444', '#3b82f6', '#10b981', '#f59e0b'],
+                                  borderRadius: 8,
+                                  borderWidth: 0
+                                }]
+                              }}
+                              options={{
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                  legend: { display: false },
+                                  tooltip: {
+                                    callbacks: {
+                                      label: (context) => `${getCurrentCurrencySymbol()}${context.parsed.y.toLocaleString()}`
+                                    }
+                                  }
+                                },
+                                scales: {
+                                  y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                      callback: (value) => `${getCurrentCurrencySymbol()}${(value/1000).toFixed(0)}k`
+                                    }
+                                  },
+                                  x: {
+                                    grid: { display: false }
+                                  }
+                                },
+                                animation: {
+                                  duration: 2000,
+                                  easing: 'easeInOutQuart'
+                                }
+                              }}
+                              height={200}
+                            />
                           </div>
-                        )}
+                          <div className="salary-stats-grid">
+                            <div className="stat-card your-offer">
+                              <div className="stat-icon">💵</div>
+                              <div className="stat-info">
+                                <span className="stat-label">Your Offer</span>
+                                <span className="stat-value">{getCurrentCurrencySymbol()}{evaluationResults.salary_analysis.offer_salary.toLocaleString()}</span>
+                              </div>
+                            </div>
+                            <div className="stat-card market-avg">
+                              <div className="stat-icon">📊</div>
+                              <div className="stat-info">
+                                <span className="stat-label">Market Average</span>
+                                <span className="stat-value">{getCurrentCurrencySymbol()}{evaluationResults.salary_analysis.market_average?.toLocaleString()}</span>
+                              </div>
+                            </div>
+                            {evaluationResults.salary_analysis.difference_from_average !== undefined && (
+                              <div className={`stat-card difference ${evaluationResults.salary_analysis.difference_from_average >= 0 ? 'positive' : 'negative'}`}>
+                                <div className="stat-icon">{evaluationResults.salary_analysis.difference_from_average >= 0 ? '📈' : '📉'}</div>
+                                <div className="stat-info">
+                                  <span className="stat-label">Difference</span>
+                                  <span className="stat-value">
+                                    {evaluationResults.salary_analysis.difference_from_average >= 0 ? '+' : ''}
+                                    {evaluationResults.salary_analysis.difference_percentage}%
+                                  </span>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                          <div className="data-source">
+                            <small>Based on {evaluationResults.salary_analysis.total_jobs_analyzed} similar job listings</small>
+                          </div>
+                        </div>
                       </div>
                     )}
-                  </div>
-                )}
 
-                {/* Recommendations */}
-                <div className="analysis-section">
-                  <h3>💡 Recommendations</h3>
-                  <div className="recommendations-list">
-                    {evaluationResults.recommendations.map((recommendation, index) => (
-                      <div key={index} className="recommendation-item">
-                        <span className="recommendation-bullet">•</span>
-                        <span>{recommendation}</span>
+                    {/* Benefits Analysis Card */}
+                    <div className="analytics-card benefits-card">
+                      <div className="card-header">
+                        <h3>🎁 Benefits Analysis</h3>
+                        <div className="benefits-score-badge">
+                          {evaluationResults.benefits_score}/30 points
+                        </div>
                       </div>
-                    ))}
+                      <div className="card-content">
+                        <div className="benefits-chart-container">
+                          <Doughnut
+                            data={{
+                              labels: ['Health Insurance', 'Remote Work', 'ESOPs', 'Learning Budget', 'Other Insurance'],
+                              datasets: [{
+                                data: [
+                                  formData.healthInsurance ? 8 : 0,
+                                  formData.remoteWork ? 6 : 0,
+                                  formData.esops ? 8 : 0,
+                                  formData.learningBudget ? 4 : 0,
+                                  formData.otherInsurance ? 4 : 0
+                                ],
+                                backgroundColor: [
+                                  formData.healthInsurance ? '#10b981' : '#e5e7eb',
+                                  formData.remoteWork ? '#3b82f6' : '#e5e7eb',
+                                  formData.esops ? '#8b5cf6' : '#e5e7eb',
+                                  formData.learningBudget ? '#f59e0b' : '#e5e7eb',
+                                  formData.otherInsurance ? '#ef4444' : '#e5e7eb'
+                                ],
+                                borderWidth: 0,
+                                cutout: '70%'
+                              }]
+                            }}
+                            options={{
+                              responsive: true,
+                              maintainAspectRatio: false,
+                              plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                  callbacks: {
+                                    label: (context) => `${context.label}: ${context.parsed > 0 ? 'Included' : 'Not Included'}`
+                                  }
+                                }
+                              },
+                              animation: {
+                                duration: 2000,
+                                easing: 'easeInOutQuart'
+                              }
+                            }}
+                            height={200}
+                          />
+                          <div className="benefits-score-center">
+                            <span className="benefits-score-number">{evaluationResults.benefits_score}</span>
+                            <span className="benefits-score-total">/30</span>
+                          </div>
+                        </div>
+                        <div className="benefits-list-modern">
+                          <div className={`benefit-item ${formData.healthInsurance ? 'included' : 'excluded'}`}>
+                            <div className="benefit-icon">🏥</div>
+                            <span className="benefit-name">Health Insurance</span>
+                            <div className="benefit-status">{formData.healthInsurance ? '✅' : '❌'}</div>
+                          </div>
+                          <div className={`benefit-item ${formData.remoteWork ? 'included' : 'excluded'}`}>
+                            <div className="benefit-icon">🏠</div>
+                            <span className="benefit-name">Remote Work</span>
+                            <div className="benefit-status">{formData.remoteWork ? '✅' : '❌'}</div>
+                          </div>
+                          <div className={`benefit-item ${formData.esops ? 'included' : 'excluded'}`}>
+                            <div className="benefit-icon">📈</div>
+                            <span className="benefit-name">ESOPs</span>
+                            <div className="benefit-status">{formData.esops ? '✅' : '❌'}</div>
+                          </div>
+                          <div className={`benefit-item ${formData.learningBudget ? 'included' : 'excluded'}`}>
+                            <div className="benefit-icon">📚</div>
+                            <span className="benefit-name">Learning Budget</span>
+                            <div className="benefit-status">{formData.learningBudget ? '✅' : '❌'}</div>
+                          </div>
+                          <div className={`benefit-item ${formData.otherInsurance ? 'included' : 'excluded'}`}>
+                            <div className="benefit-icon">🛡️</div>
+                            <span className="benefit-name">Other Insurance</span>
+                            <div className="benefit-status">{formData.otherInsurance ? '✅' : '❌'}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Cost of Living Card */}
+                    {costOfLivingData && (
+                      <div className="analytics-card cost-card">
+                        <div className="card-header">
+                          <h3>🏙️ Cost of Living</h3>
+                          <div className="location-badge">
+                            📍 {costOfLivingData.city}, {costOfLivingData.country}
+                          </div>
+                        </div>
+                        <div className="card-content">
+                          {costOfLivingData.error ? (
+                            <div className="cost-error-modern">
+                              <div className="error-icon">⚠️</div>
+                              <div className="error-text">
+                                <p>{costOfLivingData.error}</p>
+                                {!GEMINI_CONFIG.API_KEY && (
+                                  <p className="config-hint">Configure VITE_GEMINI_API_KEY for cost analysis</p>
+                                )}
+                              </div>
+                            </div>
+                          ) : (
+                            <>
+                              <div className="cost-chart-container">
+                                <Doughnut
+                                  data={{
+                                    labels: ['Rent', 'Food', 'Transport'],
+                                    datasets: [{
+                                      data: [
+                                        costOfLivingData.monthlyBreakdown.rent || 0,
+                                        costOfLivingData.monthlyBreakdown.food || 0,
+                                        costOfLivingData.monthlyBreakdown.transport || 0
+                                      ],
+                                      backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
+                                      borderWidth: 0,
+                                      cutout: '60%'
+                                    }]
+                                  }}
+                                  options={{
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: {
+                                      legend: { display: false },
+                                      tooltip: {
+                                        callbacks: {
+                                          label: (context) => `${context.label}: ₹${context.parsed.toLocaleString()}`
+                                        }
+                                      }
+                                    },
+                                    animation: {
+                                      duration: 2000,
+                                      easing: 'easeInOutQuart'
+                                    }
+                                  }}
+                                  height={200}
+                                />
+                                <div className="cost-total-center">
+                                  <span className="cost-total-number">
+                                    ₹{costOfLivingData.monthlyBreakdown.total > 0 
+                                      ? (costOfLivingData.monthlyBreakdown.total/1000).toFixed(0) + 'k'
+                                      : 'N/A'
+                                    }
+                                  </span>
+                                  <span className="cost-total-label">Monthly</span>
+                                </div>
+                              </div>
+                              <div className="cost-breakdown-modern">
+                                <div className="cost-item-modern rent">
+                                  <div className="cost-icon">🏠</div>
+                                  <div className="cost-details">
+                                    <span className="cost-label">Rent</span>
+                                    <span className="cost-value">
+                                      ₹{costOfLivingData.monthlyBreakdown.rent > 0 
+                                        ? costOfLivingData.monthlyBreakdown.rent.toLocaleString() 
+                                        : 'N/A'
+                                      }
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className="cost-item-modern food">
+                                  <div className="cost-icon">🍽️</div>
+                                  <div className="cost-details">
+                                    <span className="cost-label">Food</span>
+                                    <span className="cost-value">
+                                      ₹{costOfLivingData.monthlyBreakdown.food > 0 
+                                        ? costOfLivingData.monthlyBreakdown.food.toLocaleString() 
+                                        : 'N/A'
+                                      }
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className="cost-item-modern transport">
+                                  <div className="cost-icon">🚗</div>
+                                  <div className="cost-details">
+                                    <span className="cost-label">Transport</span>
+                                    <span className="cost-value">
+                                      ₹{costOfLivingData.monthlyBreakdown.transport > 0 
+                                        ? costOfLivingData.monthlyBreakdown.transport.toLocaleString() 
+                                        : 'N/A'
+                                      }
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                              {costOfLivingData.insights && costOfLivingData.insights.length > 0 && (
+                                <div className="cost-insights-modern">
+                                  <h4>💡 Key Insights</h4>
+                                  <div className="insights-tags">
+                                    {costOfLivingData.insights.map((insight, index) => (
+                                      <span key={index} className="insight-tag">{insight}</span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Recommendations Card */}
+                    <div className="analytics-card recommendations-card">
+                      <div className="card-header">
+                        <h3>💡 Recommendations</h3>
+                      </div>
+                      <div className="card-content">
+                        <div className="recommendations-modern">
+                          {evaluationResults.recommendations.map((recommendation, index) => (
+                            <div key={index} className="recommendation-modern">
+                              <div className="rec-number">{index + 1}</div>
+                              <div className="rec-content">{recommendation}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
                 </div>
 
                 {/* Action Buttons */}
-                <div className="results-actions">
+                <div className="results-actions-modern">
                   <button 
                     onClick={() => {
                       setEvaluationResults(null);
                       setCostOfLivingData(null);
                     }} 
-                    className="secondary-button"
+                    className="action-btn secondary"
                   >
+                    <span className="btn-icon">🔄</span>
                     Evaluate Another Offer
                   </button>
                   <button 
                     onClick={() => window.print()} 
-                    className="primary-button"
+                    className="action-btn primary"
                   >
-                    Print Results
+                    <span className="btn-icon">📄</span>
+                    Download Report
                   </button>
                 </div>
               </div>
