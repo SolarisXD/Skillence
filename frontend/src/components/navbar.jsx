@@ -221,16 +221,6 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
                     >
                       Career Path Recommendation
                     </button>
-                    <button
-                      className="dropdown-item"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        scrollToServices(e);
-                        setShowServices(false);
-                      }}
-                    >
-                      Services Overview
-                    </button>
                   </div>
                 )}
               </li>
