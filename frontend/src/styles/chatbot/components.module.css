@@ -1,0 +1,275 @@
+/* Skillence Chat Components - Professional Design */
+
+.skillenceMessage {
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.skillenceMessageUser {
+  align-items: flex-end;
+}
+
+.skillenceMessageBot {
+  align-items: flex-start;
+}
+
+.skillenceMessageBubble {
+  max-width: 75%;
+  padding: 16px 20px;
+  border-radius: 12px;
+  font-size: 15px;
+  line-height: 1.6;
+  word-wrap: break-word;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.1px;
+  text-align: left;
+}
+
+.skillenceMessageBubbleUser {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+  border-bottom-right-radius: 4px;
+}
+
+.skillenceMessageBubbleBot {
+  background: #ffffff;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .skillenceMessageBubbleUser {
+  background: #1e293b;
+  color: #e2e8f0;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .skillenceMessageBubbleBot {
+  background: #1a1a1a;
+  color: #e2e8f0;
+  border-color: #2a2a2a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Professional welcome message formatting */
+.skillenceMessageBubbleBot h1,
+.skillenceMessageBubbleBot h2,
+.skillenceMessageBubbleBot h3 {
+  margin: 0 0 12px 0;
+  font-weight: 600;
+  text-align: left;
+}
+
+.skillenceMessageBubbleBot ul {
+  margin: 12px 0;
+  padding-left: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.skillenceMessageBubbleBot ul li {
+  margin: 8px 0;
+  padding-left: 20px;
+  position: relative;
+  text-align: left;
+}
+
+.skillenceMessageBubbleBot ul li:before {
+  content: '•';
+  color: #1e40af;
+  font-weight: 700;
+  position: absolute;
+  left: 0;
+}
+
+.skillenceMessageBubbleBot p {
+  margin: 12px 0;
+  text-align: left;
+}
+
+.skillenceMessageTimestamp {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 6px;
+  padding: 0 4px;
+  font-weight: 500;
+}
+
+[data-theme="dark"] .skillenceMessageTimestamp {
+  color: #94a3b8;
+}
+
+.skillenceTypingIndicator {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  border-bottom-left-radius: 4px;
+  max-width: 180px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .skillenceTypingIndicator {
+  background: #1a1a1a;
+  border-color: #2a2a2a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.skillenceTypingDots {
+  display: flex;
+  gap: 4px;
+  margin-right: 12px;
+}
+
+.skillenceTypingDot {
+  width: 6px;
+  height: 6px;
+  background: #64748b;
+  border-radius: 50%;
+  animation: skillenceTypingBounce 1.4s infinite;
+}
+
+[data-theme="dark"] .skillenceTypingDot {
+  background: #94a3b8;
+}
+
+.skillenceTypingDot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.skillenceTypingDot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.skillenceTypingDot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.skillenceTypingText {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+[data-theme="dark"] .skillenceTypingText {
+  color: #94a3b8;
+}
+
+.skillenceInputContainer {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.skillenceInputField {
+  flex: 1;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 15px;
+  line-height: 1.5;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  resize: none;
+  height: 48px;
+  transition: all 0.2s ease;
+  font-weight: 400;
+}
+
+.skillenceInputField:focus {
+  outline: none;
+  border-color: #1e40af;
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+}
+
+.skillenceInputField::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+[data-theme="dark"] .skillenceInputField {
+  background: #1a1a1a;
+  border-color: #374151;
+  color: #e5e7eb;
+}
+
+[data-theme="dark"] .skillenceInputField:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+[data-theme="dark"] .skillenceInputField::placeholder {
+  color: #6b7280;
+}
+
+.skillenceInputButton {
+  background: #1e40af;
+  border: none;
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.skillenceInputButton:hover:not(:disabled) {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+}
+
+.skillenceInputButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.skillenceInputButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.skillenceSpeakButton {
+  background: none !important;
+  border: none !important;
+  color: inherit !important;
+  cursor: pointer !important;
+  margin-left: 8px !important;
+  opacity: 0.6 !important;
+  padding: 4px !important;
+  border-radius: 4px !important;
+  transition: opacity 0.2s ease !important;
+}
+
+.skillenceSpeakButton:hover {
+  opacity: 1 !important;
+}
+
+.skillenceSpeakButton:disabled {
+  opacity: 0.3 !important;
+  cursor: not-allowed !important;
+}
+
+/* Animations */
+@keyframes skillenceTypingBounce {
+  0%, 80%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
