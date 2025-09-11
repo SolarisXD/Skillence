@@ -508,7 +508,7 @@ const JobOfferEvaluator = () => {
     'Brussels', 'Antwerp', 'Ghent', 'Vienna', 'Zurich', 'Geneva', 'Basel',
     'Stockholm', 'Gothenburg', 'Malmö', 'Copenhagen', 'Aarhus', 'Odense',
     'Oslo', 'Bergen', 'Trondheim', 'Helsinki', 'Espoo', 'Tampere',
-    'Madrid', 'Barcelona', 'Valencia', 'Seville', 'Zaragoza', 'Málaga',
+  'Madrid', 'Barcelona', 'Valencia', 'Seville', 'Zaragoza', 'Málaga',
     'Rome', 'Milan', 'Naples', 'Turin', 'Palermo', 'Genoa', 'Bologna',
     'Lisbon', 'Porto', 'Warsaw', 'Kraków', 'Łódź', 'Wrocław', 'Poznań',
     'Prague', 'Brno', 'Ostrava', 'Budapest', 'Debrecen', 'Szeged',
@@ -519,7 +519,7 @@ const JobOfferEvaluator = () => {
     'Mexico City', 'Guadalajara', 'Monterrey', 'Puebla', 'Tijuana',
     'Buenos Aires', 'Córdoba', 'Rosario', 'Santiago', 'Valparaíso',
     'Lima', 'Arequipa', 'Trujillo', 'Bogotá', 'Medellín', 'Cali',
-    'Caracas', 'Maracaibo', 'Valencia', 'Cairo', 'Alexandria', 'Giza',
+  'Caracas', 'Maracaibo', 'Valencia (Venezuela)', 'Cairo', 'Alexandria', 'Giza',
     'Casablanca', 'Rabat', 'Fez', 'Cape Town', 'Johannesburg', 'Durban',
     'Lagos', 'Kano', 'Ibadan', 'Addis Ababa', 'Nairobi', 'Kampala'
   ];
@@ -676,8 +676,8 @@ const JobOfferEvaluator = () => {
     'Buenos Aires': 'Argentina', 'Córdoba': 'Argentina', 'Rosario': 'Argentina',
     'Santiago': 'Chile', 'Valparaíso': 'Chile',
     'Lima': 'Peru', 'Arequipa': 'Peru', 'Trujillo': 'Peru',
-    'Bogotá': 'Colombia', 'Medellín': 'Colombia', 'Cali': 'Colombia',
-    'Caracas': 'Venezuela', 'Maracaibo': 'Venezuela', 'Valencia': 'Venezuela',
+  'Bogotá': 'Colombia', 'Medellín': 'Colombia', 'Cali': 'Colombia',
+  'Caracas': 'Venezuela', 'Maracaibo': 'Venezuela', 'Valencia (Venezuela)': 'Venezuela',
     'Cairo': 'Egypt', 'Alexandria': 'Egypt', 'Giza': 'Egypt',
     'Casablanca': 'Morocco', 'Rabat': 'Morocco', 'Fez': 'Morocco',
     'Cape Town': 'South Africa', 'Johannesburg': 'South Africa', 'Durban': 'South Africa',

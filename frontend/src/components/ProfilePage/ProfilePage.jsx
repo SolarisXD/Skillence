@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from './navbar';
+import Navbar from '../navbar';
 import { 
   UserIcon, 
   BriefcaseIcon, 
@@ -12,7 +12,7 @@ import {
   DocumentIcon,
   EditIcon,
   PlusIcon
-} from './Icons/ProfessionalIcons';
+} from '../Icons/ProfessionalIcons';
 import './ProfilePage.css';
 
 const ProfilePage = () => {
