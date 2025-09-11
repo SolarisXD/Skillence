@@ -1,18 +1,20 @@
 /* Job Offer Evaluator Main Styles */
 .job-offer-evaluator {
   min-height: 100vh;
-  background: #f8f9fa;
+  background: var(--bg-secondary);
+  transition: background-color 0.3s ease;
 }
 
 /* Hero Section with Blue Background */
 .hero-section {
   background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #2563eb 100%);
-  min-height: 60vh;
+  min-height: 35vh;
   display: flex;
   align-items: center;
   position: relative;
   overflow: hidden;
-  padding-top: 80px;
+  padding-top: 40px;
+  padding-bottom: 20px;
 }
 
 .hero-content {
@@ -45,12 +47,13 @@
 
 /* Search Container */
 .search-container {
-  background: white;
+  background: var(--card-background);
   border-radius: 12px;
   padding: 2rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   max-width: 900px;
   width: 100%;
+  border: 1px solid var(--border-color);
 }
 
 .search-form {
@@ -75,29 +78,29 @@
 .search-label {
   font-size: 1rem;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-primary);
   margin-bottom: 0.25rem;
 }
 
 .search-input {
   padding: 1rem 1.25rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 1rem;
-  color: #111827;
-  background: white;
+  color: var(--text-primary);
+  background: var(--card-background);
   transition: all 0.3s ease;
   outline: none;
   width: 100%;
 }
 
 .search-input:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 .search-input::placeholder {
-  color: #9ca3af;
+  color: var(--text-secondary);
 }
 
 .location-container {
@@ -127,12 +130,12 @@
 }
 
 .clear-location:hover {
-  background: #f3f4f6;
-  color: #374151;
+  background: var(--hover-background);
+  color: var(--text-primary);
 }
 
 .search-button {
-  background: #2563eb;
+  background: var(--accent-color);
   color: white;
   border: none;
   border-radius: 8px;
@@ -146,9 +149,9 @@
 }
 
 .search-button:hover {
-  background: #1d4ed8;
+  background: var(--accent-hover);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+  box-shadow: var(--shadow-hover);
 }
 
 /* Hero Illustration */
@@ -174,20 +177,20 @@
 /* Details Section */
 .details-section {
   padding: 4rem 0;
-  background: white;
+  background: var(--card-background);
 }
 
 .section-title {
   font-size: 2rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--text-primary);
   margin-bottom: 2rem;
   text-align: center;
 }
 
 .section-subtitle {
   font-size: 1.1rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   margin-bottom: 2rem;
   text-align: center;
 }
@@ -203,7 +206,7 @@
 /* Browse Section */
 .browse-section {
   padding: 4rem 0;
-  background: #f8f9fa;
+  background: var(--bg-secondary);
 }
 
 .industry-selector {
@@ -214,11 +217,11 @@
 
 .industry-dropdown {
   padding: 0.75rem 1rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 1rem;
-  background: white;
-  color: #374151;
+  background: var(--card-background);
+  color: var(--text-primary);
   min-width: 200px;
   cursor: pointer;
 }
@@ -592,7 +595,7 @@
 }
 
 .job-offer-evaluator .form-label {
-  color: #374151;
+  color: var(--text-primary);
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
@@ -600,10 +603,10 @@
 
 .job-offer-evaluator .form-input {
   padding: 1rem 1.25rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
-  background: white;
-  color: #111827;
+  background: var(--card-background);
+  color: var(--text-primary);
   font-size: 1rem;
   outline: none;
   transition: all 0.3s ease;
@@ -612,12 +615,12 @@
 }
 
 .job-offer-evaluator .form-input::placeholder {
-  color: #9ca3af;
+  color: var(--text-secondary);
 }
 
 .job-offer-evaluator .form-input:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 /* Autocomplete Styles */
@@ -631,11 +634,11 @@
   top: 100%;
   left: 0;
   right: 0;
-  background: white;
+  background: var(--card-background);
   border-radius: 8px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-md);
   z-index: 1000;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--border-color);
   margin-top: 4px;
   overflow: hidden;
 }
@@ -643,9 +646,9 @@
 .job-offer-evaluator .suggestion-item {
   padding: 12px 16px;
   cursor: pointer;
-  color: #374151;
+  color: var(--text-primary);
   transition: background-color 0.2s ease;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--border-light);
   font-size: 0.95rem;
 }
 
@@ -654,8 +657,8 @@
 }
 
 .job-offer-evaluator .suggestion-item:hover {
-  background-color: #f8fafc;
-  color: #2563eb;
+  background-color: var(--hover-background);
+  color: var(--accent-color);
 }
 
 /* Salary Input Styles */
@@ -755,8 +758,9 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .hero-section {
-    min-height: 50vh;
-    padding-top: 100px;
+    min-height: 30vh;
+    padding-top: 60px;
+    padding-bottom: 15px;
   }
   
   .hero-title {
@@ -869,21 +873,21 @@
 
 /* Evaluation Results Styles */
 .error-message {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--warning-color);
   border-radius: 8px;
   padding: 1rem;
   margin-top: 1rem;
 }
 
 .error-content h3 {
-  color: #dc2626;
+  color: var(--warning-color);
   margin: 0 0 0.5rem 0;
   font-size: 1.1rem;
 }
 
 .error-content p {
-  color: #dc2626;
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -891,13 +895,14 @@
   text-align: center;
   padding: 2rem;
   margin-top: 1rem;
+  color: var(--text-primary);
 }
 
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #f3f4f6;
-  border-top: 4px solid #2563eb;
+  border: 4px solid var(--border-color);
+  border-top: 4px solid var(--accent-color);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 1rem;
@@ -917,7 +922,7 @@
 }
 
 .results-header {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
   color: white;
   padding: 2rem;
   text-align: center;
@@ -1150,9 +1155,9 @@
 }
 
 .primary-button:hover {
-  background: #1d4ed8;
+  background: #0284c7;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
 }
 
 /* Disable button styles */
@@ -1377,8 +1382,8 @@
 }
 
 .cost-icon {
-  font-size: 1.8rem;
-  margin-bottom: 0.8rem;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .cost-label {
@@ -1420,11 +1425,15 @@
 .results-dashboard {
   margin-top: 3rem;
   padding: 0;
+  background: var(--bg-primary);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
 }
 
 /* Results Hero Section */
 .results-hero {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0369a1 100%);
   margin: -2rem -2rem 0 -2rem;
   padding: 4rem 2rem;
   color: white;
@@ -1501,12 +1510,28 @@
   font-weight: 700;
   display: block;
   color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Ensure score is visible in both themes */
+[data-theme="light"] .score-number,
+[data-theme="dark"] .score-number {
+  color: #ffffff !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .score-total {
   font-size: 1.5rem;
   opacity: 0.8;
   color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Ensure score total is visible in both themes */
+[data-theme="light"] .score-total,
+[data-theme="dark"] .score-total {
+  color: #ffffff !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .score-details {
@@ -1529,17 +1554,21 @@
   font-size: 2.5rem;
   margin: 0 0 1rem 0;
   font-weight: 600;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .score-description {
   font-size: 1.2rem;
   opacity: 0.9;
   margin: 0;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* Analytics Dashboard */
 .analytics-dashboard {
-  background: #f8fafc;
+  background: var(--bg-secondary);
   margin: 0 -2rem;
   padding: 3rem 2rem;
 }
@@ -1553,17 +1582,18 @@
 }
 
 .analytics-card {
-  background: white;
+  background: var(--card-background);
   border-radius: 16px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow);
   overflow: hidden;
   transition: all 0.3s ease;
   animation: slideInUp 0.6s ease-out both;
+  border: 1px solid var(--border-color);
 }
 
 .analytics-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-lg);
 }
 
 .analytics-card:nth-child(1) { animation-delay: 0.1s; }
@@ -1573,7 +1603,7 @@
 
 .card-header {
   padding: 1.5rem 2rem 1rem 2rem;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--border-light);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1583,11 +1613,11 @@
   margin: 0;
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--text-primary);
 }
 
 .percentile-badge, .benefits-score-badge, .location-badge {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 20px;
@@ -1654,7 +1684,7 @@
 }
 
 .stat-card.your-offer {
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
   color: white;
 }
 
@@ -1727,13 +1757,15 @@
 }
 
 .benefit-item.included {
-  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-  border: 1px solid #a7f3d0;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--success-color);
+  opacity: 0.9;
 }
 
 .benefit-item.excluded {
-  background: linear-gradient(135deg, #fef2f2, #fee2e2);
-  border: 1px solid #fca5a5;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  opacity: 0.6;
 }
 
 .benefit-icon {
@@ -1743,7 +1775,7 @@
 .benefit-name {
   flex: 1;
   font-weight: 500;
-  color: #1e293b;
+  color: var(--text-primary);
 }
 
 .benefit-status {
@@ -1805,34 +1837,36 @@
 }
 
 .cost-breakdown-modern {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   margin-bottom: 2rem;
 }
 
 .cost-item-modern {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  text-align: center;
   gap: 1rem;
-  padding: 1rem;
+  padding: 1.5rem 1rem;
   border-radius: 12px;
   transition: all 0.3s ease;
 }
 
 .cost-item-modern.rent {
-  background: linear-gradient(135deg, #eff6ff, #dbeafe);
-  border: 1px solid #93c5fd;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--accent-color);
 }
 
 .cost-item-modern.food {
-  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-  border: 1px solid #a7f3d0;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--success-color);
 }
 
 .cost-item-modern.transport {
-  background: linear-gradient(135deg, #fffbeb, #fef3c7);
-  border: 1px solid #fcd34d;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--warning-color);
 }
 
 .cost-item-modern:hover {
@@ -1840,44 +1874,48 @@
 }
 
 .cost-details {
-  flex: 1;
   display: flex;
-  justify-content: between;
+  flex-direction: column;
   align-items: center;
+  gap: 0.5rem;
+  width: 100%;
 }
 
 .cost-label {
   font-weight: 500;
-  color: #1e293b;
+  color: var(--text-primary);
+  font-size: 0.875rem;
 }
 
 .cost-value {
   font-weight: 600;
-  color: #1e293b;
-  margin-left: auto;
+  color: var(--text-primary);
+  font-size: 1.125rem;
 }
 
 .cost-insights-modern {
-  background: #f0f9ff;
-  border: 1px solid #bae6fd;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 1.5rem;
 }
 
 .cost-insights-modern h4 {
   margin: 0 0 1rem 0;
-  color: #0c4a6e;
+  color: var(--text-primary);
   font-size: 1.125rem;
+  text-align: center;
 }
 
 .insights-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  justify-content: center;
 }
 
 .insight-tag {
-  background: #0284c7;
+  background: var(--accent-color);
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 20px;
@@ -1896,19 +1934,20 @@
   display: flex;
   gap: 1rem;
   padding: 1.5rem;
-  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  background: var(--bg-tertiary);
   border-radius: 12px;
-  border-left: 4px solid #3b82f6;
+  border-left: 4px solid var(--accent-color);
   transition: all 0.3s ease;
+  border: 1px solid var(--border-color);
 }
 
 .recommendation-modern:hover {
   transform: translateX(4px);
-  background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+  background: var(--hover-background);
 }
 
 .rec-number {
-  background: #3b82f6;
+  background: linear-gradient(135deg, #0ea5e9, #0369a1);
   color: white;
   width: 2rem;
   height: 2rem;
@@ -1922,7 +1961,7 @@
 
 .rec-content {
   flex: 1;
-  color: #1e293b;
+  color: var(--text-primary);
   line-height: 1.6;
 }
 
@@ -1955,25 +1994,25 @@
 }
 
 .action-btn.primary {
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
   color: white;
-  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5);
+  box-shadow: var(--shadow-glow);
 }
 
 .action-btn.primary:hover {
-  box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.4);
+  box-shadow: var(--shadow-hover);
 }
 
 .action-btn.secondary {
-  background: white;
-  color: #3b82f6;
-  border: 2px solid #3b82f6;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  background: var(--card-background);
+  color: var(--accent-color);
+  border: 2px solid var(--accent-color);
+  box-shadow: var(--shadow);
 }
 
 .action-btn.secondary:hover {
-  background: #eff6ff;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+  background: var(--hover-background);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-icon {
@@ -2021,6 +2060,16 @@
     gap: 0.75rem;
   }
   
+  /* Cost breakdown responsive design - stack in single column on mobile */
+  .cost-breakdown-modern {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .cost-item-modern {
+    padding: 1rem;
+  }
+  
   .results-hero {
     padding: 3rem 1rem;
   }
@@ -2038,5 +2087,332 @@
     width: 100%;
     max-width: 300px;
     justify-content: center;
+  }
+}
+
+/* Tablet responsive design */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .cost-breakdown-modern {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .cost-item-modern:last-child {
+    grid-column: 1 / -1;
+    max-width: 50%;
+    margin: 0 auto;
+  }
+}
+
+/* ================================
+   THEME COMPATIBILITY SECTION
+   ================================ */
+
+/* Ensure proper contrast and visibility in both light and dark themes */
+
+/* Score Circle - Force white text with shadow for visibility on gradient background */
+[data-theme="light"] .score-circle,
+[data-theme="dark"] .score-circle {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+/* Form Elements Theme Compatibility */
+[data-theme="dark"] .job-offer-evaluator .form-input:focus {
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3);
+}
+
+[data-theme="dark"] .job-offer-evaluator .suggestions-dropdown {
+  background: var(--card-background);
+  border-color: var(--border-color);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .job-offer-evaluator .suggestion-item:hover {
+  background-color: var(--hover-background);
+}
+
+/* Currency Select and Salary Input Theme Compatibility */
+[data-theme="dark"] .job-offer-evaluator .currency-select {
+  background: var(--card-background);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .job-offer-evaluator .salary-input {
+  background: var(--card-background);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+/* Benefits Checkbox Theme Compatibility */
+[data-theme="dark"] .job-offer-evaluator .benefit-checkbox:checked {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+/* Error Messages Theme Compatibility */
+[data-theme="dark"] .error-message {
+  background: rgba(248, 113, 113, 0.1);
+  border-color: rgba(248, 113, 113, 0.3);
+}
+
+[data-theme="dark"] .error-content h3 {
+  color: #fca5a5;
+}
+
+/* Cost Analysis Error Theme Compatibility */
+[data-theme="dark"] .cost-error-modern {
+  background: rgba(248, 113, 113, 0.1);
+  border-color: rgba(248, 113, 113, 0.3);
+}
+
+/* Charts and Data Visualization Theme Compatibility */
+[data-theme="dark"] .analytics-card {
+  background: var(--card-background);
+  border-color: var(--border-color);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Ensure text visibility in dark theme for small elements */
+[data-theme="dark"] .data-source,
+[data-theme="dark"] .percentile-badge,
+[data-theme="dark"] .benefits-score-badge,
+[data-theme="dark"] .location-badge {
+  color: var(--text-secondary);
+}
+
+/* Loading Spinner Theme Compatibility */
+[data-theme="dark"] .loading-spinner {
+  border-color: var(--border-color);
+  border-top-color: var(--accent-color);
+}
+
+/* Mobile Responsiveness for Theme Switching */
+@media (max-width: 768px) {
+  [data-theme="dark"] .job-offer-evaluator .form-input,
+  [data-theme="dark"] .job-offer-evaluator .currency-select {
+    background: var(--card-background);
+    border-color: var(--border-color);
+  }
+  
+  [data-theme="dark"] .analytics-card {
+    background: var(--card-background);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* ================================
+   DARK THEME IMPLEMENTATION
+   ================================ */
+
+/* Main dark theme styling for JobOfferEvaluator - matches the attached design */
+[data-theme="dark"] .job-offer-evaluator {
+  background: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+/* Hero section keeps its blue background in both themes */
+[data-theme="dark"] .hero-section {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #2563eb 100%) !important;
+}
+
+[data-theme="dark"] .hero-title,
+[data-theme="dark"] .joboffer-hero-subtitle {
+  color: #ffffff !important;
+}
+
+/* Dark theme for all text elements */
+[data-theme="dark"] .job-offer-evaluator h1,
+[data-theme="dark"] .job-offer-evaluator h2,
+[data-theme="dark"] .job-offer-evaluator h3,
+[data-theme="dark"] .job-offer-evaluator h4,
+[data-theme="dark"] .job-offer-evaluator h5,
+[data-theme="dark"] .job-offer-evaluator h6,
+[data-theme="dark"] .job-offer-evaluator p,
+[data-theme="dark"] .job-offer-evaluator span,
+[data-theme="dark"] .job-offer-evaluator div,
+[data-theme="dark"] .job-offer-evaluator label {
+  color: #ffffff !important;
+}
+
+/* Dark theme for cards and containers - matching the design */
+[data-theme="dark"] .job-offer-evaluator .analytics-card,
+[data-theme="dark"] .job-offer-evaluator .results-container,
+[data-theme="dark"] .job-offer-evaluator .score-card,
+[data-theme="dark"] .job-offer-evaluator .cost-breakdown,
+[data-theme="dark"] .job-offer-evaluator .recommendations-container,
+[data-theme="dark"] .job-offer-evaluator .search-container {
+  background: #2a2a2a !important;
+  border: 1px solid #3a3a3a !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Dark theme for form elements */
+[data-theme="dark"] .job-offer-evaluator .form-input,
+[data-theme="dark"] .job-offer-evaluator .currency-select,
+[data-theme="dark"] .job-offer-evaluator .salary-input {
+  background: #2a2a2a !important;
+  color: #ffffff !important;
+  border: 1px solid #3a3a3a !important;
+}
+
+[data-theme="dark"] .job-offer-evaluator .form-input:focus,
+[data-theme="dark"] .job-offer-evaluator .currency-select:focus,
+[data-theme="dark"] .job-offer-evaluator .salary-input:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3) !important;
+  border-color: #3b82f6 !important;
+  background: #2a2a2a !important;
+}
+
+/* Dark theme for placeholders */
+[data-theme="dark"] .job-offer-evaluator .form-input::placeholder,
+[data-theme="dark"] .job-offer-evaluator .salary-input::placeholder {
+  color: #9ca3af !important;
+}
+
+/* Dark theme for autofill and filled inputs */
+[data-theme="dark"] .job-offer-evaluator .form-input:-webkit-autofill,
+[data-theme="dark"] .job-offer-evaluator .salary-input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 30px #2a2a2a inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+[data-theme="dark"] .job-offer-evaluator .form-input:not(:placeholder-shown),
+[data-theme="dark"] .job-offer-evaluator .salary-input:not(:placeholder-shown) {
+  background: #2a2a2a !important;
+  color: #ffffff !important;
+}
+
+/* Dark theme for dropdowns and suggestions */
+[data-theme="dark"] .job-offer-evaluator .suggestions-dropdown {
+  background: #2a2a2a !important;
+  border: 1px solid #3a3a3a !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme="dark"] .job-offer-evaluator .suggestion-item {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .job-offer-evaluator .suggestion-item:hover {
+  background-color: #3a3a3a !important;
+}
+
+/* Dark theme for badges - matching the blue design */
+[data-theme="dark"] .job-offer-evaluator .percentile-badge,
+[data-theme="dark"] .job-offer-evaluator .benefits-score-badge,
+[data-theme="dark"] .job-offer-evaluator .location-badge {
+  background: linear-gradient(135deg, #1e3a8a, #2563eb) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+/* Numbered badges styling - like #1, #2, #3, #4 in the image */
+[data-theme="dark"] .job-offer-evaluator .rec-number {
+  background: linear-gradient(135deg, #1e3a8a, #2563eb) !important;
+  color: #ffffff !important;
+}
+
+/* Dark theme for buttons */
+[data-theme="dark"] .job-offer-evaluator .secondary-button,
+[data-theme="dark"] .job-offer-evaluator .outline-button {
+  background: #2a2a2a !important;
+  color: #ffffff !important;
+  border: 1px solid #3a3a3a !important;
+}
+
+[data-theme="dark"] .job-offer-evaluator .secondary-button:hover,
+[data-theme="dark"] .job-offer-evaluator .outline-button:hover {
+  background: #3a3a3a !important;
+}
+
+/* Dark theme for progress bars - keeping green as shown in image */
+[data-theme="dark"] .job-offer-evaluator .progress-bar {
+  background: #3a3a3a !important;
+}
+
+[data-theme="dark"] .job-offer-evaluator .progress-fill {
+  background: linear-gradient(90deg, #10b981, #059669) !important;
+}
+
+/* Dark theme for data sources and secondary text */
+[data-theme="dark"] .job-offer-evaluator .data-source,
+[data-theme="dark"] .job-offer-evaluator .text-secondary {
+  color: #9ca3af !important;
+}
+
+/* Dark theme for error messages */
+[data-theme="dark"] .job-offer-evaluator .error-message,
+[data-theme="dark"] .job-offer-evaluator .cost-error-modern {
+  background: rgba(248, 113, 113, 0.2) !important;
+  border: 1px solid rgba(248, 113, 113, 0.3) !important;
+}
+
+[data-theme="dark"] .job-offer-evaluator .error-content h3 {
+  color: #fca5a5 !important;
+}
+
+/* Dark theme for benefit items - matching the attached design */
+[data-theme="dark"] .job-offer-evaluator .benefit-item {
+  background: #2a2a2a !important;
+  border: 1px solid #3a3a3a !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .job-offer-evaluator .benefit-item:hover {
+  background: #3a3a3a !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="dark"] .job-offer-evaluator .benefit-label {
+  color: #ffffff !important;
+}
+
+/* Dark theme for checkboxes */
+[data-theme="dark"] .job-offer-evaluator .benefit-checkbox {
+  background: #2a2a2a !important;
+  border: 1px solid #3a3a3a !important;
+}
+
+[data-theme="dark"] .job-offer-evaluator .benefit-checkbox:checked {
+  background: linear-gradient(135deg, #1e3a8a, #2563eb) !important;
+  border-color: #2563eb !important;
+}
+
+/* Dark theme for loading spinner */
+[data-theme="dark"] .job-offer-evaluator .loading-spinner {
+  border-color: #3a3a3a !important;
+  border-top-color: #2563eb !important;
+}
+
+/* Dark theme for specific result elements */
+[data-theme="dark"] .job-offer-evaluator .results-hero {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #2563eb 100%) !important;
+}
+
+[data-theme="dark"] .job-offer-evaluator .stat-card {
+  background: #2a2a2a !important;
+  border: 1px solid #3a3a3a !important;
+}
+
+[data-theme="dark"] .job-offer-evaluator .results-header {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #2563eb 100%) !important;
+  color: #ffffff !important;
+}
+
+/* Mobile responsiveness for dark theme */
+@media (max-width: 768px) {
+  [data-theme="dark"] .job-offer-evaluator .form-input,
+  [data-theme="dark"] .job-offer-evaluator .currency-select {
+    background: #2a2a2a !important;
+    border: 1px solid #3a3a3a !important;
+    color: #ffffff !important;
+  }
+  
+  [data-theme="dark"] .job-offer-evaluator .analytics-card {
+    background: #2a2a2a !important;
+    border: 1px solid #3a3a3a !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
   }
 }

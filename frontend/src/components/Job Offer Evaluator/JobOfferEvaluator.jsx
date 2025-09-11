@@ -416,14 +416,85 @@ const JobOfferEvaluator = () => {
     'Database Administrator', 'System Administrator', 'Network Engineer'
   ];
 
-  // Cities data
+  // Cities data - Indian cities and international cities
   const cities = [
-    'New York', 'London', 'Tokyo', 'San Francisco', 'Berlin',
-    'Singapore', 'Sydney', 'Toronto', 'Amsterdam', 'Paris',
-    'Los Angeles', 'Chicago', 'Boston', 'Seattle', 'Austin',
-    'Mumbai', 'Bangalore', 'Delhi', 'Hyderabad', 'Pune',
-    'Dublin', 'Zurich', 'Stockholm', 'Copenhagen', 'Helsinki',
-    'Tel Aviv', 'Hong Kong', 'Seoul', 'Shanghai', 'Beijing'
+    // Indian Cities
+    'Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Pune', 'Chennai', 'Kolkata', 'Ahmedabad',
+    'Surat', 'Jaipur', 'Lucknow', 'Kanpur', 'Nagpur', 'Indore', 'Thane', 'Bhopal',
+    'Visakhapatnam', 'Pimpri-Chinchwad', 'Patna', 'Vadodara', 'Ghaziabad', 'Ludhiana',
+    'Agra', 'Nashik', 'Faridabad', 'Meerut', 'Rajkot', 'Kalyan-Dombivali', 'Vasai-Virar',
+    'Varanasi', 'Srinagar', 'Aurangabad', 'Dhanbad', 'Amritsar', 'Navi Mumbai', 'Allahabad',
+    'Ranchi', 'Howrah', 'Coimbatore', 'Jabalpur', 'Gwalior', 'Vijayawada', 'Jodhpur',
+    'Madurai', 'Raipur', 'Kota', 'Guwahati', 'Chandigarh', 'Solapur', 'Hubli-Dharwad',
+    'Tiruchirappalli', 'Bareilly', 'Mysore', 'Tiruppur', 'Gurgaon', 'Aligarh', 'Jalandhar',
+    'Bhubaneswar', 'Salem', 'Warangal', 'Guntur', 'Bhiwandi', 'Saharanpur', 'Gorakhpur',
+    'Bikaner', 'Amravati', 'Noida', 'Jamshedpur', 'Bhilai', 'Cuttack', 'Firozabad',
+    'Kochi', 'Nellore', 'Bhavnagar', 'Dehradun', 'Durgapur', 'Asansol', 'Rourkela',
+    'Nanded', 'Kolhapur', 'Ajmer', 'Akola', 'Gulbarga', 'Jamnagar', 'Ujjain', 'Loni',
+    'Siliguri', 'Jhansi', 'Ulhasnagar', 'Jammu', 'Sangli-Miraj & Kupwad', 'Mangalore',
+    'Erode', 'Belgaum', 'Ambattur', 'Tirunelveli', 'Malegaon', 'Gaya', 'Jalgaon',
+    'Udaipur', 'Maheshtala', 'Rajpur Sonarpur', 'Kharagpur', 'Agaratala', 'Shimla',
+    
+    // International Cities
+    // United States
+    'New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Philadelphia', 'San Antonio',
+    'San Diego', 'Dallas', 'San Jose', 'Austin', 'Jacksonville', 'Fort Worth', 'Columbus',
+    'Charlotte', 'San Francisco', 'Indianapolis', 'Seattle', 'Denver', 'Washington DC',
+    'Boston', 'El Paso', 'Nashville', 'Detroit', 'Oklahoma City', 'Portland', 'Las Vegas',
+    'Memphis', 'Louisville', 'Baltimore', 'Milwaukee', 'Albuquerque', 'Tucson', 'Fresno',
+    'Sacramento', 'Kansas City', 'Mesa', 'Atlanta', 'Omaha', 'Colorado Springs', 'Raleigh',
+    'Miami', 'Virginia Beach', 'Oakland', 'Minneapolis', 'Tulsa', 'Arlington', 'Tampa',
+    
+    // United Kingdom
+    'London', 'Birmingham', 'Manchester', 'Glasgow', 'Liverpool', 'Leeds', 'Sheffield',
+    'Edinburgh', 'Bristol', 'Cardiff', 'Belfast', 'Leicester', 'Coventry', 'Bradford',
+    'Nottingham', 'Kingston upon Hull', 'Newcastle upon Tyne', 'Stoke-on-Trent', 'Southampton',
+    'Derby', 'Portsmouth', 'Brighton', 'Plymouth', 'Northampton', 'Reading', 'Luton',
+    
+    // Canada
+    'Toronto', 'Montreal', 'Vancouver', 'Calgary', 'Edmonton', 'Ottawa', 'Winnipeg',
+    'Quebec City', 'Hamilton', 'Kitchener', 'London', 'Victoria', 'Halifax', 'Oshawa',
+    'Windsor', 'Saskatoon', 'St. Catharines', 'Regina', 'Sherbrooke', 'Barrie',
+    
+    // Australia
+    'Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Adelaide', 'Gold Coast', 'Newcastle',
+    'Canberra', 'Sunshine Coast', 'Wollongong', 'Geelong', 'Hobart', 'Townsville',
+    'Cairns', 'Darwin', 'Toowoomba', 'Ballarat', 'Bendigo', 'Albury', 'Launceston',
+    
+    // Germany
+    'Berlin', 'Hamburg', 'Munich', 'Cologne', 'Frankfurt', 'Stuttgart', 'Düsseldorf',
+    'Dortmund', 'Essen', 'Leipzig', 'Bremen', 'Dresden', 'Hanover', 'Nuremberg',
+    'Duisburg', 'Bochum', 'Wuppertal', 'Bielefeld', 'Bonn', 'Münster',
+    
+    // France
+    'Paris', 'Marseille', 'Lyon', 'Toulouse', 'Nice', 'Nantes', 'Strasbourg', 'Montpellier',
+    'Bordeaux', 'Lille', 'Rennes', 'Reims', 'Saint-Étienne', 'Le Havre', 'Toulon',
+    'Grenoble', 'Dijon', 'Angers', 'Nîmes', 'Villeurbanne',
+    
+    // Other Major International Cities
+    'Tokyo', 'Osaka', 'Kyoto', 'Yokohama', 'Nagoya', 'Sapporo', 'Fukuoka', // Japan
+    'Shanghai', 'Beijing', 'Shenzhen', 'Guangzhou', 'Chengdu', 'Hangzhou', 'Wuhan', // China
+    'Seoul', 'Busan', 'Incheon', 'Daegu', 'Daejeon', 'Gwangju', // South Korea
+    'Singapore', 'Hong Kong', 'Taipei', 'Kaohsiung', 'Bangkok', 'Manila', 'Jakarta',
+    'Kuala Lumpur', 'Ho Chi Minh City', 'Hanoi', 'Dubai', 'Abu Dhabi', 'Doha',
+    'Tel Aviv', 'Jerusalem', 'Amsterdam', 'Rotterdam', 'The Hague', 'Utrecht',
+    'Brussels', 'Antwerp', 'Ghent', 'Vienna', 'Zurich', 'Geneva', 'Basel',
+    'Stockholm', 'Gothenburg', 'Malmö', 'Copenhagen', 'Aarhus', 'Odense',
+    'Oslo', 'Bergen', 'Trondheim', 'Helsinki', 'Espoo', 'Tampere',
+    'Madrid', 'Barcelona', 'Valencia', 'Seville', 'Zaragoza', 'Málaga',
+    'Rome', 'Milan', 'Naples', 'Turin', 'Palermo', 'Genoa', 'Bologna',
+    'Lisbon', 'Porto', 'Warsaw', 'Kraków', 'Łódź', 'Wrocław', 'Poznań',
+    'Prague', 'Brno', 'Ostrava', 'Budapest', 'Debrecen', 'Szeged',
+    'Bucharest', 'Cluj-Napoca', 'Timișoara', 'Sofia', 'Plovdiv', 'Varna',
+    'Athens', 'Thessaloniki', 'Patras', 'Istanbul', 'Ankara', 'Izmir',
+    'Moscow', 'Saint Petersburg', 'Novosibirsk', 'Yekaterinburg', 'Nizhny Novgorod',
+    'São Paulo', 'Rio de Janeiro', 'Brasília', 'Salvador', 'Fortaleza',
+    'Mexico City', 'Guadalajara', 'Monterrey', 'Puebla', 'Tijuana',
+    'Buenos Aires', 'Córdoba', 'Rosario', 'Santiago', 'Valparaíso',
+    'Lima', 'Arequipa', 'Trujillo', 'Bogotá', 'Medellín', 'Cali',
+    'Caracas', 'Maracaibo', 'Valencia', 'Cairo', 'Alexandria', 'Giza',
+    'Casablanca', 'Rabat', 'Fez', 'Cape Town', 'Johannesburg', 'Durban',
+    'Lagos', 'Kano', 'Ibadan', 'Addis Ababa', 'Nairobi', 'Kampala'
   ];
 
   // Countries data
@@ -449,12 +520,159 @@ const JobOfferEvaluator = () => {
     { code: 'SGD', symbol: 'S$', name: 'Singapore Dollar' }
   ];
 
+  // City to Country mapping for auto-fill functionality
+  const cityToCountryMap = {
+    // Indian Cities
+    'Mumbai': 'India', 'Delhi': 'India', 'Bangalore': 'India', 'Hyderabad': 'India', 'Pune': 'India',
+    'Chennai': 'India', 'Kolkata': 'India', 'Ahmedabad': 'India', 'Surat': 'India', 'Jaipur': 'India',
+    'Lucknow': 'India', 'Kanpur': 'India', 'Nagpur': 'India', 'Indore': 'India', 'Thane': 'India',
+    'Bhopal': 'India', 'Visakhapatnam': 'India', 'Pimpri-Chinchwad': 'India', 'Patna': 'India',
+    'Vadodara': 'India', 'Ghaziabad': 'India', 'Ludhiana': 'India', 'Agra': 'India', 'Nashik': 'India',
+    'Faridabad': 'India', 'Meerut': 'India', 'Rajkot': 'India', 'Kalyan-Dombivali': 'India',
+    'Vasai-Virar': 'India', 'Varanasi': 'India', 'Srinagar': 'India', 'Aurangabad': 'India',
+    'Dhanbad': 'India', 'Amritsar': 'India', 'Navi Mumbai': 'India', 'Allahabad': 'India',
+    'Ranchi': 'India', 'Howrah': 'India', 'Coimbatore': 'India', 'Jabalpur': 'India', 'Gwalior': 'India',
+    'Vijayawada': 'India', 'Jodhpur': 'India', 'Madurai': 'India', 'Raipur': 'India', 'Kota': 'India',
+    'Guwahati': 'India', 'Chandigarh': 'India', 'Solapur': 'India', 'Hubli-Dharwad': 'India',
+    'Tiruchirappalli': 'India', 'Bareilly': 'India', 'Mysore': 'India', 'Tiruppur': 'India',
+    'Gurgaon': 'India', 'Aligarh': 'India', 'Jalandhar': 'India', 'Bhubaneswar': 'India',
+    'Salem': 'India', 'Warangal': 'India', 'Guntur': 'India', 'Bhiwandi': 'India', 'Saharanpur': 'India',
+    'Gorakhpur': 'India', 'Bikaner': 'India', 'Amravati': 'India', 'Noida': 'India', 'Jamshedpur': 'India',
+    'Bhilai': 'India', 'Cuttack': 'India', 'Firozabad': 'India', 'Kochi': 'India', 'Nellore': 'India',
+    'Bhavnagar': 'India', 'Dehradun': 'India', 'Durgapur': 'India', 'Asansol': 'India', 'Rourkela': 'India',
+    'Nanded': 'India', 'Kolhapur': 'India', 'Ajmer': 'India', 'Akola': 'India', 'Gulbarga': 'India',
+    'Jamnagar': 'India', 'Ujjain': 'India', 'Loni': 'India', 'Siliguri': 'India', 'Jhansi': 'India',
+    'Ulhasnagar': 'India', 'Jammu': 'India', 'Sangli-Miraj & Kupwad': 'India', 'Mangalore': 'India',
+    'Erode': 'India', 'Belgaum': 'India', 'Ambattur': 'India', 'Tirunelveli': 'India', 'Malegaon': 'India',
+    'Gaya': 'India', 'Jalgaon': 'India', 'Udaipur': 'India', 'Maheshtala': 'India', 'Rajpur Sonarpur': 'India',
+    'Kharagpur': 'India', 'Agaratala': 'India', 'Shimla': 'India',
+
+    // United States
+    'New York': 'United States', 'Los Angeles': 'United States', 'Chicago': 'United States',
+    'Houston': 'United States', 'Phoenix': 'United States', 'Philadelphia': 'United States',
+    'San Antonio': 'United States', 'San Diego': 'United States', 'Dallas': 'United States',
+    'San Jose': 'United States', 'Austin': 'United States', 'Jacksonville': 'United States',
+    'Fort Worth': 'United States', 'Columbus': 'United States', 'Charlotte': 'United States',
+    'San Francisco': 'United States', 'Indianapolis': 'United States', 'Seattle': 'United States',
+    'Denver': 'United States', 'Washington DC': 'United States', 'Boston': 'United States',
+    'El Paso': 'United States', 'Nashville': 'United States', 'Detroit': 'United States',
+    'Oklahoma City': 'United States', 'Portland': 'United States', 'Las Vegas': 'United States',
+    'Memphis': 'United States', 'Louisville': 'United States', 'Baltimore': 'United States',
+    'Milwaukee': 'United States', 'Albuquerque': 'United States', 'Tucson': 'United States',
+    'Fresno': 'United States', 'Sacramento': 'United States', 'Kansas City': 'United States',
+    'Mesa': 'United States', 'Atlanta': 'United States', 'Omaha': 'United States',
+    'Colorado Springs': 'United States', 'Raleigh': 'United States', 'Miami': 'United States',
+    'Virginia Beach': 'United States', 'Oakland': 'United States', 'Minneapolis': 'United States',
+    'Tulsa': 'United States', 'Arlington': 'United States', 'Tampa': 'United States',
+
+    // United Kingdom
+    'London': 'United Kingdom', 'Birmingham': 'United Kingdom', 'Manchester': 'United Kingdom',
+    'Glasgow': 'United Kingdom', 'Liverpool': 'United Kingdom', 'Leeds': 'United Kingdom',
+    'Sheffield': 'United Kingdom', 'Edinburgh': 'United Kingdom', 'Bristol': 'United Kingdom',
+    'Cardiff': 'United Kingdom', 'Belfast': 'United Kingdom', 'Leicester': 'United Kingdom',
+    'Coventry': 'United Kingdom', 'Bradford': 'United Kingdom', 'Nottingham': 'United Kingdom',
+    'Kingston upon Hull': 'United Kingdom', 'Newcastle upon Tyne': 'United Kingdom',
+    'Stoke-on-Trent': 'United Kingdom', 'Southampton': 'United Kingdom', 'Derby': 'United Kingdom',
+    'Portsmouth': 'United Kingdom', 'Brighton': 'United Kingdom', 'Plymouth': 'United Kingdom',
+    'Northampton': 'United Kingdom', 'Reading': 'United Kingdom', 'Luton': 'United Kingdom',
+
+    // Canada
+    'Toronto': 'Canada', 'Montreal': 'Canada', 'Vancouver': 'Canada', 'Calgary': 'Canada',
+    'Edmonton': 'Canada', 'Ottawa': 'Canada', 'Winnipeg': 'Canada', 'Quebec City': 'Canada',
+    'Hamilton': 'Canada', 'Kitchener': 'Canada', 'Victoria': 'Canada', 'Halifax': 'Canada',
+    'Oshawa': 'Canada', 'Windsor': 'Canada', 'Saskatoon': 'Canada', 'St. Catharines': 'Canada',
+    'Regina': 'Canada', 'Sherbrooke': 'Canada', 'Barrie': 'Canada',
+
+    // Australia
+    'Sydney': 'Australia', 'Melbourne': 'Australia', 'Brisbane': 'Australia', 'Perth': 'Australia',
+    'Adelaide': 'Australia', 'Gold Coast': 'Australia', 'Newcastle': 'Australia', 'Canberra': 'Australia',
+    'Sunshine Coast': 'Australia', 'Wollongong': 'Australia', 'Geelong': 'Australia', 'Hobart': 'Australia',
+    'Townsville': 'Australia', 'Cairns': 'Australia', 'Darwin': 'Australia', 'Toowoomba': 'Australia',
+    'Ballarat': 'Australia', 'Bendigo': 'Australia', 'Albury': 'Australia', 'Launceston': 'Australia',
+
+    // Germany
+    'Berlin': 'Germany', 'Hamburg': 'Germany', 'Munich': 'Germany', 'Cologne': 'Germany',
+    'Frankfurt': 'Germany', 'Stuttgart': 'Germany', 'Düsseldorf': 'Germany', 'Dortmund': 'Germany',
+    'Essen': 'Germany', 'Leipzig': 'Germany', 'Bremen': 'Germany', 'Dresden': 'Germany',
+    'Hanover': 'Germany', 'Nuremberg': 'Germany', 'Duisburg': 'Germany', 'Bochum': 'Germany',
+    'Wuppertal': 'Germany', 'Bielefeld': 'Germany', 'Bonn': 'Germany', 'Münster': 'Germany',
+
+    // France
+    'Paris': 'France', 'Marseille': 'France', 'Lyon': 'France', 'Toulouse': 'France',
+    'Nice': 'France', 'Nantes': 'France', 'Strasbourg': 'France', 'Montpellier': 'France',
+    'Bordeaux': 'France', 'Lille': 'France', 'Rennes': 'France', 'Reims': 'France',
+    'Saint-Étienne': 'France', 'Le Havre': 'France', 'Toulon': 'France', 'Grenoble': 'France',
+    'Dijon': 'France', 'Angers': 'France', 'Nîmes': 'France', 'Villeurbanne': 'France',
+
+    // Japan
+    'Tokyo': 'Japan', 'Osaka': 'Japan', 'Kyoto': 'Japan', 'Yokohama': 'Japan', 'Nagoya': 'Japan',
+    'Sapporo': 'Japan', 'Fukuoka': 'Japan',
+
+    // China
+    'Shanghai': 'China', 'Beijing': 'China', 'Shenzhen': 'China', 'Guangzhou': 'China',
+    'Chengdu': 'China', 'Hangzhou': 'China', 'Wuhan': 'China',
+
+    // South Korea
+    'Seoul': 'South Korea', 'Busan': 'South Korea', 'Incheon': 'South Korea', 'Daegu': 'South Korea',
+    'Daejeon': 'South Korea', 'Gwangju': 'South Korea',
+
+    // Other major countries
+    'Singapore': 'Singapore', 'Hong Kong': 'Hong Kong', 'Taipei': 'Taiwan', 'Kaohsiung': 'Taiwan',
+    'Bangkok': 'Thailand', 'Manila': 'Philippines', 'Jakarta': 'Indonesia', 'Kuala Lumpur': 'Malaysia',
+    'Ho Chi Minh City': 'Vietnam', 'Hanoi': 'Vietnam', 'Dubai': 'United Arab Emirates',
+    'Abu Dhabi': 'United Arab Emirates', 'Doha': 'Qatar', 'Tel Aviv': 'Israel', 'Jerusalem': 'Israel',
+    'Amsterdam': 'Netherlands', 'Rotterdam': 'Netherlands', 'The Hague': 'Netherlands', 'Utrecht': 'Netherlands',
+    'Brussels': 'Belgium', 'Antwerp': 'Belgium', 'Ghent': 'Belgium', 'Vienna': 'Austria',
+    'Zurich': 'Switzerland', 'Geneva': 'Switzerland', 'Basel': 'Switzerland',
+    'Stockholm': 'Sweden', 'Gothenburg': 'Sweden', 'Malmö': 'Sweden',
+    'Copenhagen': 'Denmark', 'Aarhus': 'Denmark', 'Odense': 'Denmark',
+    'Oslo': 'Norway', 'Bergen': 'Norway', 'Trondheim': 'Norway',
+    'Helsinki': 'Finland', 'Espoo': 'Finland', 'Tampere': 'Finland',
+    'Madrid': 'Spain', 'Barcelona': 'Spain', 'Valencia': 'Spain', 'Seville': 'Spain',
+    'Zaragoza': 'Spain', 'Málaga': 'Spain',
+    'Rome': 'Italy', 'Milan': 'Italy', 'Naples': 'Italy', 'Turin': 'Italy', 'Palermo': 'Italy',
+    'Genoa': 'Italy', 'Bologna': 'Italy',
+    'Lisbon': 'Portugal', 'Porto': 'Portugal',
+    'Warsaw': 'Poland', 'Kraków': 'Poland', 'Łódź': 'Poland', 'Wrocław': 'Poland', 'Poznań': 'Poland',
+    'Prague': 'Czech Republic', 'Brno': 'Czech Republic', 'Ostrava': 'Czech Republic',
+    'Budapest': 'Hungary', 'Debrecen': 'Hungary', 'Szeged': 'Hungary',
+    'Bucharest': 'Romania', 'Cluj-Napoca': 'Romania', 'Timișoara': 'Romania',
+    'Sofia': 'Bulgaria', 'Plovdiv': 'Bulgaria', 'Varna': 'Bulgaria',
+    'Athens': 'Greece', 'Thessaloniki': 'Greece', 'Patras': 'Greece',
+    'Istanbul': 'Turkey', 'Ankara': 'Turkey', 'Izmir': 'Turkey',
+    'Moscow': 'Russia', 'Saint Petersburg': 'Russia', 'Novosibirsk': 'Russia',
+    'Yekaterinburg': 'Russia', 'Nizhny Novgorod': 'Russia',
+    'São Paulo': 'Brazil', 'Rio de Janeiro': 'Brazil', 'Brasília': 'Brazil', 'Salvador': 'Brazil',
+    'Fortaleza': 'Brazil',
+    'Mexico City': 'Mexico', 'Guadalajara': 'Mexico', 'Monterrey': 'Mexico', 'Puebla': 'Mexico',
+    'Tijuana': 'Mexico',
+    'Buenos Aires': 'Argentina', 'Córdoba': 'Argentina', 'Rosario': 'Argentina',
+    'Santiago': 'Chile', 'Valparaíso': 'Chile',
+    'Lima': 'Peru', 'Arequipa': 'Peru', 'Trujillo': 'Peru',
+    'Bogotá': 'Colombia', 'Medellín': 'Colombia', 'Cali': 'Colombia',
+    'Caracas': 'Venezuela', 'Maracaibo': 'Venezuela', 'Valencia': 'Venezuela',
+    'Cairo': 'Egypt', 'Alexandria': 'Egypt', 'Giza': 'Egypt',
+    'Casablanca': 'Morocco', 'Rabat': 'Morocco', 'Fez': 'Morocco',
+    'Cape Town': 'South Africa', 'Johannesburg': 'South Africa', 'Durban': 'South Africa',
+    'Lagos': 'Nigeria', 'Kano': 'Nigeria', 'Ibadan': 'Nigeria',
+    'Addis Ababa': 'Ethiopia', 'Nairobi': 'Kenya', 'Kampala': 'Uganda'
+  };
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    setFormData(prevState => {
+      const newFormData = {
+        ...prevState,
+        [name]: type === 'checkbox' ? checked : value
+      };
+      
+      // Auto-fill country when exact city match is found while typing
+      if (name === 'city' && cityToCountryMap[value]) {
+        newFormData.country = cityToCountryMap[value];
+      }
+      
+      return newFormData;
+    });
 
     // Handle suggestions visibility
     if (name === 'jobTitle') {
@@ -467,9 +685,22 @@ const JobOfferEvaluator = () => {
   };
 
   const handleSuggestionClick = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData(prev => {
+      const newFormData = { ...prev, [field]: value };
+      
+      // Auto-fill country when city is selected
+      if (field === 'city' && cityToCountryMap[value]) {
+        newFormData.country = cityToCountryMap[value];
+      }
+      
+      return newFormData;
+    });
+    
     if (field === 'jobTitle') setShowJobSuggestions(false);
-    if (field === 'city') setShowCitySuggestions(false);
+    if (field === 'city') {
+      setShowCitySuggestions(false);
+      setShowCountrySuggestions(false); // Hide country suggestions since it's auto-filled
+    }
     if (field === 'country') setShowCountrySuggestions(false);
   };
 
@@ -797,8 +1028,8 @@ const JobOfferEvaluator = () => {
   };
 
   const calculateLocationScore = (city, country) => {
-    // Simple location scoring - can be enhanced
-    const majorCities = ['New York', 'London', 'San Francisco', 'Tokyo', 'Singapore'];
+    // Major Indian cities scoring
+    const majorCities = ['Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Pune', 'Chennai', 'Kolkata', 'Ahmedabad', 'Gurgaon', 'Noida'];
     const majorCountries = ['United States', 'United Kingdom', 'Germany', 'Canada', 'Australia'];
     
     let score = 15; // Base score
