@@ -4,7 +4,7 @@ import Navbar from './navbar';
 import ThemeSelector from './ThemeSelector';
 import AuthModal from './AuthModal';
 import NeuralBg from './NeuralBg';
-import SkillenceChatModal from './skillence/SkillenceChatModal';
+import SkillenceChatModal from './Chatbot/SkillenceChatModal';
 
 const MainPage = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
