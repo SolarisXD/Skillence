@@ -2,6 +2,33 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../navbar';
 import './JobOfferEvaluator.css';
+// Professional SVG Icons
+import {
+  BriefcaseIcon,
+  WarningIcon,
+  CelebrationIcon,
+  ThumbsUpIcon,
+  BalanceIcon,
+  MoneyBagIcon,
+  DollarIcon,
+  PieChartIcon,
+  TrendingUpIcon,
+  TrendingDownIcon,
+  HospitalIcon,
+  CheckMarkIcon,
+  CrossMarkIcon,
+  HomeIcon,
+  SeedlingIcon,
+  BookIcon,
+  ShieldIcon,
+  CityscapeIcon,
+  LocationPinIcon,
+  DiningIcon,
+  CarIcon,
+  LightBulbIcon,
+  RefreshIcon,
+  PageIcon
+} from '../Icons/ProfessionalIcons';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -112,7 +139,7 @@ const adzunaAPI = {
   // Test API connection
   testConnection: async () => {
     try {
-      console.log('🧪 Testing Adzuna API connection...');
+  console.log('Testing Adzuna API connection...');
       const url = new URL(`${ADZUNA_CONFIG.BASE_URL}/jobs/in/search/1`);
       url.searchParams.append('app_id', ADZUNA_CONFIG.APP_ID);
       url.searchParams.append('app_key', ADZUNA_CONFIG.API_KEY);
@@ -125,15 +152,15 @@ const adzunaAPI = {
       
       if (response.ok) {
         const data = await response.json();
-        console.log('✅ API Test successful:', data);
+    console.log('API Test successful:', data);
         return data;
       } else {
         const errorText = await response.text();
-        console.error('❌ API Test failed:', response.status, errorText);
+  console.error('API Test failed:', response.status, errorText);
         return null;
       }
     } catch (error) {
-      console.error('❌ API Test error:', error);
+  console.error('API Test error:', error);
       return null;
     }
   },
@@ -156,7 +183,7 @@ const adzunaAPI = {
       if (params[key]) url.searchParams.append(key, params[key]);
     });
     
-    console.log('🔍 API Call URL:', url.toString());
+  console.log('API Call URL:', url.toString());
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Adzuna API error: ${response.status} - ${await response.text()}`);
@@ -216,7 +243,7 @@ const geminiAPI = {
   // Get cost of living analysis for a specific city
   getCostOfLivingAnalysis: async (city, country, salary, currency) => {
     try {
-      console.log('🏙️ Fetching cost of living data from Gemini API for:', city, country);
+  console.log('Fetching cost of living data from Gemini API for:', city, country);
       
       if (!GEMINI_CONFIG.API_KEY || GEMINI_CONFIG.API_KEY === 'your_gemini_api_key') {
         throw new Error('Gemini API key not configured properly');
@@ -272,7 +299,7 @@ RESPOND WITH ONLY THE 4 NUMBERS IN INR AS SHOWN ABOVE FOR A SINGLE PERSON.`;
       
       if (data.candidates && data.candidates[0] && data.candidates[0].content) {
         const analysisText = data.candidates[0].content.parts[0].text;
-        console.log('✅ Cost of living analysis received:', analysisText);
+  console.log('Cost of living analysis received:', analysisText);
         
         // Parse the response to extract structured data
         const parsedData = parseGeminiCostAnalysis(analysisText, city, country);
@@ -281,7 +308,7 @@ RESPOND WITH ONLY THE 4 NUMBERS IN INR AS SHOWN ABOVE FOR A SINGLE PERSON.`;
         throw new Error('Invalid response format from Gemini API');
       }
     } catch (error) {
-      console.error('❌ Cost of living analysis error:', error);
+  console.error('Cost of living analysis error:', error);
       throw error;
     }
   }
@@ -289,7 +316,7 @@ RESPOND WITH ONLY THE 4 NUMBERS IN INR AS SHOWN ABOVE FOR A SINGLE PERSON.`;
 
 // Helper function to parse Gemini's cost of living analysis
 const parseGeminiCostAnalysis = (analysisText, city, country) => {
-  console.log('🔍 Parsing Gemini response:', analysisText);
+  console.log('Parsing Gemini response:', analysisText);
   
   // Create a structured object from the Gemini response
   const costData = {
@@ -338,7 +365,7 @@ const parseGeminiCostAnalysis = (analysisText, city, country) => {
 
     // If structured parsing didn't work, try to extract any numbers
     if (costData.monthlyBreakdown.total === 0) {
-      console.log('⚠️ Structured parsing failed, trying fallback extraction');
+    console.log('Structured parsing failed, trying fallback extraction');
       const numbers = analysisText.match(/\d+/g);
       if (numbers && numbers.length >= 4) {
         costData.monthlyBreakdown.rent = parseInt(numbers[0]);
@@ -358,10 +385,10 @@ const parseGeminiCostAnalysis = (analysisText, city, country) => {
       costData.insights.push('Moderate cost of living');
     }
 
-    console.log('✅ Parsed cost data:', costData);
+  console.log('Parsed cost data:', costData);
     return costData;
   } catch (parseError) {
-    console.error('❌ Error parsing cost data:', parseError);
+  console.error('Error parsing cost data:', parseError);
     return {
       ...costData,
       error: 'Could not parse cost data from response'
@@ -1101,14 +1128,8 @@ const JobOfferEvaluator = () => {
           
           {/* Decorative briefcase icon */}
           <div className="hero-illustration">
-            <div className="briefcase-icon">
-              <svg viewBox="0 0 100 100" width="120" height="120">
-                <rect x="20" y="35" width="60" height="40" rx="4" fill="#d97706" />
-                <rect x="35" y="25" width="30" height="15" rx="2" fill="#d97706" />
-                <circle cx="50" cy="55" r="3" fill="#fff" />
-                <rect x="25" y="40" width="50" height="2" fill="#b45309" />
-                <rect x="25" y="65" width="50" height="2" fill="#b45309" />
-              </svg>
+            <div className="briefcase-icon" style={{ fontSize: 48 }} aria-hidden="true">
+              <BriefcaseIcon size={48} className="text-blue-600" />
             </div>
           </div>
         </div>
@@ -1343,7 +1364,7 @@ const JobOfferEvaluator = () => {
             {apiError && (
               <div className="error-message">
                 <div className="error-content">
-                  <h3>⚠️ Error</h3>
+                  <h3><WarningIcon size={20} className="inline mr-2" /> Error</h3>
                   <p>{apiError}</p>
                 </div>
               </div>
@@ -1372,10 +1393,13 @@ const JobOfferEvaluator = () => {
                       <div className="score-details">
                         <h2>Job Offer Evaluation</h2>
                         <p className="score-description">
-                          {evaluationResults.overall_score >= 80 ? '🎉 Excellent offer!' :
-                           evaluationResults.overall_score >= 60 ? '👍 Good offer!' :
-                           evaluationResults.overall_score >= 40 ? '⚖️ Average offer' :
-                           '⚠️ Consider negotiating'}
+                          {evaluationResults.overall_score >= 80 ? 
+                            <><CelebrationIcon size={16} className="inline mr-1" /> Excellent offer!</> :
+                           evaluationResults.overall_score >= 60 ? 
+                            <><ThumbsUpIcon size={16} className="inline mr-1" /> Good offer!</> :
+                           evaluationResults.overall_score >= 40 ? 
+                            <><BalanceIcon size={16} className="inline mr-1" /> Average offer</> :
+                           <><WarningIcon size={16} className="inline mr-1" /> Consider negotiating</>}
                         </p>
                       </div>
                     </div>
@@ -1390,7 +1414,7 @@ const JobOfferEvaluator = () => {
                     {evaluationResults.salary_analysis.offer_salary && (
                       <div className="analytics-card salary-card">
                         <div className="card-header">
-                          <h3>💰 Salary Analysis</h3>
+                          <h3><MoneyBagIcon size={20} className="inline mr-2" /> Salary Analysis</h3>
                           <div className="percentile-badge">
                             {evaluationResults.salary_analysis.percentile}th percentile
                           </div>
@@ -1444,14 +1468,14 @@ const JobOfferEvaluator = () => {
                           </div>
                           <div className="salary-stats-grid">
                             <div className="stat-card your-offer">
-                              <div className="stat-icon">💵</div>
+                              <div className="stat-icon"><DollarIcon size={20} /></div>
                               <div className="stat-info">
                                 <span className="stat-label">Your Offer</span>
                                 <span className="stat-value">{getCurrentCurrencySymbol()}{evaluationResults.salary_analysis.offer_salary.toLocaleString()}</span>
                               </div>
                             </div>
                             <div className="stat-card market-avg">
-                              <div className="stat-icon">📊</div>
+                              <div className="stat-icon"><PieChartIcon size={20} /></div>
                               <div className="stat-info">
                                 <span className="stat-label">Market Average</span>
                                 <span className="stat-value">{getCurrentCurrencySymbol()}{evaluationResults.salary_analysis.market_average?.toLocaleString()}</span>
@@ -1459,7 +1483,12 @@ const JobOfferEvaluator = () => {
                             </div>
                             {evaluationResults.salary_analysis.difference_from_average !== undefined && (
                               <div className={`stat-card difference ${evaluationResults.salary_analysis.difference_from_average >= 0 ? 'positive' : 'negative'}`}>
-                                <div className="stat-icon">{evaluationResults.salary_analysis.difference_from_average >= 0 ? '📈' : '📉'}</div>
+                                <div className="stat-icon">
+                                  {evaluationResults.salary_analysis.difference_from_average >= 0 ? 
+                                    <TrendingUpIcon size={20} /> : 
+                                    <TrendingDownIcon size={20} />
+                                  }
+                                </div>
                                 <div className="stat-info">
                                   <span className="stat-label">Difference</span>
                                   <span className="stat-value">
@@ -1480,7 +1509,7 @@ const JobOfferEvaluator = () => {
                     {/* Benefits Analysis Card */}
                     <div className="analytics-card benefits-card">
                       <div className="card-header">
-                        <h3>🎁 Benefits Analysis</h3>
+                        <h3><TrendingUpIcon size={20} className="inline mr-2" /> Benefits Analysis</h3>
                         <div className="benefits-score-badge">
                           {evaluationResults.benefits_score}/30 points
                         </div>
@@ -1534,29 +1563,39 @@ const JobOfferEvaluator = () => {
                         </div>
                         <div className="benefits-list-modern">
                           <div className={`benefit-item ${formData.healthInsurance ? 'included' : 'excluded'}`}>
-                            <div className="benefit-icon">🏥</div>
+                            <div className="benefit-icon"><HospitalIcon size={20} /></div>
                             <span className="benefit-name">Health Insurance</span>
-                            <div className="benefit-status">{formData.healthInsurance ? '✅' : '❌'}</div>
+                            <div className="benefit-status">
+                              {formData.healthInsurance ? <CheckMarkIcon size={16} /> : <CrossMarkIcon size={16} />}
+                            </div>
                           </div>
                           <div className={`benefit-item ${formData.remoteWork ? 'included' : 'excluded'}`}>
-                            <div className="benefit-icon">🏠</div>
+                            <div className="benefit-icon"><HomeIcon size={20} /></div>
                             <span className="benefit-name">Remote Work</span>
-                            <div className="benefit-status">{formData.remoteWork ? '✅' : '❌'}</div>
+                            <div className="benefit-status">
+                              {formData.remoteWork ? <CheckMarkIcon size={16} /> : <CrossMarkIcon size={16} />}
+                            </div>
                           </div>
                           <div className={`benefit-item ${formData.esops ? 'included' : 'excluded'}`}>
-                            <div className="benefit-icon">📈</div>
+                            <div className="benefit-icon"><SeedlingIcon size={20} /></div>
                             <span className="benefit-name">ESOPs</span>
-                            <div className="benefit-status">{formData.esops ? '✅' : '❌'}</div>
+                            <div className="benefit-status">
+                              {formData.esops ? <CheckMarkIcon size={16} /> : <CrossMarkIcon size={16} />}
+                            </div>
                           </div>
                           <div className={`benefit-item ${formData.learningBudget ? 'included' : 'excluded'}`}>
-                            <div className="benefit-icon">📚</div>
+                            <div className="benefit-icon"><BookIcon size={20} /></div>
                             <span className="benefit-name">Learning Budget</span>
-                            <div className="benefit-status">{formData.learningBudget ? '✅' : '❌'}</div>
+                            <div className="benefit-status">
+                              {formData.learningBudget ? <CheckMarkIcon size={16} /> : <CrossMarkIcon size={16} />}
+                            </div>
                           </div>
                           <div className={`benefit-item ${formData.otherInsurance ? 'included' : 'excluded'}`}>
-                            <div className="benefit-icon">🛡️</div>
+                            <div className="benefit-icon"><ShieldIcon size={20} /></div>
                             <span className="benefit-name">Other Insurance</span>
-                            <div className="benefit-status">{formData.otherInsurance ? '✅' : '❌'}</div>
+                            <div className="benefit-status">
+                              {formData.otherInsurance ? <CheckMarkIcon size={16} /> : <CrossMarkIcon size={16} />}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1566,15 +1605,15 @@ const JobOfferEvaluator = () => {
                     {costOfLivingData && (
                       <div className="analytics-card cost-card">
                         <div className="card-header">
-                          <h3>🏙️ Cost of Living</h3>
+                          <h3><CityscapeIcon size={20} className="inline mr-2" /> Cost of Living</h3>
                           <div className="location-badge">
-                            📍 {costOfLivingData.city}, {costOfLivingData.country}
+                            <LocationPinIcon size={16} className="inline mr-1" /> {costOfLivingData.city}, {costOfLivingData.country}
                           </div>
                         </div>
                         <div className="card-content">
                           {costOfLivingData.error ? (
-                            <div className="cost-error-modern">
-                              <div className="error-icon">⚠️</div>
+                              <div className="cost-error-modern">
+                              <div className="error-icon"><WarningIcon size={24} /></div>
                               <div className="error-text">
                                 <p>{costOfLivingData.error}</p>
                                 {!GEMINI_CONFIG.API_KEY && (
@@ -1628,8 +1667,8 @@ const JobOfferEvaluator = () => {
                                 </div>
                               </div>
                               <div className="cost-breakdown-modern">
-                                <div className="cost-item-modern rent">
-                                  <div className="cost-icon">🏠</div>
+                  <div className="cost-item-modern rent">
+                    <div className="cost-icon"><HomeIcon size={20} /></div>
                                   <div className="cost-details">
                                     <span className="cost-label">Rent</span>
                                     <span className="cost-value">
@@ -1641,7 +1680,7 @@ const JobOfferEvaluator = () => {
                                   </div>
                                 </div>
                                 <div className="cost-item-modern food">
-                                  <div className="cost-icon">🍽️</div>
+                                  <div className="cost-icon"><DiningIcon size={20} /></div>
                                   <div className="cost-details">
                                     <span className="cost-label">Food</span>
                                     <span className="cost-value">
@@ -1653,7 +1692,7 @@ const JobOfferEvaluator = () => {
                                   </div>
                                 </div>
                                 <div className="cost-item-modern transport">
-                                  <div className="cost-icon">🚗</div>
+                                  <div className="cost-icon"><CarIcon size={20} /></div>
                                   <div className="cost-details">
                                     <span className="cost-label">Transport</span>
                                     <span className="cost-value">
@@ -1667,7 +1706,7 @@ const JobOfferEvaluator = () => {
                               </div>
                               {costOfLivingData.insights && costOfLivingData.insights.length > 0 && (
                                 <div className="cost-insights-modern">
-                                  <h4>💡 Key Insights</h4>
+                                  <h4><LightBulbIcon size={16} className="inline mr-2" /> Key Insights</h4>
                                   <div className="insights-tags">
                                     {costOfLivingData.insights.map((insight, index) => (
                                       <span key={index} className="insight-tag">{insight}</span>
@@ -1684,7 +1723,7 @@ const JobOfferEvaluator = () => {
                     {/* Recommendations Card */}
                     <div className="analytics-card recommendations-card">
                       <div className="card-header">
-                        <h3>💡 Recommendations</h3>
+                        <h3><LightBulbIcon size={20} className="inline mr-2" /> Recommendations</h3>
                       </div>
                       <div className="card-content">
                         <div className="recommendations-modern">
@@ -1710,14 +1749,14 @@ const JobOfferEvaluator = () => {
                     }} 
                     className="action-btn secondary"
                   >
-                    <span className="btn-icon">🔄</span>
+                    <span className="btn-icon"><RefreshIcon size={16} /></span>
                     Evaluate Another Offer
                   </button>
                   <button 
                     onClick={() => window.print()} 
                     className="action-btn primary"
                   >
-                    <span className="btn-icon">📄</span>
+                    <span className="btn-icon"><PageIcon size={16} /></span>
                     Download Report
                   </button>
                 </div>

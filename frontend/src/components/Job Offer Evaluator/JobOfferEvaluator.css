@@ -7,7 +7,8 @@
 
 /* Hero Section with Blue Background */
 .hero-section {
-  background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #2563eb 100%);
+  /* Use a background image with a subtle gradient overlay for better contrast */
+  background: linear-gradient(135deg, rgba(12, 48, 97, 0.65) 0%, rgba(29, 78, 216, 0.45) 50%, rgba(37, 99, 235, 0.25) 100%), url('/JOE-bg.jpg') center/cover no-repeat;
   min-height: 35vh;
   display: flex;
   align-items: center;
@@ -15,6 +16,10 @@
   overflow: hidden;
   padding-top: 40px;
   padding-bottom: 20px;
+  background-blend-mode: overlay;
+  -webkit-background-size: cover;
+  background-size: cover;
+  background-position: center;
 }
 
 .hero-content {
@@ -27,6 +32,16 @@
   align-items: center;
   text-align: center;
   z-index: 2;
+}
+
+/* medium-sized business icons used across the Job Offer Evaluator */
+.job-offer-icon {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.45rem;
 }
 
 .hero-title {
@@ -2214,7 +2229,11 @@
 
 /* Hero section keeps its blue background in both themes */
 [data-theme="dark"] .hero-section {
-  background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #2563eb 100%) !important;
+  /* Keep the background image in dark theme but use a slightly stronger overlay for contrast */
+  background: linear-gradient(135deg, rgba(2, 24, 54, 0.75) 0%, rgba(12, 34, 78, 0.6) 50%, rgba(6, 30, 70, 0.45) 100%), url('/JOE-bg.jpg') center/cover no-repeat !important;
+  background-blend-mode: overlay !important;
+  background-size: cover !important;
+  background-position: center !important;
 }
 
 [data-theme="dark"] .hero-title,
