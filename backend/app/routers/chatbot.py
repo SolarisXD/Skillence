@@ -12,7 +12,7 @@ import google.generativeai as genai
 logger = logging.getLogger(__name__)
 
 # Configure Gemini AI
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+genai.configure(api_key=os.getenv("GEMINI_API"))
 
 router = APIRouter()
 
@@ -29,9 +29,17 @@ class ChatResponse(BaseModel):
 
 class ChatService:
     def __init__(self):
-        api_key = os.getenv("GEMINI_API_KEY")
-        logger.info(f"Initializing ChatService with API key: {'***' + api_key[-4:] if api_key else 'NOT_FOUND'}")
-        self.model = genai.GenerativeModel('gemini-1.5-flash')
+        api_key = os.getenv("GEMINI_API")
+        gemini_endpoint = os.getenv("GEMINI_ENDPOINT")
+        logger.info(f"Initializing ChatService with API key: {'***' + api_key[-4:] if api_key else 'NOT_FOUND'} and endpoint: {gemini_endpoint or 'NOT_SET'}")
+        # Extract model id from GEMINI_ENDPOINT if provided, e.g. "/models/gemini-2.0-flash:generateContent"
+        model_id = 'gemini-1.5-flash'
+        if gemini_endpoint:
+            m = re.search(r'/models/([^:]+)', gemini_endpoint)
+            if m:
+                model_id = m.group(1)
+        logger.info(f"Using Gemini model: {model_id}")
+        self.model = genai.GenerativeModel(model_id)
         self.chat_sessions = {}
     
     def get_career_prompt(self):

@@ -11,3 +11,4 @@ Things to implement / improve:
 - When career path is chosen in Career Path Recommendation, it is saved to mongoDB. use that somewhere meaningful in other features to automatically fetch the career chosen.
 - Folder for profile page in components folder.
 - Change all ResumeDashboard names to ResumeUpload to make space for actual dashboard page.
+- Once sidebar is added, add chatbot there as a small popup in bottom right.

@@ -4,9 +4,11 @@ import Navbar from './navbar';
 import ThemeSelector from './ThemeSelector';
 import AuthModal from './AuthModal';
 import NeuralBg from './NeuralBg';
+import SkillenceChatModal from './skillence/SkillenceChatModal';
 
 const MainPage = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showChatModal, setShowChatModal] = useState(false);
   const navigate = useNavigate();
 
   // Check if user is already authenticated and redirect to dashboard
@@ -38,7 +40,7 @@ const MainPage = () => {
             professional profile and emerging market trends.
           </p>
           <div className="hero-buttons">
-            <button className="cta-button primary">Launch AI Assistant</button>
+            <button className="cta-button primary" onClick={() => setShowChatModal(true)}>Launch AI Assistant</button>
           </div>
         </div>
       </div>
@@ -290,6 +292,9 @@ const MainPage = () => {
 
       {showAuthModal && (
         <AuthModal onClose={() => setShowAuthModal(false)} />
+      )}
+      {showChatModal && (
+        <SkillenceChatModal onClose={() => setShowChatModal(false)} />
       )}
     </>
   );
