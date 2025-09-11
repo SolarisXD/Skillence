@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 import os
 import json
 import re
@@ -12,6 +12,7 @@ import requests
 import logging
 from datetime import datetime
 from app.utils.security import verify_token
+from app.services.learning_plan_service import LearningPlanService
 
 router = APIRouter()
 security = HTTPBearer()
@@ -568,3 +569,199 @@ async def get_career_path(
     except Exception as e:
         logger.error(f"Error retrieving career path: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to retrieve career path")
+
+# Learning Plan Models
+class LearningPlanResponse(BaseModel):
+    success: bool
+    message: str
+    learning_plan: Optional[Dict[str, Any]] = None
+
+class SkillUpdate(BaseModel):
+    skills_to_add: List[str]
+    skill_category: str = "technical"  # technical, soft, languages
+
+class SkillUpdateResponse(BaseModel):
+    success: bool
+    message: str
+    updated_skills: Optional[Dict[str, Any]] = None
+
+# Initialize learning plan service
+learning_plan_service = LearningPlanService()
+
+@router.get("/learning-plan")
+async def get_learning_plan(
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """
+    Generate personalized learning plan based on saved career path and user profile
+    """
+    try:
+        # Verify token and get user_id
+        payload = verify_token(credentials.credentials)
+        user_id = payload.get("user_id")
+        
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        # Connect to MongoDB
+        from app.database import get_database
+        db = get_database()
+        profiles_collection = db.profiles
+        
+        # Get user profile with career path
+        profile = await profiles_collection.find_one({"user_id": user_id})
+        
+        if not profile:
+            raise HTTPException(status_code=404, detail="User profile not found")
+        
+        career_path = profile.get("career_path")
+        if not career_path:
+            raise HTTPException(status_code=404, detail="No career path selected. Please select a career path first.")
+        
+        # Generate learning plan
+        learning_plan = learning_plan_service.generate_learning_plan(profile, career_path)
+        
+        return LearningPlanResponse(
+            success=True,
+            message="Learning plan generated successfully",
+            learning_plan=learning_plan
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error generating learning plan: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to generate learning plan")
+
+@router.post("/add-learned-skills")
+async def add_learned_skills(
+    skill_update: SkillUpdate,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """
+    Add learned skills to user profile and optionally regenerate learning plan
+    """
+    try:
+        # Verify token and get user_id
+        payload = verify_token(credentials.credentials)
+        user_id = payload.get("user_id")
+        
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        # Connect to MongoDB
+        from app.database import get_database
+        db = get_database()
+        profiles_collection = db.profiles
+        
+        # Get current user profile
+        profile = await profiles_collection.find_one({"user_id": user_id})
+        
+        if not profile:
+            raise HTTPException(status_code=404, detail="User profile not found")
+        
+        # Update skills in profile
+        profile_data = profile.get("profile_data", {})
+        current_skills = profile_data.get("skills", {})
+        
+        # Add new skills to the appropriate category
+        category_skills = current_skills.get(skill_update.skill_category, [])
+        
+        # Add only new skills (avoid duplicates)
+        new_skills_added = []
+        for new_skill in skill_update.skills_to_add:
+            # Ensure the skill is a string and properly formatted
+            skill_to_add = str(new_skill).strip()
+            if skill_to_add and skill_to_add not in category_skills:
+                category_skills.append(skill_to_add)
+                new_skills_added.append(skill_to_add)
+        
+        current_skills[skill_update.skill_category] = category_skills
+        profile_data["skills"] = current_skills
+        
+        # Update profile in database
+        result = await profiles_collection.update_one(
+            {"user_id": user_id},
+            {
+                "$set": {
+                    "profile_data": profile_data,
+                    "updated_at": datetime.utcnow().isoformat()
+                }
+            }
+        )
+        
+        if result.acknowledged:
+            # Auto-regenerate learning plan if skills were actually added and user has a career path
+            regenerated_plan = None
+            if new_skills_added and profile.get("career_path"):
+                try:
+                    # Get updated profile for learning plan generation
+                    updated_profile = await profiles_collection.find_one({"user_id": user_id})
+                    career_path = updated_profile.get("career_path")
+                    
+                    # Regenerate learning plan with updated skills
+                    regenerated_plan = learning_plan_service.generate_learning_plan(updated_profile, career_path)
+                    logger.info(f"Auto-regenerated learning plan after adding {len(new_skills_added)} skills")
+                except Exception as e:
+                    logger.error(f"Error auto-regenerating learning plan: {e}")
+                    # Don't fail the skill update if learning plan regeneration fails
+            
+            return SkillUpdateResponse(
+                success=True,
+                message=f"Successfully added {len(new_skills_added)} new skills to {skill_update.skill_category} skills" + 
+                       (" and updated learning plan" if regenerated_plan else ""),
+                updated_skills=current_skills
+            )
+        else:
+            raise HTTPException(status_code=500, detail="Failed to update skills")
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error adding learned skills: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to add learned skills")
+
+@router.post("/regenerate-learning-plan")
+async def regenerate_learning_plan(
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """
+    Regenerate learning plan with updated profile data
+    """
+    try:
+        # Verify token and get user_id
+        payload = verify_token(credentials.credentials)
+        user_id = payload.get("user_id")
+        
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        # Connect to MongoDB
+        from app.database import get_database
+        db = get_database()
+        profiles_collection = db.profiles
+        
+        # Get user profile with career path
+        profile = await profiles_collection.find_one({"user_id": user_id})
+        
+        if not profile:
+            raise HTTPException(status_code=404, detail="User profile not found")
+        
+        career_path = profile.get("career_path")
+        if not career_path:
+            raise HTTPException(status_code=404, detail="No career path selected. Please select a career path first.")
+        
+        # Force regenerate learning plan (could add cache invalidation here)
+        learning_plan = learning_plan_service.generate_learning_plan(profile, career_path)
+        
+        return LearningPlanResponse(
+            success=True,
+            message="Learning plan regenerated successfully with updated skills",
+            learning_plan=learning_plan
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error regenerating learning plan: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to regenerate learning plan")

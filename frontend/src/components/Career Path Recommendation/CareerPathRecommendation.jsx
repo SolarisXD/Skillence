@@ -35,6 +35,57 @@ const LoadingSpinner = () => (
   </svg>
 );
 
+// Learning Plan SVG Icons
+const BookOpenIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M2 3h6l2 2h10v14H2z"/>
+    <path d="M8 21v-5h8v5"/>
+  </svg>
+);
+
+const TargetIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="10"/>
+    <circle cx="12" cy="12" r="6"/>
+    <circle cx="12" cy="12" r="2"/>
+  </svg>
+);
+
+const ClockIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="10"/>
+    <polyline points="12,6 12,12 16,14"/>
+  </svg>
+);
+
+const TrendingUpIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <polyline points="23,6 13.5,15.5 8.5,10.5 1,18"/>
+    <polyline points="17,6 23,6 23,12"/>
+  </svg>
+);
+
+const BrainIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M9.5 2A2.5 2.5 0 0 0 7 4.5v15A2.5 2.5 0 0 0 9.5 22h5a2.5 2.5 0 0 0 2.5-2.5v-15A2.5 2.5 0 0 0 14.5 2z"/>
+    <path d="M9 9h6m-6 4h6"/>
+  </svg>
+);
+
+const CertificateIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="8" r="7"/>
+    <polyline points="8.21,13.89 7,23 12,20 17,23 15.79,13.88"/>
+  </svg>
+);
+
+const CodeIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <polyline points="16,18 22,12 16,6"/>
+    <polyline points="8,6 2,12 8,18"/>
+  </svg>
+);
+
 const CareerPathRecommendation = () => {
   const navigate = useNavigate();
   const [recommendations, setRecommendations] = useState([]);
@@ -45,6 +96,13 @@ const CareerPathRecommendation = () => {
   const [expandedCard, setExpandedCard] = useState(null);
   const [savingCareer, setSavingCareer] = useState(null);
   const [currentCareerPath, setCurrentCareerPath] = useState(null);
+  const [learningPlan, setLearningPlan] = useState(null);
+  const [loadingLearningPlan, setLoadingLearningPlan] = useState(false);
+  const [collapsedPhases, setCollapsedPhases] = useState({ 1: true, 2: true, 3: true }); // Default collapsed
+  const [regeneratingPlan, setRegeneratingPlan] = useState(false);
+  const [addingSkills, setAddingSkills] = useState(false);
+  const [learnedSkills, setLearnedSkills] = useState(new Set());
+  const [hasStartedRoadmap, setHasStartedRoadmap] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -52,7 +110,7 @@ const CareerPathRecommendation = () => {
       navigate('/');
       return;
     }
-    // Load existing career path on component mount
+    // Load existing career path on component mount, but don't auto-generate learning plan
     loadCurrentCareerPath();
   }, [navigate]);
 
@@ -72,10 +130,38 @@ const CareerPathRecommendation = () => {
         const data = await response.json();
         if (data.success && data.career_path) {
           setCurrentCareerPath(data.career_path);
+          // Don't auto-load learning plan anymore - let user initiate it
         }
       }
     } catch (err) {
       console.error('Error loading career path:', err);
+    }
+  };
+
+  const loadLearningPlan = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    setLoadingLearningPlan(true);
+    setHasStartedRoadmap(true);
+    try {
+      const response = await fetch('http://localhost:8000/api/career-path/learning-plan', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.learning_plan) {
+          setLearningPlan(data.learning_plan);
+        }
+      }
+    } catch (err) {
+      console.error('Error loading learning plan:', err);
+    } finally {
+      setLoadingLearningPlan(false);
     }
   };
 
@@ -94,6 +180,11 @@ const CareerPathRecommendation = () => {
 
     setLoading(true);
     setError('');
+    
+    // Clear both learning plan AND current career path when discovering new opportunities
+    setLearningPlan(null);
+    setCurrentCareerPath(null);
+    setCollapsedPhases({ 1: true, 2: true, 3: true }); // Reset to collapsed state
     
     try {
       const response = await fetch('http://localhost:8000/api/career-path/recommendations', {
@@ -121,6 +212,12 @@ const CareerPathRecommendation = () => {
         setRecommendations(topRecommendations);
         setProfileSummary(data.profile_summary || '');
         setHasAnalyzed(true);
+        
+        // Log for debugging - check if recommendations show updated scores
+        console.log('Career recommendations loaded:', topRecommendations.map(r => ({
+          title: r.title,
+          score: (r.score * 100).toFixed(1) + '%'
+        })));
       } else {
         setError(data.message || 'Failed to get recommendations');
       }
@@ -160,6 +257,8 @@ const CareerPathRecommendation = () => {
           // Hide the current recommendations when a career is selected
           setHasAnalyzed(false);
           setExpandedCard(null);
+          // Load learning plan for the newly selected career
+          loadLearningPlan();
         }
       }
     } catch (err) {
@@ -171,6 +270,91 @@ const CareerPathRecommendation = () => {
 
   const toggleCardExpansion = (index) => {
     setExpandedCard(expandedCard === index ? null : index);
+  };
+
+  const togglePhaseCollapse = (phaseNumber) => {
+    setCollapsedPhases(prev => ({
+      ...prev,
+      [phaseNumber]: !prev[phaseNumber]
+    }));
+  };
+
+  const addLearnedSkill = async (skill) => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    // Mark skill as learned immediately for UI feedback
+    setLearnedSkills(prev => new Set([...prev, skill]));
+
+    try {
+      const response = await fetch('http://localhost:8000/api/career-path/add-learned-skills', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          skills_to_add: [skill],
+          skill_category: "technical"
+        })
+      });
+
+      if (response.ok) {
+        console.log('Skill added successfully');
+        // Auto-refresh both the learning plan AND career recommendations to show updated compatibility scores
+        setTimeout(() => {
+          loadLearningPlan();
+          // If user has already discovered opportunities, refresh recommendations to show updated compatibility
+          if (hasAnalyzed && recommendations.length > 0) {
+            console.log('Refreshing career recommendations after skill addition...');
+            analyzeCareerPath();
+          }
+        }, 1000); // Small delay to ensure backend processing is complete
+      } else {
+        // Revert the UI change if the API call failed
+        setLearnedSkills(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(skill);
+          return newSet;
+        });
+      }
+    } catch (err) {
+      console.error('Error adding skill:', err);
+      // Revert the UI change if the API call failed
+      setLearnedSkills(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(skill);
+        return newSet;
+      });
+    }
+  };
+
+  const regenerateLearningPlan = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    setRegeneratingPlan(true);
+    // Reset to collapsed state when regenerating
+    setCollapsedPhases({ 1: true, 2: true, 3: true });
+    try {
+      const response = await fetch('http://localhost:8000/api/career-path/regenerate-learning-plan', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.learning_plan) {
+          setLearningPlan(data.learning_plan);
+        }
+      }
+    } catch (err) {
+      console.error('Error regenerating learning plan:', err);
+    } finally {
+      setRegeneratingPlan(false);
+    }
   };
 
   return (
@@ -222,6 +406,238 @@ const CareerPathRecommendation = () => {
                 <p className="career-explanation">{currentCareerPath.explanation}</p>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Learning Plan Section */}
+        {currentCareerPath && (
+          <div className="learning-plan-section">
+            <div className="learning-plan-header">
+              <div className="header-content">
+                <BrainIcon />
+                <div className="header-text">
+                  <h2 className="learning-plan-title">Personalized Learning Plan</h2>
+                  <p className="learning-plan-subtitle">
+                    Tailored roadmap to bridge skill gaps and achieve your career goals
+                  </p>
+                </div>
+                {learningPlan && (
+                  <button 
+                    className="regenerate-button"
+                    onClick={regenerateLearningPlan}
+                    disabled={regeneratingPlan}
+                  >
+                    {regeneratingPlan ? (
+                      <>
+                        <LoadingSpinner />
+                        Regenerating...
+                      </>
+                    ) : (
+                      <>
+                        🔄 Regenerate Plan
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {!hasStartedRoadmap && !learningPlan ? (
+              <div className="start-roadmap-section">
+                <div className="start-roadmap-content">
+                  <h3>Ready to Begin Your Learning Journey?</h3>
+                  <p>Generate a personalized learning roadmap tailored to your career goals and current skills. Our AI will analyze your profile and create a step-by-step plan to help you reach your target role.</p>
+                  <button
+                    className="simple-start-button"
+                    onClick={loadLearningPlan}
+                    disabled={loadingLearningPlan}
+                  >
+                    {loadingLearningPlan ? (
+                      <>
+                        <LoadingSpinner />
+                        Generating...
+                      </>
+                    ) : (
+                      'Generate Learning Roadmap'
+                    )}
+                  </button>
+                </div>
+              </div>
+            ) : loadingLearningPlan ? (
+              <div className="learning-plan-loading">
+                <LoadingSpinner />
+                <p>Analyzing your profile and generating personalized learning roadmap...</p>
+              </div>
+            ) : learningPlan ? (
+              <>
+                {/* Skill Gap Analysis */}
+                <div className="skill-gap-analysis">
+                  <div className="section-header">
+                    <TargetIcon />
+                    <h3>Skill Gap Analysis</h3>
+                  </div>
+                  
+                  <div className="skill-analysis-grid">
+                    <div className="skill-summary-card">
+                      <div className="summary-stat">
+                        <span className="stat-number">{learningPlan.skill_analysis?.total_gaps || 0}</span>
+                        <span className="stat-label">Skills to Develop</span>
+                      </div>
+                    </div>
+                    
+                    <div className="skill-summary-card">
+                      <div className="summary-stat">
+                        <span className="stat-number">{learningPlan.skill_analysis?.strengths_count || 0}</span>
+                        <span className="stat-label">Current Strengths</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Priority Skills */}
+                  {learningPlan.skill_analysis?.priority_skills && learningPlan.skill_analysis.priority_skills.length > 0 && (
+                    <div className="priority-skills">
+                      <h4>High Priority Skills to Develop</h4>
+                      <div className="gamified-skills-grid">
+                        {learningPlan.skill_analysis.priority_skills.map((skill, index) => (
+                          <div key={index} className="gamified-skill-card">
+                            <div className="skill-content">
+                              <div className="skill-info">
+                                <span className="skill-name">
+                                  {skill.skill || skill.technology}
+                                </span>
+                                <span className={`priority-badge priority-${skill.priority}`}>
+                                  {skill.priority}
+                                </span>
+                              </div>
+                              {skill.reason && (
+                                <p className="skill-reason">{skill.reason}</p>
+                              )}
+                              <button 
+                                className={`add-skill-button ${learnedSkills.has(skill.skill || skill.technology) ? 'learned' : ''}`}
+                                onClick={() => addLearnedSkill(skill.skill || skill.technology)}
+                                disabled={learnedSkills.has(skill.skill || skill.technology)}
+                              >
+                                {learnedSkills.has(skill.skill || skill.technology) ? (
+                                  <>
+                                    <CheckIcon />
+                                    Learned
+                                  </>
+                                ) : (
+                                  '✓ Mark as Learned'
+                                )}
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Strengths */}
+                  {learningPlan.skill_gaps?.strengths && learningPlan.skill_gaps.strengths.length > 0 && (
+                    <div className="current-strengths">
+                      <h4>Your Current Strengths</h4>
+                      <div className="strengths-grid">
+                        {learningPlan.skill_gaps.strengths.slice(0, 6).map((strength, index) => (
+                          <div key={index} className="strength-card">
+                            <CheckIcon />
+                            <span>{strength.technology || strength.skill || strength}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Learning Roadmap */}
+                <div className="learning-roadmap">
+                  <div className="section-header">
+                    <ClockIcon />
+                    <h3>Learning Roadmap</h3>
+                    <span className="timeline-duration">{learningPlan.learning_roadmap?.total_duration || '12 months'}</span>
+                  </div>
+
+                  <div className="roadmap-phases">
+                    {learningPlan.learning_roadmap?.phases?.map((phase, index) => (
+                      <div key={index} className="phase-card">
+                        <div className="phase-header" onClick={() => togglePhaseCollapse(phase.phase_number)}>
+                          <div className="phase-number">{phase.phase_number}</div>
+                          <div className="phase-info">
+                            <h4 className="phase-title">{phase.title}</h4>
+                            <p className="phase-duration">{phase.duration}</p>
+                          </div>
+                          <div className="phase-toggle">
+                            {collapsedPhases[phase.phase_number] ? <ChevronDownIcon /> : <ChevronUpIcon />}
+                          </div>
+                        </div>
+                        
+                        {!collapsedPhases[phase.phase_number] && (
+                          <div className="phase-content">
+                            <p className="phase-description">{phase.description}</p>
+
+                            {/* Skills to Learn */}
+                            {phase.skills_to_learn && phase.skills_to_learn.length > 0 && (
+                              <div className="phase-skills">
+                                <h5>🎯 Skills Focus</h5>
+                                <div className="gamified-phase-skills">
+                                  {phase.skills_to_learn.map((skill, skillIdx) => (
+                                    <div key={skillIdx} className="gamified-skill-box">
+                                      <span className="skill-text">{skill.skill || skill.technology || skill}</span>
+                                      <div className="skill-progress-ring"></div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                        {/* Learning Resources */}
+                        {phase.learning_resources && phase.learning_resources.length > 0 && (
+                          <div className="phase-resources">
+                            <h5>Recommended Resources</h5>
+                            <div className="resources-list">
+                              {phase.learning_resources.slice(0, 3).map((resource, resIdx) => (
+                                <div key={resIdx} className="resource-item">
+                                  {resource.type === 'course' && <BookOpenIcon />}
+                                  {resource.type === 'certification' && <CertificateIcon />}
+                                  {resource.type === 'project' && <CodeIcon />}
+                                  <div className="resource-info">
+                                    <span className="resource-title">{resource.title}</span>
+                                    <span className="resource-meta">
+                                      {resource.provider || resource.platform} • {resource.duration}
+                                    </span>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                            {/* Milestones */}
+                            {phase.milestones && phase.milestones.length > 0 && (
+                              <div className="phase-milestones">
+                                <h5>🏆 Key Milestones</h5>
+                                <ul className="milestones-list">
+                                  {phase.milestones.map((milestone, milIdx) => (
+                                    <li key={milIdx} className="milestone-item">
+                                      <TargetIcon />
+                                      {milestone}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="learning-plan-error">
+                <p>Unable to generate learning plan. Please try refreshing the page.</p>
+              </div>
+            )}
           </div>
         )}
         

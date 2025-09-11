@@ -301,8 +301,8 @@ const ProfilePage = () => {
               <div className="contact-item">
                 <span className="contact-label">Website:</span>
                 <span className="contact-value">
-                  <a href={contact.website} target="_blank" rel="noopener noreferrer">
-                    {contact.website}
+                  <a href={cleanUrl(contact.website)} target="_blank" rel="noopener noreferrer">
+                    {cleanUrl(contact.website)}
                   </a>
                 </span>
               </div>
@@ -311,8 +311,8 @@ const ProfilePage = () => {
               <div className="contact-item">
                 <span className="contact-label">LinkedIn:</span>
                 <span className="contact-value">
-                  <a href={contact.linkedin} target="_blank" rel="noopener noreferrer">
-                    {contact.linkedin}
+                  <a href={cleanUrl(contact.linkedin)} target="_blank" rel="noopener noreferrer">
+                    {cleanUrl(contact.linkedin)}
                   </a>
                 </span>
               </div>
@@ -321,8 +321,8 @@ const ProfilePage = () => {
               <div className="contact-item">
                 <span className="contact-label">GitHub:</span>
                 <span className="contact-value">
-                  <a href={contact.github} target="_blank" rel="noopener noreferrer">
-                    {contact.github}
+                  <a href={cleanUrl(contact.github)} target="_blank" rel="noopener noreferrer">
+                    {cleanUrl(contact.github)}
                   </a>
                 </span>
               </div>
