@@ -161,9 +161,12 @@
   gap: 1rem;
 }
 
+/* demo-icon styles commented out as element was removed */
+/*
 .demo-icon {
   font-size: 1.8rem;
 }
+*/
 
 .demo-description {
   font-size: 1.1rem;

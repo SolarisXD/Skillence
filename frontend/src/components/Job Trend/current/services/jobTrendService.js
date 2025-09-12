@@ -185,10 +185,10 @@ export const formatSalary = (value) => {
 };
 
 export const getTrendIndicator = (score) => {
-  if (score >= 90) return { icon: '🔥', label: 'Hot', color: '#EF4444' };
-  if (score >= 80) return { icon: '📈', label: 'Trending', color: '#F59E0B' };
-  if (score >= 70) return { icon: '📊', label: 'Stable', color: '#10B981' };
-  return { icon: '📉', label: 'Cooling', color: '#6B7280' };
+  if (score >= 90) return { icon: '', label: 'Hot', color: '#EF4444' };
+  if (score >= 80) return { icon: '', label: 'Trending', color: '#F59E0B' };
+  if (score >= 70) return { icon: '', label: 'Stable', color: '#10B981' };
+  return { icon: '', label: 'Cooling', color: '#6B7280' };
 };
 
 export const getGrowthColor = (growth) => {

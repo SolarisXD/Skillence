@@ -173,7 +173,7 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
         <div className="navbar-container">
           {/* Logo - Left aligned */}
           <div className="navbar-brand" onClick={() => navigate('/')}>
-            <h1>Chatbot</h1>
+            <h1>Skillence</h1>
           </div>
           
           {/* Navigation Menu - Center-left with proper spacing */}

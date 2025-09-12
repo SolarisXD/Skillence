@@ -65,7 +65,6 @@ const JobTrendNavigation = () => {
       <div className="demo-section">
         <div className="demo-card">
           <h2 className="demo-title">
-            <span className="demo-icon">🔬</span>
             Live Demo Available
           </h2>
           <p className="demo-description">

@@ -305,7 +305,7 @@ class JobTrendService:
         return sorted(trend_data, key=lambda x: x['date'])
     
     async def get_experience_distribution(self, job_title: str) -> List[Dict[str, Any]]:
-        """Get experience level distribution for a job title"""
+        """Get experience level distribution for a job title with salary information"""
         df = await self._load_data()
         
         # Filter by job title
@@ -314,20 +314,46 @@ class JobTrendService:
         if job_data.empty:
             return []
         
-        # Calculate distribution
-        exp_dist = job_data['experience_level'].value_counts()
+        # Calculate distribution with salary information
+        distribution = []
         total = len(job_data)
         
-        distribution = []
-        for level, count in exp_dist.items():
+        # Group by experience level
+        exp_groups = job_data.groupby('experience_level')
+        
+        for level, group in exp_groups:
+            count = len(group)
             percentage = (count / total) * 100
+            
+            # Calculate average salary for this experience level
+            salary_data = group['salary_usd'].dropna()
+            avg_salary = float(salary_data.mean()) if not salary_data.empty else 0.0
+            
+            # Map experience level codes to readable names
+            level_name = self._map_experience_level(level)
+            
             distribution.append({
-                "level": level,
+                "level": level_name,
                 "count": int(count),
-                "percentage": round(float(percentage), 1)
+                "percentage": round(float(percentage), 1),
+                "average_salary": round(avg_salary, 0) if avg_salary > 0 else 0,
+                "salary_min": float(salary_data.min()) if not salary_data.empty else 0,
+                "salary_max": float(salary_data.max()) if not salary_data.empty else 0,
+                "salary_median": float(salary_data.median()) if not salary_data.empty else 0
             })
         
-        return distribution
+        # Sort by count (descending)
+        return sorted(distribution, key=lambda x: x['count'], reverse=True)
+    
+    def _map_experience_level(self, level_code: str) -> str:
+        """Map experience level codes to readable names"""
+        mapping = {
+            'EN': 'Entry Level',
+            'MI': 'Mid Level', 
+            'SE': 'Senior Level',
+            'EX': 'Executive'
+        }
+        return mapping.get(level_code, level_code)
     
     def _apply_time_filter(self, df: pd.DataFrame, time_range: str) -> pd.DataFrame:
         """Apply time range filter to dataframe"""

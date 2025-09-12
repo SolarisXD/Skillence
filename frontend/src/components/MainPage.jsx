@@ -87,7 +87,7 @@ const MainPage = () => {
                   <div className="chart-bar" style={{height: '80%'}}></div>
                   <div className="chart-bar" style={{height: '60%'}}></div>
                 </div>
-                <span className="trend-text">📈 +23% AI demand</span>
+                <span className="trend-text">+23% AI demand</span>
               </div>
             </div>
 

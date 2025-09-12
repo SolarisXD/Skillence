@@ -5,7 +5,7 @@
   width: 100%;
   min-height: 100vh;
   padding: 90px 0 20px 0; /* Top padding to account for fixed navbar, no side padding for full width */
-  background: var(--primary-gradient);
+  background: var(--bg-primary);
   font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: var(--text-primary);
   transition: var(--transition-base);

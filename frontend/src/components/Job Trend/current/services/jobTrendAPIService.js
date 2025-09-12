@@ -97,11 +97,15 @@ class JobTrendAPIService {
       }
       const data = await response.json();
       
-      // Transform for pie chart
+      // Transform for pie chart with salary information
       return data.distribution.map(item => ({
         level: this.formatExperienceLevel(item.level),
         value: item.count,
-        percentage: item.percentage
+        percentage: item.percentage,
+        averageSalary: item.average_salary || 0,
+        salaryMin: item.salary_min || 0,
+        salaryMax: item.salary_max || 0,
+        salaryMedian: item.salary_median || 0
       }));
     } catch (error) {
       console.error('Error fetching experience distribution:', error);

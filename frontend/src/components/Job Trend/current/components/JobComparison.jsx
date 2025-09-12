@@ -74,13 +74,9 @@ const JobComparison = ({ availableJobs }) => {
         <select 
           onChange={(e) => addJobToComparison(e.target.value)}
           value=""
+          className="control-select"
           style={{
             width: '100%',
-            padding: '12px 16px',
-            background: 'var(--input-bg)',
-            border: '1px solid var(--border-color)',
-            borderRadius: '8px',
-            color: 'var(--text-primary)',
             fontSize: '0.95rem',
             cursor: 'pointer'
           }}
@@ -116,7 +112,7 @@ const JobComparison = ({ availableJobs }) => {
         ) : (
           <div style={{ 
             display: 'flex', 
-            gap: '12px', 
+            gap: '8px', 
             flexWrap: 'wrap', 
             marginTop: '12px' 
           }}>
@@ -124,30 +120,44 @@ const JobComparison = ({ availableJobs }) => {
               <div key={job} style={{
                 background: 'var(--accent-color)',
                 color: 'white',
-                padding: '10px 16px',
-                borderRadius: '20px',
+                padding: '6px 12px',
+                borderRadius: '16px',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '10px',
-                fontSize: '0.9rem',
-                fontWeight: '500'
+                gap: '8px',
+                fontSize: '0.85rem',
+                fontWeight: '500',
+                maxWidth: 'fit-content'
               }}>
                 {job}
                 <button 
                   onClick={() => removeJobFromComparison(job)}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'rgba(255,255,255,0.5)';
+                    e.target.style.transform = 'scale(1.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'rgba(255,255,255,0.3)';
+                    e.target.style.transform = 'scale(1)';
+                  }}
                   style={{
                     background: 'rgba(255,255,255,0.3)',
                     border: 'none',
                     borderRadius: '50%',
-                    width: '22px',
-                    height: '22px',
+                    width: '18px',
+                    height: '18px',
                     cursor: 'pointer',
                     color: 'white',
-                    fontSize: '14px',
+                    fontSize: '11px',
                     fontWeight: 'bold',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    lineHeight: '1',
+                    padding: '0',
+                    margin: '0',
+                    flexShrink: 0,
+                    transition: 'all 0.2s ease'
                   }}
                 >×</button>
               </div>
@@ -315,7 +325,7 @@ const JobComparison = ({ availableJobs }) => {
                         <th style={{ 
                           padding: '16px 20px', 
                           border: '1px solid var(--border-color)',
-                          textAlign: 'left',
+                          textAlign: 'center',
                           color: 'var(--text-primary)',
                           fontWeight: '600',
                           fontSize: '0.95rem'

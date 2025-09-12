@@ -22,18 +22,36 @@
   --dropdown-border: rgba(0, 0, 0, 0.05);
   --hover-bg: rgba(30, 64, 175, 0.05);
   --modal-overlay: rgba(0, 0, 0, 0.4);
+  
+  /* Additional variables for enhanced components */
+  --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --card-gradient: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  --card-bg: #ffffff;
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-glow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --accent-glow: rgba(30, 64, 175, 0.15);
+  --text-accent: #1e40af;
+  --card-gradient-rgb: 255, 255, 255;
+  --card-bg-rgb: 255, 255, 255;
+  
+  /* Component gradients */
+  --primary-gradient: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+  --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
 }
 
 [data-theme="dark"] {
-  /* Dark theme colors - True Dark Business */
+  /* Dark theme colors - Unified Professional Dark */
   --bg-primary: #121212;
-  --bg-secondary: #1e1e1e;
-  --bg-tertiary: #2c2c2c;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #1a1a1a;
   --text-primary: #ffffff;
   --text-secondary: #d1d5db;
   --text-muted: #9ca3af;
-  --border-color: #2c2c2c;
-  --border-light: #424242;
+  --border-color: #2a2a2a;
+  --border-light: #353535;
   --accent-color: #3b82f6;
   --accent-hover: #2563eb;
   --success-color: #059669;
@@ -42,12 +60,30 @@
   --shadow-light: rgba(0, 0, 0, 0.5);
   --shadow-medium: rgba(0, 0, 0, 0.7);
   --shadow-heavy: rgba(0, 0, 0, 0.9);
-  --navbar-bg: rgba(18, 18, 18, 0.85);
-  --navbar-border: rgba(255, 255, 255, 0.1);
-  --dropdown-bg: #2c2c2c;
-  --dropdown-border: #424242;
+  --navbar-bg: rgba(18, 18, 18, 0.95);
+  --navbar-border: rgba(255, 255, 255, 0.08);
+  --dropdown-bg: #1a1a1a;
+  --dropdown-border: #2a2a2a;
   --hover-bg: rgba(59, 130, 246, 0.1);
   --modal-overlay: rgba(0, 0, 0, 0.8);
+  
+  /* Additional variables for enhanced components - Unified */
+  --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --card-gradient: linear-gradient(135deg, #1a1a1a 0%, #1a1a1a 100%);
+  --card-bg: #1a1a1a;
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
+  --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.8), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --accent-glow: rgba(59, 130, 246, 0.25);
+  --text-accent: #3b82f6;
+  --card-gradient-rgb: 26, 26, 26;
+  --card-bg-rgb: 26, 26, 26;
+  
+  /* Component gradients */
+  --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
 }
 
 [data-theme="auto"] {
@@ -74,18 +110,36 @@
   --dropdown-border: rgba(0, 0, 0, 0.05);
   --hover-bg: rgba(30, 64, 175, 0.05);
   --modal-overlay: rgba(0, 0, 0, 0.4);
+  
+  /* Additional variables for enhanced components */
+  --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --card-gradient: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  --card-bg: #ffffff;
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-glow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --accent-glow: rgba(30, 64, 175, 0.15);
+  --text-accent: #1e40af;
+  --card-gradient-rgb: 255, 255, 255;
+  --card-bg-rgb: 255, 255, 255;
+  
+  /* Component gradients */
+  --primary-gradient: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+  --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
 }
 
 @media (prefers-color-scheme: dark) {
   [data-theme="auto"] {
     --bg-primary: #121212;
-    --bg-secondary: #1e1e1e;
-    --bg-tertiary: #2c2c2c;
+    --bg-secondary: #1a1a1a;
+    --bg-tertiary: #1a1a1a;
     --text-primary: #ffffff;
     --text-secondary: #d1d5db;
     --text-muted: #9ca3af;
-    --border-color: #2c2c2c;
-    --border-light: #424242;
+    --border-color: #2a2a2a;
+    --border-light: #353535;
     --accent-color: #3b82f6;
     --accent-hover: #2563eb;
     --success-color: #059669;
@@ -94,12 +148,30 @@
     --shadow-light: rgba(0, 0, 0, 0.5);
     --shadow-medium: rgba(0, 0, 0, 0.7);
     --shadow-heavy: rgba(0, 0, 0, 0.9);
-    --navbar-bg: rgba(18, 18, 18, 0.85);
-    --navbar-border: rgba(255, 255, 255, 0.1);
-    --dropdown-bg: #2c2c2c;
-    --dropdown-border: #424242;
+    --navbar-bg: rgba(18, 18, 18, 0.95);
+    --navbar-border: rgba(255, 255, 255, 0.08);
+    --dropdown-bg: #1a1a1a;
+    --dropdown-border: #2a2a2a;
     --hover-bg: rgba(59, 130, 246, 0.1);
     --modal-overlay: rgba(0, 0, 0, 0.8);
+    
+    /* Additional variables for enhanced components - dark auto theme */
+    --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --card-gradient: linear-gradient(135deg, #1a1a1a 0%, #1a1a1a 100%);
+    --card-bg: #1a1a1a;
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
+    --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.8), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --accent-glow: rgba(59, 130, 246, 0.25);
+    --text-accent: #3b82f6;
+    --card-gradient-rgb: 26, 26, 26;
+    --card-bg-rgb: 26, 26, 26;
+    
+    /* Component gradients */
+    --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   }
 }
 

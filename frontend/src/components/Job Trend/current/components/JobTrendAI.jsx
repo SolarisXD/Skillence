@@ -59,12 +59,14 @@ const JobTrendAI = ({ selectedFilters }) => {
       margin: '20px 0',
       boxShadow: 'var(--shadow-lg)'
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
         <h3 style={{ 
           color: 'var(--text-primary)', 
           margin: '0',
           fontSize: '1.4rem',
-          fontWeight: '600'
+          fontWeight: '600',
+          textAlign: 'center',
+          width: '100%'
         }}>
           AI Market Insights
         </h3>
@@ -75,10 +77,23 @@ const JobTrendAI = ({ selectedFilters }) => {
             border: '3px solid var(--border-color)',
             borderTop: '3px solid var(--accent-color)',
             borderRadius: '50%',
-            animation: 'spin 1s linear infinite'
+            animation: 'spin 1s linear infinite',
+            position: 'absolute',
+            right: '24px'
           }} />
         )}
       </div>
+
+      {/* Simple tagline without separate box */}
+      <p style={{ 
+        color: 'var(--text-secondary)', 
+        margin: '0 0 20px 0',
+        fontSize: '1rem',
+        textAlign: 'center',
+        lineHeight: '1.5'
+      }}>
+        Get AI-powered insights about market trends, career advice, and skill recommendations for your selected job role.
+      </p>
 
       {insights ? (
         <div style={{ marginTop: '20px' }}>
@@ -93,7 +108,13 @@ const JobTrendAI = ({ selectedFilters }) => {
               <p style={{ color: 'var(--error-text)', margin: '0' }}>{insights.error}</p>
             </div>
           ) : (
-            <div style={{ display: 'grid', gap: '20px' }}>
+            <div style={{ 
+              display: 'grid', 
+              gap: '20px',
+              border: '2px solid white',
+              borderRadius: '12px',
+              padding: '20px'
+            }}>
               {insights.marketOverview && (
                 <div style={{ 
                   padding: '20px',
@@ -134,20 +155,20 @@ const JobTrendAI = ({ selectedFilters }) => {
                   }}>
                     Career Recommendations
                   </h4>
-                  <ul style={{ 
+                  <div style={{ 
                     margin: '0', 
-                    paddingLeft: '20px',
                     color: 'var(--text-secondary)'
                   }}>
                     {insights.careerAdvice.map((advice, index) => (
-                      <li key={index} style={{ 
-                        marginBottom: '8px',
-                        lineHeight: '1.5'
+                      <p key={index} style={{ 
+                        marginBottom: '12px',
+                        lineHeight: '1.6',
+                        margin: '0 0 12px 0'
                       }}>
                         {advice}
-                      </li>
+                      </p>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               )}
               
@@ -214,42 +235,41 @@ const JobTrendAI = ({ selectedFilters }) => {
             </div>
           )}
         </div>
-      ) : !loading && (
-        <div style={{ 
-          textAlign: 'center', 
-          padding: '40px 20px',
-          background: 'var(--bg-secondary)',
-          borderRadius: '12px',
-          border: '1px solid var(--border-color)'
-        }}>
-          <p style={{ 
-            color: 'var(--text-secondary)', 
-            margin: '0 0 20px 0',
-            fontSize: '1rem'
-          }}>
-            Get AI-powered insights about market trends, career advice, and skill recommendations for your selected job role.
-          </p>
-        </div>
-      )}
+      ) : null}
 
       <button
         onClick={generateInsights}
         disabled={loading}
         style={{
-          background: loading ? 'var(--bg-secondary)' : 'var(--accent-color)',
+          background: loading ? 'var(--bg-secondary)' : 'var(--text-primary)',
           border: '1px solid var(--border-color)',
-          color: loading ? 'var(--text-secondary)' : 'white',
+          color: loading ? 'var(--text-secondary)' : 'var(--bg-primary)',
           padding: '12px 24px',
           borderRadius: '8px',
           marginTop: '20px',
           cursor: loading ? 'not-allowed' : 'pointer',
           transition: 'all 0.3s ease',
           fontSize: '0.95rem',
-          fontWeight: '500',
-          width: '100%'
+          fontWeight: '600',
+          width: '100%',
+          boxShadow: 'var(--shadow-md)'
+        }}
+        onMouseEnter={(e) => {
+          if (!loading) {
+            e.target.style.background = 'var(--text-secondary)';
+            e.target.style.transform = 'translateY(-1px)';
+            e.target.style.boxShadow = 'var(--shadow-hover)';
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!loading) {
+            e.target.style.background = 'var(--text-primary)';
+            e.target.style.transform = 'translateY(0)';
+            e.target.style.boxShadow = 'var(--shadow-md)';
+          }
         }}
       >
-        {loading ? 'Generating AI Insights...' : 'Generate AI Insights'}
+        {loading ? 'Generating AI Insights...' : (insights && !insights.error ? 'Generate New Insights' : 'Generate AI Insights')}
       </button>
 
       <style jsx>{`
