@@ -10,9 +10,21 @@ from dotenv import load_dotenv
 from pymongo import MongoClient
 import requests
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 from app.utils.security import verify_token
 from app.services.learning_plan_service import LearningPlanService
+from app.models.learning_roadmap import (
+    LearningRoadmapProgress, 
+    PhaseProgress, 
+    TaskProgress, 
+    TaskCompletionUpdate,
+    PhaseDeadlineUpdate,
+    RoadmapProgressResponse,
+    RoadmapCreationRequest,
+    ProgressSummary,
+    TaskStatus,
+    PhaseStatus
+)
 
 router = APIRouter()
 security = HTTPBearer()
@@ -593,7 +605,8 @@ async def get_learning_plan(
     credentials: HTTPAuthorizationCredentials = Depends(security)
 ):
     """
-    Generate personalized learning plan based on saved career path and user profile
+    Generate personalized learning plan based on saved career path and user profile.
+    Only generates skills analysis - roadmap structure is handled separately.
     """
     try:
         # Verify token and get user_id
@@ -618,7 +631,7 @@ async def get_learning_plan(
         if not career_path:
             raise HTTPException(status_code=404, detail="No career path selected. Please select a career path first.")
         
-        # Generate learning plan
+        # Generate learning plan (just skills analysis)
         learning_plan = learning_plan_service.generate_learning_plan(profile, career_path)
         
         return LearningPlanResponse(
@@ -632,6 +645,55 @@ async def get_learning_plan(
     except Exception as e:
         logger.error(f"Error generating learning plan: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to generate learning plan")
+
+@router.post("/generate-roadmap")
+async def generate_and_save_roadmap(
+    user_id: str = Depends(get_current_user_id)
+):
+    """
+    Generate complete learning roadmap and save it with progress tracking.
+    This creates the persistent roadmap structure.
+    """
+    try:
+        from app.database import get_database
+        db = get_database()
+        profiles_collection = db.profiles
+        
+        # Get user profile with career path
+        profile = await profiles_collection.find_one({"user_id": user_id})
+        
+        if not profile:
+            raise HTTPException(status_code=404, detail="User profile not found")
+        
+        career_path = profile.get("career_path")
+        if not career_path:
+            raise HTTPException(status_code=404, detail="No career path selected. Please select a career path first.")
+        
+        # Generate complete learning plan with roadmap
+        learning_plan = learning_plan_service.generate_learning_plan(profile, career_path)
+        
+        # Create roadmap request
+        roadmap_request = RoadmapCreationRequest(
+            career_path_id=career_path["occupation_code"],
+            learning_plan_data=learning_plan,
+            estimated_duration_months=12  # Default to 12 months
+        )
+        
+        # Call the create roadmap function
+        roadmap_response = await create_learning_roadmap(roadmap_request, user_id)
+        
+        return {
+            "success": True,
+            "message": "Learning roadmap generated and saved successfully",
+            "learning_plan": learning_plan,
+            "roadmap_progress": roadmap_response.roadmap_progress
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error generating roadmap: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to generate roadmap")
 
 @router.post("/add-learned-skills")
 async def add_learned_skills(
@@ -765,3 +827,415 @@ async def regenerate_learning_plan(
     except Exception as e:
         logger.error(f"Error regenerating learning plan: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to regenerate learning plan")
+
+# New Learning Roadmap Progress Endpoints
+
+@router.post("/roadmap/create")
+async def create_learning_roadmap(
+    roadmap_request: RoadmapCreationRequest,
+    user_id: str = Depends(get_current_user_id)
+):
+    """Create a new learning roadmap with progress tracking"""
+    try:
+        from app.database import get_database
+        db = get_database()
+        
+        # Get user's career path
+        profiles_collection = db.profiles
+        profile = await profiles_collection.find_one({"user_id": user_id})
+        
+        if not profile or not profile.get("career_path"):
+            raise HTTPException(status_code=404, detail="Career path not found")
+        
+        career_path = profile["career_path"]
+        
+        # Parse estimated duration
+        duration_months = roadmap_request.estimated_duration_months
+        estimated_completion = datetime.utcnow() + timedelta(days=duration_months * 30)
+        
+        # Create phases with tasks from learning plan
+        phases = []
+        learning_plan = roadmap_request.learning_plan_data
+        roadmap_phases = learning_plan.get("learning_roadmap", {}).get("phases", [])
+        
+        for idx, phase_data in enumerate(roadmap_phases, 1):
+            # Calculate phase deadline (distribute evenly across total duration)
+            phase_duration_days = (duration_months * 30) // len(roadmap_phases)
+            phase_deadline = datetime.utcnow() + timedelta(days=phase_duration_days * idx)
+            
+            # Create tasks for this phase
+            tasks = []
+            
+            # 1. Add regular tasks (3-4 tasks to do) - generate from phase context
+            phase_title = phase_data.get("title", f"Phase {idx}")
+            phase_description = phase_data.get("description", "")
+            
+            # Generate contextual tasks based on phase
+            if "foundation" in phase_title.lower() or idx == 1:
+                tasks.extend([
+                    TaskProgress(task_id=f"task_{idx}_1", task_name="Set up development environment", task_type="task"),
+                    TaskProgress(task_id=f"task_{idx}_2", task_name="Complete introductory courses", task_type="task"),
+                    TaskProgress(task_id=f"task_{idx}_3", task_name="Build first practice project", task_type="task"),
+                    TaskProgress(task_id=f"task_{idx}_4", task_name="Join relevant communities", task_type="task")
+                ])
+            elif "technical" in phase_title.lower() or "development" in phase_title.lower() or idx == 2:
+                tasks.extend([
+                    TaskProgress(task_id=f"task_{idx}_1", task_name="Complete intermediate projects", task_type="task"),
+                    TaskProgress(task_id=f"task_{idx}_2", task_name="Practice coding challenges", task_type="task"),
+                    TaskProgress(task_id=f"task_{idx}_3", task_name="Build portfolio website", task_type="task"),
+                    TaskProgress(task_id=f"task_{idx}_4", task_name="Contribute to open source", task_type="task")
+                ])
+            elif "specialization" in phase_title.lower() or "mastery" in phase_title.lower() or idx == 3:
+                tasks.extend([
+                    TaskProgress(task_id=f"task_{idx}_1", task_name="Complete capstone project", task_type="task"),
+                    TaskProgress(task_id=f"task_{idx}_2", task_name="Obtain relevant certifications", task_type="task"),
+                    TaskProgress(task_id=f"task_{idx}_3", task_name="Apply for job opportunities", task_type="task"),
+                    TaskProgress(task_id=f"task_{idx}_4", task_name="Network with professionals", task_type="task")
+                ])
+            else:
+                # Generic tasks
+                tasks.extend([
+                    TaskProgress(task_id=f"task_{idx}_1", task_name="Complete learning objectives", task_type="task"),
+                    TaskProgress(task_id=f"task_{idx}_2", task_name="Practice hands-on exercises", task_type="task"),
+                    TaskProgress(task_id=f"task_{idx}_3", task_name="Build relevant projects", task_type="task")
+                ])
+            
+            # 2. Add skills as skills (for Skills Focus section)
+            for skill_idx, skill in enumerate(phase_data.get("skills_to_learn", [])):
+                skill_name = skill.get("skill", skill) if isinstance(skill, dict) else skill
+                tasks.append(TaskProgress(
+                    task_id=f"skill_{idx}_{skill_idx}",
+                    task_name=skill_name,
+                    task_type="skill"
+                ))
+            
+            # 3. Add learning resources as resources (for Recommended Resources section)
+            for res_idx, resource in enumerate(phase_data.get("learning_resources", [])):
+                resource_title = resource.get("title", resource) if isinstance(resource, dict) else resource
+                tasks.append(TaskProgress(
+                    task_id=f"resource_{idx}_{res_idx}",
+                    task_name=resource_title,
+                    task_type="resource"
+                ))
+            
+            # 4. Add milestones as milestones (for Key Milestones section)
+            for mil_idx, milestone in enumerate(phase_data.get("milestones", [])):
+                tasks.append(TaskProgress(
+                    task_id=f"milestone_{idx}_{mil_idx}",
+                    task_name=milestone,
+                    task_type="milestone"
+                ))
+            
+            phase = PhaseProgress(
+                phase_number=idx,
+                phase_title=phase_data.get("title", f"Phase {idx}"),
+                target_deadline=phase_deadline,
+                tasks=tasks
+            )
+            phases.append(phase)
+        
+        # Create roadmap progress document
+        roadmap_progress = LearningRoadmapProgress(
+            user_id=user_id,
+            career_path_id=career_path["occupation_code"],
+            career_title=career_path["title"],
+            occupation_code=career_path["occupation_code"],
+            learning_plan_data=learning_plan,
+            phases=phases,
+            estimated_completion_date=estimated_completion,
+            original_estimated_duration=f"{duration_months} months"
+        )
+        
+        # Save to database
+        roadmaps_collection = db.learning_roadmaps
+        roadmap_dict = roadmap_progress.dict()
+        roadmap_dict["_id"] = f"{user_id}_{career_path['occupation_code']}"
+        
+        result = await roadmaps_collection.replace_one(
+            {"user_id": user_id, "career_path_id": career_path["occupation_code"]},
+            roadmap_dict,
+            upsert=True
+        )
+        
+        return RoadmapProgressResponse(
+            success=True,
+            message="Learning roadmap created successfully",
+            roadmap_progress=roadmap_progress
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error creating learning roadmap: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create learning roadmap")
+
+@router.get("/roadmap/progress")
+async def get_roadmap_progress(
+    user_id: str = Depends(get_current_user_id)
+):
+    """Get learning roadmap progress for the user"""
+    try:
+        from app.database import get_database
+        db = get_database()
+        
+        # Get user's current career path
+        profiles_collection = db.profiles
+        profile = await profiles_collection.find_one({"user_id": user_id})
+        
+        if not profile or not profile.get("career_path"):
+            raise HTTPException(status_code=404, detail="Career path not found")
+        
+        career_path = profile["career_path"]
+        
+        # Get roadmap progress
+        roadmaps_collection = db.learning_roadmaps
+        roadmap_doc = await roadmaps_collection.find_one({
+            "user_id": user_id,
+            "career_path_id": career_path["occupation_code"]
+        })
+        
+        if not roadmap_doc:
+            return RoadmapProgressResponse(
+                success=True,
+                message="No roadmap found",
+                roadmap_progress=None
+            )
+        
+        # Remove MongoDB _id before creating Pydantic model
+        roadmap_doc.pop("_id", None)
+        roadmap_progress = LearningRoadmapProgress(**roadmap_doc)
+        
+        return RoadmapProgressResponse(
+            success=True,
+            message="Roadmap progress retrieved successfully",
+            roadmap_progress=roadmap_progress
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error retrieving roadmap progress: {e}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve roadmap progress")
+
+@router.post("/roadmap/update-task")
+async def update_task_completion(
+    task_update: TaskCompletionUpdate,
+    user_id: str = Depends(get_current_user_id)
+):
+    """Update task completion status"""
+    try:
+        from app.database import get_database
+        db = get_database()
+        
+        # Get user's career path
+        profiles_collection = db.profiles
+        profile = await profiles_collection.find_one({"user_id": user_id})
+        
+        if not profile or not profile.get("career_path"):
+            raise HTTPException(status_code=404, detail="Career path not found")
+        
+        career_path = profile["career_path"]
+        
+        # Update task status
+        roadmaps_collection = db.learning_roadmaps
+        update_data = {
+            "phases.$[phase].tasks.$[task].status": task_update.status.value,
+            "last_updated": datetime.utcnow()
+        }
+        
+        if task_update.status == TaskStatus.COMPLETED:
+            update_data["phases.$[phase].tasks.$[task].completed_at"] = datetime.utcnow()
+        
+        if task_update.notes:
+            update_data["phases.$[phase].tasks.$[task].notes"] = task_update.notes
+        
+        result = await roadmaps_collection.update_one(
+            {"user_id": user_id, "career_path_id": career_path["occupation_code"]},
+            {"$set": update_data},
+            array_filters=[
+                {"phase.tasks": {"$elemMatch": {"task_id": task_update.task_id}}},
+                {"task.task_id": task_update.task_id}
+            ]
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=404, detail="Task not found")
+        
+        # Recalculate progress
+        await _recalculate_progress(db, user_id, career_path["occupation_code"])
+        
+        return {"success": True, "message": "Task updated successfully"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating task: {e}")
+        raise HTTPException(status_code=500, detail="Failed to update task")
+
+@router.post("/roadmap/update-deadline")
+async def update_phase_deadline(
+    deadline_update: PhaseDeadlineUpdate,
+    user_id: str = Depends(get_current_user_id)
+):
+    """Update phase deadline"""
+    try:
+        from app.database import get_database
+        db = get_database()
+        
+        # Get user's career path
+        profiles_collection = db.profiles
+        profile = await profiles_collection.find_one({"user_id": user_id})
+        
+        if not profile or not profile.get("career_path"):
+            raise HTTPException(status_code=404, detail="Career path not found")
+        
+        career_path = profile["career_path"]
+        
+        # Update phase deadline
+        roadmaps_collection = db.learning_roadmaps
+        result = await roadmaps_collection.update_one(
+            {"user_id": user_id, "career_path_id": career_path["occupation_code"]},
+            {
+                "$set": {
+                    "phases.$[phase].target_deadline": deadline_update.new_deadline,
+                    "last_updated": datetime.utcnow()
+                }
+            },
+            array_filters=[{"phase.phase_number": deadline_update.phase_number}]
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=404, detail="Phase not found")
+        
+        return {"success": True, "message": "Deadline updated successfully"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating deadline: {e}")
+        raise HTTPException(status_code=500, detail="Failed to update deadline")
+
+@router.get("/roadmap/summary")
+async def get_progress_summary(
+    user_id: str = Depends(get_current_user_id)
+):
+    """Get progress summary for quick display"""
+    try:
+        from app.database import get_database
+        db = get_database()
+        
+        # Get user's career path
+        profiles_collection = db.profiles
+        profile = await profiles_collection.find_one({"user_id": user_id})
+        
+        if not profile or not profile.get("career_path"):
+            raise HTTPException(status_code=404, detail="Career path not found")
+        
+        career_path = profile["career_path"]
+        
+        # Get roadmap
+        roadmaps_collection = db.learning_roadmaps
+        roadmap_doc = await roadmaps_collection.find_one({
+            "user_id": user_id,
+            "career_path_id": career_path["occupation_code"]
+        })
+        
+        if not roadmap_doc:
+            return {"success": True, "summary": None}
+        
+        # Calculate summary statistics
+        total_phases = len(roadmap_doc.get("phases", []))
+        completed_phases = sum(1 for phase in roadmap_doc.get("phases", []) 
+                             if phase.get("status") == PhaseStatus.COMPLETED.value)
+        
+        total_tasks = sum(len(phase.get("tasks", [])) for phase in roadmap_doc.get("phases", []))
+        completed_tasks = sum(
+            sum(1 for task in phase.get("tasks", []) if task.get("status") == TaskStatus.COMPLETED.value)
+            for phase in roadmap_doc.get("phases", [])
+        )
+        
+        overall_progress = roadmap_doc.get("overall_progress_percentage", 0.0)
+        
+        # Calculate days remaining
+        completion_date = roadmap_doc.get("estimated_completion_date")
+        if isinstance(completion_date, str):
+            completion_date = datetime.fromisoformat(completion_date.replace('Z', '+00:00'))
+        
+        days_remaining = max(0, (completion_date - datetime.utcnow()).days) if completion_date else 0
+        
+        # Determine if on track (simple heuristic)
+        expected_progress = min(100, (datetime.utcnow() - datetime.fromisoformat(roadmap_doc["roadmap_start_date"].replace('Z', '+00:00'))).days / 
+                                   ((completion_date - datetime.fromisoformat(roadmap_doc["roadmap_start_date"].replace('Z', '+00:00'))).days or 1) * 100)
+        on_track = overall_progress >= expected_progress * 0.8  # 80% of expected progress
+        
+        summary = ProgressSummary(
+            overall_progress=overall_progress,
+            completed_phases=completed_phases,
+            total_phases=total_phases,
+            completed_tasks=completed_tasks,
+            total_tasks=total_tasks,
+            days_remaining=days_remaining,
+            on_track=on_track
+        )
+        
+        return {"success": True, "summary": summary}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting progress summary: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get progress summary")
+
+async def _recalculate_progress(db, user_id: str, career_path_id: str):
+    """Helper function to recalculate progress percentages"""
+    try:
+        roadmaps_collection = db.learning_roadmaps
+        roadmap_doc = await roadmaps_collection.find_one({
+            "user_id": user_id,
+            "career_path_id": career_path_id
+        })
+        
+        if not roadmap_doc:
+            return
+        
+        phases = roadmap_doc.get("phases", [])
+        total_tasks = 0
+        completed_tasks = 0
+        
+        # Update phase progress
+        for phase in phases:
+            phase_tasks = phase.get("tasks", [])
+            phase_total = len(phase_tasks)
+            phase_completed = sum(1 for task in phase_tasks if task.get("status") == TaskStatus.COMPLETED.value)
+            
+            phase_progress = (phase_completed / phase_total * 100) if phase_total > 0 else 0
+            phase["progress_percentage"] = phase_progress
+            
+            # Update phase status
+            if phase_completed == phase_total and phase_total > 0:
+                phase["status"] = PhaseStatus.COMPLETED.value
+                if not phase.get("actual_completion_date"):
+                    phase["actual_completion_date"] = datetime.utcnow()
+            elif phase_completed > 0:
+                phase["status"] = PhaseStatus.IN_PROGRESS.value
+            
+            total_tasks += phase_total
+            completed_tasks += phase_completed
+        
+        # Calculate overall progress
+        overall_progress = (completed_tasks / total_tasks * 100) if total_tasks > 0 else 0
+        
+        # Update document
+        await roadmaps_collection.update_one(
+            {"user_id": user_id, "career_path_id": career_path_id},
+            {
+                "$set": {
+                    "phases": phases,
+                    "overall_progress_percentage": overall_progress,
+                    "last_updated": datetime.utcnow()
+                }
+            }
+        )
+        
+    except Exception as e:
+        logger.error(f"Error recalculating progress: {e}")

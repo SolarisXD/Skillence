@@ -1,0 +1,185 @@
+/* Enhanced Task Checkbox Styles - Minimalistic Version */
+.task-checkbox-wrapper {
+  width: 100%;
+  margin: 0;
+}
+
+.task-checkbox-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0;
+  width: 100%;
+  flex-direction: row-reverse; /* Checkbox to the right */
+}
+
+.task-checkbox-section {
+  flex-shrink: 0;
+  padding-top: 0.125rem;
+}
+
+.task-content-section {
+  flex: 1;
+  min-width: 0;
+  text-align: left; /* Remove text centering */
+}
+
+.task-checkbox {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-color);
+  border-radius: 0; /* Square shape */
+  background: var(--bg-primary);
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: none; /* Remove all transitions/animations */
+}
+
+.task-checkbox:hover {
+  border-color: var(--accent-color);
+}
+
+.task-checkbox:hover {
+  border-color: var(--accent-color);
+}
+
+.task-checkbox.checked {
+  background: var(--success-color);
+  border-color: var(--success-color);
+}
+
+.task-checkbox.checked::after {
+  content: '✓';
+  position: absolute;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.task-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.task-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.task-name {
+  font-size: 1rem; /* Increased from 0.9rem */
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.4;
+  flex: 1;
+}
+
+.task-type-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  margin-top: 0.25rem;
+}
+
+.milestone-badge {
+  background: rgba(139, 92, 246, 0.1);
+  color: #8B5CF6;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.skill-badge {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3B82F6;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+/* Completed state */
+.task-checkbox-wrapper.task-completed .task-name {
+  text-decoration: line-through;
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+.task-checkbox-wrapper.task-completed .task-icon {
+  opacity: 0.6;
+}
+
+.task-checkbox-wrapper.task-completed .task-type-badge {
+  opacity: 0.5;
+}
+
+/* Loading state - remove spinner animations */
+.checkbox-spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid transparent;
+  border-top: 2px solid var(--accent-color);
+  border-radius: 50%;
+  /* Remove animation */
+}
+
+/* Remove keyframes */
+
+/* Size variants */
+.task-checkbox-small .task-checkbox {
+  width: 18px;
+  height: 18px;
+  border-radius: 0; /* Square */
+}
+
+.task-checkbox-small .task-name {
+  font-size: 0.875rem; /* Slightly increased */
+}
+
+.task-checkbox-small .task-icon {
+  font-size: 0.875rem;
+}
+
+.task-checkbox-large .task-checkbox {
+  width: 24px;
+  height: 24px;
+  border-radius: 0; /* Square */
+}
+
+.task-checkbox-large .task-name {
+  font-size: 1.125rem; /* Increased */
+}
+
+.task-checkbox-large .task-icon {
+  font-size: 1.125rem;
+}
+
+/* Dark mode support */
+[data-theme="dark"] .milestone-badge {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+[data-theme="dark"] .skill-badge {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+/* Accessibility */
+.task-checkbox:focus {
+  outline: 1px solid var(--accent-color);
+  outline-offset: 1px;
+}
+
+/* Reduced animation styles - completely remove animations */
+@media (prefers-reduced-motion: reduce) {
+  .checkbox-spinner {
+    animation: none;
+  }
+}

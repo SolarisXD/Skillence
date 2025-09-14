@@ -1,7 +1,6 @@
 Things to implement / improve:
 
 - Broken links in My profile page, currently add localhost300 before the links.
-- Enhance onetdata.json with AI/etc to add more jobs (Namit)
 - Basic career roadmap in career path recommendation, shows what is missing in profile with career chosen.
 - Make a proper dashboard page, with stats and all. Remove navbar from there and add sidebar. Integrate that sidebar to all feature pages as well, make a new feature page for Resume Upload.
 - Improve footer, current one has bad styling, make it thinner. 
@@ -14,6 +13,8 @@ Things to implement / improve:
 - Reduce the time for azure + gemini response, it is taking too long.
 - Convert csv files to json files for faster reading.
 
+- **Namit**
 - Progress Bar in Learning Roadmap properly for total and each phase
 - Deadline and remaining days, with a calendar at the bottom.
 - Fix auto regeneration, its happening per skill.
+- Enhance onetdata.json with AI/etc to add more jobs
