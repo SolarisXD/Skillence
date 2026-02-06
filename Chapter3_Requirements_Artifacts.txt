@@ -1,0 +1,163 @@
+CHAPTER-3
+REQUIREMENT ARTIFACTS
+
+
+INTRODUCTION
+
+
+The requirements for CareerAI's intelligent career guidance platform are essential in ensuring that the system delivers accurate, personalized, and reliable career advice to professionals seeking career advancement. These requirements are necessary to provide users with a sophisticated AI-powered platform that can analyze resumes, generate personalized career recommendations, and provide data-driven job market insights. The requirements for CareerAI can be divided into three categories: functional, non-functional, and usability requirements. Functional requirements define the core AI capabilities and features of the platform, such as resume parsing with Azure Document Intelligence, career path generation using Google Gemini AI, and job trend analysis. Non-functional requirements define the performance, security, scalability, and reliability of the platform, while usability requirements define the user experience, interface design, and accessibility of the React-based frontend.
+
+Meeting these requirements is crucial in creating a successful AI-powered career guidance platform. CareerAI leverages cutting-edge artificial intelligence technologies to analyze user profiles, match skills with career opportunities, and provide actionable insights for professional development. By adhering to these requirements, CareerAI can transform how professionals approach career planning, enabling data-driven decisions that align with market demands and individual strengths. The platform's integration with the O*NET occupational database ensures recommendations are based on authoritative career data, while its AI-driven approach personalizes guidance to each user's unique profile and aspirations.
+
+HARDWARE AND SOFTWARE REQUIREMENTS
+
+The hardware requirements for CareerAI's intelligent career guidance platform are:
+
+Server Infrastructure: The platform requires robust cloud-based server infrastructure to handle AI processing workloads, including Azure Document Intelligence API calls and Google Gemini AI requests. The system must support concurrent processing of multiple resume analyses and career recommendation generations.
+
+Database Storage: The platform requires a scalable NoSQL database (MongoDB Atlas) to store user profiles, resume data, career recommendations, job trend analytics, and the comprehensive O*NET occupational database containing 900+ career options with detailed skill mappings.
+
+AI Processing Resources: The system requires sufficient computational resources to handle machine learning workloads, including natural language processing for resume analysis, skill extraction algorithms, and complex career matching computations.
+
+Network Infrastructure: The platform requires high-bandwidth, low-latency network connectivity to ensure rapid communication with external AI services (Azure AI Document Intelligence, Google Gemini API) and to deliver real-time user experiences across web and mobile interfaces.
+
+Load Balancing: Given the platform's AI-intensive operations and potential for high concurrent usage, load balancing mechanisms are essential to distribute AI processing requests and maintain consistent response times during peak usage periods.
+
+Content Delivery Network (CDN): For optimal performance of the React frontend and static assets, CDN infrastructure is required to minimize load times and ensure global accessibility.
+
+These hardware requirements are essential for maintaining the platform's AI capabilities, ensuring reliable performance during complex data processing operations, and supporting the scalability needed for a growing user base. The infrastructure must accommodate the computational demands of AI services while maintaining security and data integrity standards.
+
+The software requirements for CareerAI's intelligent career guidance platform are:
+
+Backend Development Stack:
+FastAPI - High-performance Python web framework for building RESTful APIs
+Python 3.8+ - Core programming language with advanced data processing capabilities
+MongoDB with Motor - NoSQL database with asynchronous driver for scalable data operations
+PyMongo - MongoDB integration library for database operations
+Uvicorn - ASGI server for serving FastAPI applications
+
+AI and Machine Learning Services:
+Azure AI Document Intelligence - Advanced document parsing and text extraction service
+Google Gemini AI - Large language model for generating personalized career recommendations
+NLTK - Natural Language Toolkit for text processing and analysis
+spaCy - Advanced natural language processing library
+Pandas and NumPy - Data analysis and numerical computing libraries
+
+Frontend Development Stack:
+React 19 - Modern JavaScript framework for building interactive user interfaces
+Vite - Fast build tool and development server for modern web applications
+React Router DOM - Client-side routing for single-page application navigation
+TailwindCSS - Utility-first CSS framework for responsive design
+Chart.js and Recharts - Interactive data visualization libraries for analytics dashboards
+
+Authentication and Security:
+JWT (JSON Web Tokens) - Secure stateless authentication system
+bcrypt - Password hashing and encryption library
+python-jose - JWT token generation and validation
+Passlib - Password hashing utilities
+
+Development Tools:
+Visual Studio Code - Primary integrated development environment
+ESLint - JavaScript code linting and formatting
+Prettier - Code formatting tool
+Git - Version control system
+
+APIs and External Services:
+Azure AI Document Intelligence API - Resume parsing and analysis
+Google Gemini API - AI-powered career recommendation generation
+O*NET Database Integration - Official occupational information database
+RESTful API Architecture - For frontend-backend communication
+
+These software requirements are essential in building a sophisticated, AI-driven career guidance platform that can deliver personalized recommendations, process complex resume data, and provide interactive user experiences. The technology stack ensures scalability, maintainability, and integration capabilities with leading AI services.
+
+
+3.3 SPECIFIC PROJECT REQUIREMENTS
+
+3.3.1 Data Requirements:
+
+User Profile Management:
+The system must store comprehensive user profiles including personal information (name, email, contact details), professional experience history with detailed job descriptions, educational background with degrees and certifications, and complete skill inventories categorized into technical and soft skills. The platform must maintain user authentication data with secure password hashing and JWT token management.
+
+Resume Data Storage:
+The platform must store original resume files (PDF, DOCX formats) and their parsed data including extracted contact information, work experience with dates and descriptions, educational qualifications, technical and soft skills, projects and achievements, and certifications. The system must maintain parsing metadata and confidence scores for data quality assessment.
+
+Career Database Integration:
+The system must integrate the O*NET occupational database containing 900+ career profiles, including job descriptions, required skills, typical education levels, salary ranges, and growth projections. The platform must store career matching algorithms' results, including compatibility scores and skill gap analyses.
+
+Analytics and Trend Data:
+The platform must store job market trend data including salary information by role and location, skill demand patterns, industry growth metrics, and employment statistics. The system must maintain user interaction analytics, recommendation effectiveness metrics, and platform usage patterns.
+
+AI Model Data:
+The system must store AI-generated content including personalized career recommendations, learning roadmaps with 3-phase structures, skill development suggestions, and career progression pathways. The platform must maintain conversation histories from the AI chatbot and user feedback on recommendations.
+
+3.3.2 Functional Requirements:
+
+Intelligent Resume Processing:
+The system must integrate with Azure AI Document Intelligence to automatically parse uploaded resumes in PDF and DOCX formats. The platform must extract and categorize skills, experience, education, and contact information with high accuracy. The system must handle multiple resume formats and provide confidence scores for extracted data.
+
+AI-Powered Career Recommendations:
+The platform must utilize Google Gemini AI to generate personalized career path recommendations based on user profiles, skills, and market trends. The system must provide detailed career compatibility scores, skill gap analyses, and specific improvement suggestions. The platform must generate 3-phase learning roadmaps with timelines, resources, and milestones.
+
+Job Trend Analytics Dashboard:
+The system must provide interactive dashboards displaying real-time job market trends, salary benchmarks, and skill demand patterns. The platform must offer advanced filtering options by location, industry, experience level, and salary range. The system must support data export in CSV and JSON formats with chart visualization capabilities.
+
+User Authentication and Profile Management:
+The platform must implement secure JWT-based authentication with password encryption using bcrypt. The system must provide comprehensive profile creation and editing capabilities, allowing users to manage their professional information, skills, and career preferences.
+
+AI Chatbot Integration:
+The system must provide an intelligent chatbot powered by AI for real-time career guidance and platform assistance. The chatbot must understand context, provide relevant career advice, and help users navigate platform features.
+
+Job Offer Evaluation:
+The platform must provide tools for comparing and evaluating job offers, including salary benchmarking against market standards, role compatibility assessment, and decision-making frameworks with scoring metrics.
+
+3.3.3 Performance and Security Requirements:
+
+API Response Times:
+The platform must maintain API response times under 3 seconds for standard operations and under 10 seconds for AI-intensive operations such as resume parsing and career recommendation generation. The system must handle concurrent users efficiently without degradation in performance.
+
+Data Processing Capabilities:
+The system must process multiple resume uploads simultaneously and handle concurrent AI recommendation requests. The platform must maintain consistent performance during peak usage periods and scale dynamically based on demand.
+
+Security Protocols:
+The platform must implement secure authentication using JWT tokens with configurable expiration times. The system must encrypt sensitive data using industry-standard encryption protocols and protect against common security threats including SQL injection, CSRF, and XSS attacks.
+
+Data Privacy and Protection:
+The system must comply with data privacy regulations including GDPR and CCPA. The platform must implement secure data storage practices, including encrypted database connections and secure API communications using HTTPS.
+
+Scalability and Reliability:
+The platform must support horizontal scaling to accommodate growing user bases and increasing AI processing demands. The system must maintain 99.5% uptime and implement comprehensive error handling and logging mechanisms.
+
+AI Service Integration Security:
+The system must securely manage API keys for Azure AI Document Intelligence and Google Gemini AI services. The platform must implement rate limiting and monitoring for external AI service calls to prevent abuse and manage costs.
+
+3.3.4 Look and Feel Requirements:
+
+Modern User Interface Design:
+The platform must feature a clean, professional, and modern interface built with React 19 and styled using TailwindCSS. The design must reflect the innovative nature of AI-powered career guidance while maintaining professional credibility and trustworthiness.
+
+Responsive and Cross-Platform Compatibility:
+The system must provide a fully responsive design that adapts seamlessly to desktop, tablet, and mobile devices. The platform must ensure consistent user experience across different browsers and operating systems, with optimized performance on all screen sizes.
+
+Interactive Data Visualization:
+The platform must implement engaging and interactive charts and graphs using Chart.js and Recharts libraries for displaying career analytics, job trends, and skill assessments. The visualizations must be intuitive and help users understand complex career data at a glance.
+
+User-Friendly Navigation:
+The system must provide intuitive navigation with clear menu structures and breadcrumb trails. The platform must implement smooth page transitions and loading states to enhance user experience during AI processing operations.
+
+Accessibility Compliance:
+The platform must meet WCAG 2.1 accessibility standards, ensuring the interface is usable by people with disabilities. The system must provide appropriate color contrasts, keyboard navigation support, and screen reader compatibility.
+
+Personalization and Customization:
+The interface must adapt to user preferences and provide personalized dashboards displaying relevant career information, recommendations, and progress tracking. The platform must allow users to customize their experience while maintaining consistent branding and functionality.
+
+Professional Branding:
+The system must maintain consistent branding throughout the platform that conveys expertise, reliability, and innovation in career guidance. The design must build trust and confidence in the AI-powered recommendations and analysis provided.
+
+
+3.4 SUMMARY
+
+By creating and adhering to the mentioned requirement artifacts, we ensure that our CareerAI platform is designed and implemented to meet the complex needs of modern career development while leveraging cutting-edge artificial intelligence technologies. These requirements guarantee that the platform delivers accurate resume analysis through Azure AI Document Intelligence, generates personalized career recommendations via Google Gemini AI, and provides comprehensive job market insights through data-driven analytics.
+
+The comprehensive requirement framework ensures that CareerAI maintains high performance standards while processing AI-intensive operations, implements robust security measures to protect sensitive career and personal data, and delivers an exceptional user experience through modern web technologies. The platform's integration with authoritative data sources like the O*NET database ensures that career recommendations are based on verified occupational information and current market demands.
+
+These requirements collectively enable CareerAI to serve as a transformative tool in career development, empowering professionals to make informed decisions about their career paths through intelligent analysis, personalized recommendations, and actionable insights. The platform's adherence to these requirements ensures scalability for future growth, maintainability for ongoing development, and reliability for users who depend on accurate career guidance in their professional journeys.
