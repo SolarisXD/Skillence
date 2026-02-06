@@ -12,7 +12,7 @@ class GeminiService:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.api_key = os.getenv('GEMINI_API')
-        self.endpoint = os.getenv('GEMINI_ENDPOINT', 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent')
+        self.endpoint = os.getenv('GEMINI_ENDPOINT', 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent')
         
         if not self.api_key:
             self.logger.error("GEMINI_API key not found in environment variables")

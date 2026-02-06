@@ -372,7 +372,7 @@ async def generate_ai_insights_gemini(request: Dict[str, Any]):
     try:
         # Configure Gemini API
         genai.configure(api_key=os.getenv('GEMINI_API'))
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = genai.GenerativeModel('gemini-2.5-flash')
         
         # Extract request data
         job_title = request.get('jobTitle', 'Software Engineer')

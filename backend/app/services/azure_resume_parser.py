@@ -344,7 +344,7 @@ Now analyze this resume text and extract the information:
                 endpoint = self.gemini_endpoint
             else:
                 # Use the standard v1beta endpoint for generateContent
-                endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+                endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
 
             headers = {
                 "Content-Type": "application/json",

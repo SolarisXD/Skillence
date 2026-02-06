@@ -52,8 +52,8 @@ class ChatService:
         api_key = os.getenv("GEMINI_API")
         gemini_endpoint = os.getenv("GEMINI_ENDPOINT")
         logger.info(f"Initializing ChatService with API key: {'***' + api_key[-4:] if api_key else 'NOT_FOUND'} and endpoint: {gemini_endpoint or 'NOT_SET'}")
-        # Extract model id from GEMINI_ENDPOINT if provided, e.g. "/models/gemini-2.0-flash:generateContent"
-        model_id = 'gemini-1.5-flash'
+        # Extract model id from GEMINI_ENDPOINT if provided, e.g. "/models/gemini-2.5-flash:generateContent"
+        model_id = 'gemini-2.5-flash'
         if gemini_endpoint:
             m = re.search(r'/models/([^:]+)', gemini_endpoint)
             if m:

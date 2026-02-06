@@ -7,6 +7,8 @@ import ProfilePage from './components/ProfilePage/ProfilePage';
 import JobOfferEvaluator from './components/Job Offer Evaluator/JobOfferEvaluator';
 import CareerPathRecommendation from './components/Career Path Recommendation/CareerPathRecommendation';
 import JobTrendDashboard from './components/Job Trend/current/JobTrendDashboard';
+import ReflectionEngineHome from './components/ReflectionEngineHome';
+import ReflectionEngineInterviewDiagnostic from './components/ReflectionEngineInterviewDiagnostic';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -52,6 +54,8 @@ function App() {
           />
           <Route path="/job-offer-evaluator" element={<JobOfferEvaluator />} />
           <Route path="/job-trends" element={<JobTrendDashboard />} />
+          <Route path="/reflection-engine" element={<ReflectionEngineHome />} />
+          <Route path="/reflection-engine/diagnostic" element={<ReflectionEngineInterviewDiagnostic />} />
           <Route 
             path="/career-path-recommendation" 
             element={

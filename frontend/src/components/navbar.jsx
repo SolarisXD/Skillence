@@ -215,6 +215,16 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
                       className="dropdown-item"
                       onClick={(e) => {
                         e.stopPropagation();
+                        navigate('/reflection-engine');
+                        setShowServices(false);
+                      }}
+                    >
+                      Reflection Engine
+                    </button>
+                    <button
+                      className="dropdown-item"
+                      onClick={(e) => {
+                        e.stopPropagation();
                         navigate('/career-path-recommendation');
                         setShowServices(false);
                       }}

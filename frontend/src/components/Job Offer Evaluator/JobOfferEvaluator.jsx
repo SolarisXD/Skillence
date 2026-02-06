@@ -67,7 +67,7 @@ const ADZUNA_CONFIG = {
 // Gemini API configuration
 const GEMINI_CONFIG = {
   API_KEY: import.meta.env.VITE_GEMINI_API_KEY,
-  BASE_URL: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent',
+  BASE_URL: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
 };
 
 // Country code mapping for Adzuna API
