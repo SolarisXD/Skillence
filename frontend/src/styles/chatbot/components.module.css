@@ -51,10 +51,10 @@
 }
 
 [data-theme="dark"] .skillenceMessageBubbleBot {
-  background: #1e293b;
-  color: #e2e8f0;
-  border-color: #334155;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  background: #151b23;
+  color: #e6edf3;
+  border-color: #2d3748;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Professional welcome message formatting */
@@ -124,9 +124,9 @@
 }
 
 [data-theme="dark"] .skillenceTypingIndicator {
-  background: #1e293b;
-  border-color: #334155;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  background: #151b23;
+  border-color: #2d3748;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .skillenceTypingDots {
@@ -205,15 +205,15 @@
 }
 
 [data-theme="dark"] .skillenceInputField {
-  background: #0f172a;
-  border-color: #334155;
-  color: #e2e8f0;
+  background: #0d1117;
+  border-color: #2d3748;
+  color: #e6edf3;
 }
 
 [data-theme="dark"] .skillenceInputField:focus {
-  background: #1e293b;
+  background: #151b23;
   border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
 }
 
 [data-theme="dark"] .skillenceInputField::placeholder {
@@ -307,11 +307,11 @@
 }
 
 [data-theme="dark"] .skillenceMicButton {
-  background: #475569;
+  background: #3d4a5f;
 }
 
 [data-theme="dark"] .skillenceMicButton:hover:not(:disabled) {
-  background: #64748b;
+  background: #4d5a70;
 }
 
 /* Clear Chat Button - Ghost/Subtle */
@@ -344,9 +344,9 @@
 }
 
 [data-theme="dark"] .skillenceClearButton {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: #475569;
-  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.04);
+  border-color: #3d4a5f;
+  color: #9ca3af;
 }
 
 [data-theme="dark"] .skillenceClearButton:hover:not(:disabled) {

@@ -11,9 +11,9 @@
   --deadline-label: #6b7280;
   
   /* Dark mode colors */
-  --deadline-bg-dark: #1f2937;
-  --deadline-border-dark: #374151;
-  --deadline-text-dark: #d1d5db;
+  --deadline-bg-dark: #1c2432;
+  --deadline-border-dark: #2d3748;
+  --deadline-text-dark: #e6edf3;
   --deadline-label-dark: #9ca3af;
 }
 

@@ -227,17 +227,17 @@
 
 /* Dark mode specific overrides */
 [data-theme="dark"] .profile-add-action-btn {
-  background: #fff;
-  color: #1e293b;
-  border: 1px solid #1e293b;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  background: #e6edf3;
+  color: #0d1117;
+  border: 1px solid #2d3748;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 [data-theme="dark"] .profile-add-action-btn:hover {
   background: #3b82f6;
   color: #fff;
   border-color: #3b82f6;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .remove-item-button {
@@ -1147,14 +1147,14 @@
 }
 
 [data-theme="dark"] {
-  /* Dark Theme */
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-tertiary: #334155;
-  --text-primary: #f1f5f9;
-  --text-secondary: #cbd5e1;
-  --border-primary: #475569;
-  --border-secondary: #64748b;
-  --accent-primary: #60a5fa;
+  /* Dark Theme - Slate Blue */
+  --bg-primary: #0d1117;
+  --bg-secondary: #151b23;
+  --bg-tertiary: #1c2432;
+  --text-primary: #e6edf3;
+  --text-secondary: #9ca3af;
+  --border-primary: #2d3748;
+  --border-secondary: #3d4a5f;
+  --accent-primary: #58a6ff;
   --accent-secondary: #a78bfa;
 }

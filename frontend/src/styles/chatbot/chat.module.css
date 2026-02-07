@@ -45,10 +45,10 @@
 }
 
 [data-theme="dark"] .skillenceChatModal {
-  background: #0f172a;
+  background: #0d1117;
   box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.1);
+    0 25px 50px -12px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
 .skillenceChatContainer {
@@ -73,8 +73,8 @@
 }
 
 [data-theme="dark"] .skillenceChatHeader {
-  border-bottom: 1px solid #334155;
-  background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+  border-bottom: 1px solid #2d3748;
+  background: linear-gradient(135deg, #1e3a8a 0%, #0d1117 100%);
 }
 
 .skillenceChatTitle {
@@ -169,16 +169,16 @@
 }
 
 [data-theme="dark"] .skillenceChatMessages {
-  background: #0f172a;
-  scrollbar-color: #475569 transparent;
+  background: #0d1117;
+  scrollbar-color: #3d4a5f transparent;
 }
 
 [data-theme="dark"] .skillenceChatMessages::-webkit-scrollbar-thumb {
-  background: #475569;
+  background: #3d4a5f;
 }
 
 [data-theme="dark"] .skillenceChatMessages::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
+  background: #4d5a70;
 }
 
 .skillenceChatInputArea {
@@ -193,8 +193,8 @@
 }
 
 [data-theme="dark"] .skillenceChatInputArea {
-  border-top: 1px solid #334155;
-  background: #1e293b;
+  border-top: 1px solid #2d3748;
+  background: #151b23;
 }
 
 /* Responsive Design */

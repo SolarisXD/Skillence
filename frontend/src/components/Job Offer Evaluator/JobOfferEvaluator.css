@@ -2223,8 +2223,8 @@
 
 /* Main dark theme styling for JobOfferEvaluator - matches the attached design */
 [data-theme="dark"] .job-offer-evaluator {
-  background: #1a1a1a !important;
-  color: #ffffff !important;
+  background: #0d1117 !important;
+  color: #e6edf3 !important;
 }
 
 /* Hero section keeps its blue background in both themes */
@@ -2252,7 +2252,7 @@
 [data-theme="dark"] .job-offer-evaluator span,
 [data-theme="dark"] .job-offer-evaluator div,
 [data-theme="dark"] .job-offer-evaluator label {
-  color: #ffffff !important;
+  color: #e6edf3 !important;
 }
 
 /* Dark theme for cards and containers - matching the design */
@@ -2262,60 +2262,60 @@
 [data-theme="dark"] .job-offer-evaluator .cost-breakdown,
 [data-theme="dark"] .job-offer-evaluator .recommendations-container,
 [data-theme="dark"] .job-offer-evaluator .search-container {
-  background: #2a2a2a !important;
-  border: 1px solid #3a3a3a !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+  background: #1c2432 !important;
+  border: 1px solid #2d3748 !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
 }
 
 /* Dark theme for form elements */
 [data-theme="dark"] .job-offer-evaluator .form-input,
 [data-theme="dark"] .job-offer-evaluator .currency-select,
 [data-theme="dark"] .job-offer-evaluator .salary-input {
-  background: #2a2a2a !important;
-  color: #ffffff !important;
-  border: 1px solid #3a3a3a !important;
+  background: #1c2432 !important;
+  color: #e6edf3 !important;
+  border: 1px solid #2d3748 !important;
 }
 
 [data-theme="dark"] .job-offer-evaluator .form-input:focus,
 [data-theme="dark"] .job-offer-evaluator .currency-select:focus,
 [data-theme="dark"] .job-offer-evaluator .salary-input:focus {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
   border-color: #3b82f6 !important;
-  background: #2a2a2a !important;
+  background: #1c2432 !important;
 }
 
 /* Dark theme for placeholders */
 [data-theme="dark"] .job-offer-evaluator .form-input::placeholder,
 [data-theme="dark"] .job-offer-evaluator .salary-input::placeholder {
-  color: #9ca3af !important;
+  color: #6b7280 !important;
 }
 
 /* Dark theme for autofill and filled inputs */
 [data-theme="dark"] .job-offer-evaluator .form-input:-webkit-autofill,
 [data-theme="dark"] .job-offer-evaluator .salary-input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0 30px #2a2a2a inset !important;
-  -webkit-text-fill-color: #ffffff !important;
+  -webkit-box-shadow: 0 0 0 30px #1c2432 inset !important;
+  -webkit-text-fill-color: #e6edf3 !important;
 }
 
 [data-theme="dark"] .job-offer-evaluator .form-input:not(:placeholder-shown),
 [data-theme="dark"] .job-offer-evaluator .salary-input:not(:placeholder-shown) {
-  background: #2a2a2a !important;
-  color: #ffffff !important;
+  background: #1c2432 !important;
+  color: #e6edf3 !important;
 }
 
 /* Dark theme for dropdowns and suggestions */
 [data-theme="dark"] .job-offer-evaluator .suggestions-dropdown {
-  background: #2a2a2a !important;
-  border: 1px solid #3a3a3a !important;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5) !important;
+  background: #1c2432 !important;
+  border: 1px solid #2d3748 !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35) !important;
 }
 
 [data-theme="dark"] .job-offer-evaluator .suggestion-item {
-  color: #ffffff !important;
+  color: #e6edf3 !important;
 }
 
 [data-theme="dark"] .job-offer-evaluator .suggestion-item:hover {
-  background-color: #3a3a3a !important;
+  background-color: #252d3d !important;
 }
 
 /* Dark theme for badges - matching the blue design */
@@ -2336,19 +2336,19 @@
 /* Dark theme for buttons */
 [data-theme="dark"] .job-offer-evaluator .secondary-button,
 [data-theme="dark"] .job-offer-evaluator .outline-button {
-  background: #2a2a2a !important;
-  color: #ffffff !important;
-  border: 1px solid #3a3a3a !important;
+  background: #1c2432 !important;
+  color: #e6edf3 !important;
+  border: 1px solid #2d3748 !important;
 }
 
 [data-theme="dark"] .job-offer-evaluator .secondary-button:hover,
 [data-theme="dark"] .job-offer-evaluator .outline-button:hover {
-  background: #3a3a3a !important;
+  background: #252d3d !important;
 }
 
 /* Dark theme for progress bars - keeping green as shown in image */
 [data-theme="dark"] .job-offer-evaluator .progress-bar {
-  background: #3a3a3a !important;
+  background: #2d3748 !important;
 }
 
 [data-theme="dark"] .job-offer-evaluator .progress-fill {
@@ -2364,8 +2364,8 @@
 /* Dark theme for error messages */
 [data-theme="dark"] .job-offer-evaluator .error-message,
 [data-theme="dark"] .job-offer-evaluator .cost-error-modern {
-  background: rgba(248, 113, 113, 0.2) !important;
-  border: 1px solid rgba(248, 113, 113, 0.3) !important;
+  background: rgba(248, 113, 113, 0.1) !important;
+  border: 1px solid rgba(248, 113, 113, 0.2) !important;
 }
 
 [data-theme="dark"] .job-offer-evaluator .error-content h3 {
@@ -2374,24 +2374,24 @@
 
 /* Dark theme for benefit items - matching the attached design */
 [data-theme="dark"] .job-offer-evaluator .benefit-item {
-  background: #2a2a2a !important;
-  border: 1px solid #3a3a3a !important;
-  color: #ffffff !important;
+  background: #1c2432 !important;
+  border: 1px solid #2d3748 !important;
+  color: #e6edf3 !important;
 }
 
 [data-theme="dark"] .job-offer-evaluator .benefit-item:hover {
-  background: #3a3a3a !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  background: #252d3d !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
 }
 
 [data-theme="dark"] .job-offer-evaluator .benefit-label {
-  color: #ffffff !important;
+  color: #e6edf3 !important;
 }
 
 /* Dark theme for checkboxes */
 [data-theme="dark"] .job-offer-evaluator .benefit-checkbox {
-  background: #2a2a2a !important;
-  border: 1px solid #3a3a3a !important;
+  background: #1c2432 !important;
+  border: 1px solid #2d3748 !important;
 }
 
 [data-theme="dark"] .job-offer-evaluator .benefit-checkbox:checked {
@@ -2401,7 +2401,7 @@
 
 /* Dark theme for loading spinner */
 [data-theme="dark"] .job-offer-evaluator .loading-spinner {
-  border-color: #3a3a3a !important;
+  border-color: #2d3748 !important;
   border-top-color: #2563eb !important;
 }
 
@@ -2411,8 +2411,8 @@
 }
 
 [data-theme="dark"] .job-offer-evaluator .stat-card {
-  background: #2a2a2a !important;
-  border: 1px solid #3a3a3a !important;
+  background: #1c2432 !important;
+  border: 1px solid #2d3748 !important;
 }
 
 [data-theme="dark"] .job-offer-evaluator .results-header {
@@ -2424,14 +2424,14 @@
 @media (max-width: 768px) {
   [data-theme="dark"] .job-offer-evaluator .form-input,
   [data-theme="dark"] .job-offer-evaluator .currency-select {
-    background: #2a2a2a !important;
-    border: 1px solid #3a3a3a !important;
-    color: #ffffff !important;
+    background: #1c2432 !important;
+    border: 1px solid #2d3748 !important;
+    color: #e6edf3 !important;
   }
   
   [data-theme="dark"] .job-offer-evaluator .analytics-card {
-    background: #2a2a2a !important;
-    border: 1px solid #3a3a3a !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+    background: #1c2432 !important;
+    border: 1px solid #2d3748 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
   }
 }

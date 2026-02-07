@@ -147,13 +147,13 @@
 
 /* Dark theme preview */
 .dark-preview {
-  background: #1a1a1a;
+  background: #0d1117;
 }
 
 .dark-preview .preview-header {
   height: 12px;
-  background: #2d2d2d;
-  border-bottom: 1px solid #404040;
+  background: #151b23;
+  border-bottom: 1px solid #2d3748;
 }
 
 .dark-preview .preview-content {
@@ -163,8 +163,8 @@
 
 .dark-preview .preview-sidebar {
   width: 20px;
-  background: #262626;
-  border-right: 1px solid #404040;
+  background: #151b23;
+  border-right: 1px solid #2d3748;
 }
 
 .dark-preview .preview-main {
@@ -177,14 +177,14 @@
 
 .dark-preview .preview-card {
   height: 8px;
-  background: #2d2d2d;
-  border: 1px solid #404040;
+  background: #1c2432;
+  border: 1px solid #2d3748;
   border-radius: 2px;
 }
 
 /* Auto theme preview */
 .auto-preview {
-  background: linear-gradient(90deg, #ffffff 50%, #1a1a1a 50%);
+  background: linear-gradient(90deg, #ffffff 50%, #0d1117 50%);
   position: relative;
 }
 
