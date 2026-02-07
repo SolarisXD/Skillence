@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Send, Mic, MicOff, Trash2 } from "lucide-react";
+import { SendIcon, MicIcon, MicOffIcon, TrashIcon } from "./ChatIcons";
 import { validateMessage } from "../utils/helpers";
 import styles from "../../../styles/chatbot/components.module.css";
 
@@ -54,20 +54,17 @@ const ChatInput = ({
 
   return (
     <form onSubmit={handleSubmit} className={styles.skillenceInputContainer}>
+      {/* Clear chat button - subtle ghost style on the left */}
       {onClearChat && (
         <button
           type="button"
           onClick={handleClearChat}
-          className={styles.skillenceInputButton}
+          className={styles.skillenceClearButton}
           disabled={isLoading}
           aria-label="Clear chat history"
-          style={{
-            background: "#6b7280",
-            marginRight: "4px",
-          }}
           title="Clear chat history"
         >
-          <Trash2 size={18} />
+          <TrashIcon size={22} />
         </button>
       )}
 
@@ -82,28 +79,29 @@ const ChatInput = ({
         maxLength={1000}
       />
 
+      {/* Voice input button */}
       {speechSupported && (
         <button
           type="button"
           onClick={toggleListening}
-          className={styles.skillenceInputButton}
+          className={`${styles.skillenceInputButton} ${styles.skillenceMicButton} ${isListening ? styles.skillenceMicActive : ''}`}
           disabled={isLoading}
           aria-label={isListening ? "Stop recording" : "Start voice input"}
-          style={{
-            background: isListening ? "#ef4444" : "#6b7280",
-          }}
+          title={isListening ? "Stop recording" : "Start voice input"}
         >
-          {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+          {isListening ? <MicOffIcon size={22} /> : <MicIcon size={22} />}
         </button>
       )}
 
+      {/* Send button - primary action */}
       <button
         type="submit"
-        className={styles.skillenceInputButton}
+        className={`${styles.skillenceInputButton} ${styles.skillenceSendButton}`}
         disabled={!validateMessage(message) || isLoading}
         aria-label="Send message"
+        title="Send message"
       >
-        <Send size={18} />
+        <SendIcon size={22} />
       </button>
     </form>
   );

@@ -902,7 +902,12 @@ async def create_learning_roadmap(
             
             # 2. Add skills as skills (for Skills Focus section)
             for skill_idx, skill in enumerate(phase_data.get("skills_to_learn", [])):
-                skill_name = skill.get("skill", skill) if isinstance(skill, dict) else skill
+                if isinstance(skill, dict):
+                    skill_name = (skill.get("skill") or skill.get("technology")
+                                  or skill.get("name") or skill.get("knowledge")
+                                  or str(skill))
+                else:
+                    skill_name = str(skill)
                 tasks.append(TaskProgress(
                     task_id=f"skill_{idx}_{skill_idx}",
                     task_name=skill_name,
@@ -911,7 +916,11 @@ async def create_learning_roadmap(
             
             # 3. Add learning resources as resources (for Recommended Resources section)
             for res_idx, resource in enumerate(phase_data.get("learning_resources", [])):
-                resource_title = resource.get("title", resource) if isinstance(resource, dict) else resource
+                if isinstance(resource, dict):
+                    resource_title = (resource.get("title") or resource.get("name")
+                                      or str(resource))
+                else:
+                    resource_title = str(resource)
                 tasks.append(TaskProgress(
                     task_id=f"resource_{idx}_{res_idx}",
                     task_name=resource_title,
@@ -920,9 +929,10 @@ async def create_learning_roadmap(
             
             # 4. Add milestones as milestones (for Key Milestones section)
             for mil_idx, milestone in enumerate(phase_data.get("milestones", [])):
+                milestone_name = milestone if isinstance(milestone, str) else str(milestone)
                 tasks.append(TaskProgress(
                     task_id=f"milestone_{idx}_{mil_idx}",
-                    task_name=milestone,
+                    task_name=milestone_name,
                     task_type="milestone"
                 ))
             

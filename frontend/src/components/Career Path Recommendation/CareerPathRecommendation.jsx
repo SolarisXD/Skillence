@@ -121,6 +121,14 @@ const ResourcesIcon = () => (
   </svg>
 );
 
+const MLIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+    <path d="M2 17l10 5 10-5"/>
+    <path d="M2 12l10 5 10-5"/>
+  </svg>
+);
+
 const CareerPathRecommendation = () => {
   const navigate = useNavigate();
   const [recommendations, setRecommendations] = useState([]);
@@ -145,6 +153,8 @@ const CareerPathRecommendation = () => {
   const [taskCompletionState, setTaskCompletionState] = useState({});
   const [updatingTask, setUpdatingTask] = useState(null);
   const [generatingRoadmap, setGeneratingRoadmap] = useState(false);
+  const [mlRecommendations, setMlRecommendations] = useState(null);
+  const [careerPathChanged, setCareerPathChanged] = useState(false);
 
   // Utility function to generate appropriate URLs for programming resources
   const getResourceUrl = (resourceName) => {
@@ -226,7 +236,7 @@ const CareerPathRecommendation = () => {
         if (data.success && data.career_path) {
           setCurrentCareerPath(data.career_path);
           // Load existing roadmap progress if career path exists
-          await loadRoadmapProgress();
+          await loadRoadmapProgress(data.career_path.occupation_code);
         }
       }
     } catch (err) {
@@ -252,6 +262,9 @@ const CareerPathRecommendation = () => {
         const data = await response.json();
         if (data.success && data.learning_plan) {
           setLearningPlan(data.learning_plan);
+          if (data.learning_plan.ml_skill_recommendations) {
+            setMlRecommendations(data.learning_plan.ml_skill_recommendations);
+          }
         }
       }
     } catch (err) {
@@ -262,7 +275,7 @@ const CareerPathRecommendation = () => {
   };
 
   // New functions for roadmap progress management
-  const loadRoadmapProgress = async () => {
+  const loadRoadmapProgress = async (currentOccupationCode = null) => {
     const token = localStorage.getItem('token');
     if (!token) return;
 
@@ -279,6 +292,22 @@ const CareerPathRecommendation = () => {
         const data = await response.json();
         if (data.success && data.roadmap_progress) {
           setRoadmapProgress(data.roadmap_progress);
+          
+          // Restore learning plan from saved roadmap data so skill analysis persists
+          if (data.roadmap_progress.learning_plan_data) {
+            setLearningPlan(data.roadmap_progress.learning_plan_data);
+            if (data.roadmap_progress.learning_plan_data.ml_skill_recommendations) {
+              setMlRecommendations(data.roadmap_progress.learning_plan_data.ml_skill_recommendations);
+            }
+          }
+          
+          // Detect if career path has changed since roadmap was generated
+          if (currentOccupationCode && data.roadmap_progress.career_path_id !== currentOccupationCode) {
+            setCareerPathChanged(true);
+          } else {
+            setCareerPathChanged(false);
+          }
+          
           // Initialize task completion state
           const completionState = {};
           data.roadmap_progress.phases.forEach(phase => {
@@ -314,6 +343,9 @@ const CareerPathRecommendation = () => {
         const data = await response.json();
         if (data.success) {
           setLearningPlan(data.learning_plan);
+          if (data.learning_plan?.ml_skill_recommendations) {
+            setMlRecommendations(data.learning_plan.ml_skill_recommendations);
+          }
           setRoadmapProgress(data.roadmap_progress);
           setHasStartedRoadmap(true);
           
@@ -590,6 +622,9 @@ const CareerPathRecommendation = () => {
         const data = await response.json();
         if (data.success && data.learning_plan) {
           setLearningPlan(data.learning_plan);
+          if (data.learning_plan.ml_skill_recommendations) {
+            setMlRecommendations(data.learning_plan.ml_skill_recommendations);
+          }
         }
       }
     } catch (err) {
@@ -666,7 +701,12 @@ const CareerPathRecommendation = () => {
               <div className="header-content">
                 <BrainIcon />
                 <div className="header-text">
-                  <h2 className="learning-plan-title">Personalized Learning Plan</h2>
+                  <h2 className="learning-plan-title">
+                    Personalized Learning Plan
+                    {learningPlan?.ml_powered && (
+                      <span className="ml-powered-badge">ML Enhanced</span>
+                    )}
+                  </h2>
                   <p className="learning-plan-subtitle">
                     Tailored roadmap to bridge skill gaps and achieve your career goals
                   </p>
@@ -709,6 +749,27 @@ const CareerPathRecommendation = () => {
                       </>
                     ) : (
                       'Generate Learning Roadmap'
+                    )}
+                  </button>
+                </div>
+              </div>
+            ) : careerPathChanged ? (
+              <div className="career-changed-banner">
+                <div className="career-changed-content">
+                  <h3>Career Path Updated</h3>
+                  <p>Your career path has changed since your last roadmap was generated. Generate a new roadmap aligned with your updated career goals.</p>
+                  <button
+                    className="simple-start-button"
+                    onClick={() => { setCareerPathChanged(false); generateAndSaveRoadmap(); }}
+                    disabled={generatingRoadmap}
+                  >
+                    {generatingRoadmap ? (
+                      <>
+                        <LoadingSpinner />
+                        Generating...
+                      </>
+                    ) : (
+                      'Generate New Roadmap'
                     )}
                   </button>
                 </div>
@@ -770,15 +831,23 @@ const CareerPathRecommendation = () => {
                           <h4>High Priority Skills to Develop</h4>
                           <div className="gamified-skills-grid">
                             {learningPlan.skill_analysis.priority_skills.map((skill, index) => (
-                              <div key={index} className="gamified-skill-card">
+                              <div key={index} className={`gamified-skill-card ${skill.source === 'ml' ? 'ml-sourced' : skill.source === 'onet' ? 'onet-sourced' : ''}`}>
                                 <div className="skill-content">
                                   <div className="skill-info">
                                     <span className="skill-name">
                                       {skill.skill || skill.technology}
                                     </span>
-                                    <span className={`priority-badge priority-${skill.priority}`}>
-                                      {skill.priority}
-                                    </span>
+                                    <div className="skill-badges">
+                                      <span className={`priority-badge priority-${skill.priority}`}>
+                                        {skill.priority}
+                                      </span>
+                                      {skill.source === 'ml' && (
+                                        <span className="source-badge source-ml">ML</span>
+                                      )}
+                                      {skill.source === 'onet' && (
+                                        <span className="source-badge source-onet">O*NET</span>
+                                      )}
+                                    </div>
                                   </div>
                                   {skill.reason && (
                                     <p className="skill-reason">{skill.reason}</p>
@@ -794,7 +863,7 @@ const CareerPathRecommendation = () => {
                                         Learned
                                       </>
                                     ) : (
-                                      '✓ Mark as Learned'
+                                      '+ Add to Profile'
                                     )}
                                   </button>
                                 </div>
@@ -976,6 +1045,8 @@ const CareerPathRecommendation = () => {
                     ))}
                   </div>
                 </div>
+
+                {/* ML Skill Recommendations - Integrated into Skill Gap Analysis above */}
               </>
             ) : learningPlan ? (
               <>
@@ -1008,15 +1079,23 @@ const CareerPathRecommendation = () => {
                       <h4>High Priority Skills to Develop</h4>
                       <div className="gamified-skills-grid">
                         {learningPlan.skill_analysis.priority_skills.map((skill, index) => (
-                          <div key={index} className="gamified-skill-card">
+                          <div key={index} className={`gamified-skill-card ${skill.source === 'ml' ? 'ml-sourced' : skill.source === 'onet' ? 'onet-sourced' : ''}`}>
                             <div className="skill-content">
                               <div className="skill-info">
                                 <span className="skill-name">
                                   {skill.skill || skill.technology}
                                 </span>
-                                <span className={`priority-badge priority-${skill.priority}`}>
-                                  {skill.priority}
-                                </span>
+                                <div className="skill-badges">
+                                  <span className={`priority-badge priority-${skill.priority}`}>
+                                    {skill.priority}
+                                  </span>
+                                  {skill.source === 'ml' && (
+                                    <span className="source-badge source-ml">ML</span>
+                                  )}
+                                  {skill.source === 'onet' && (
+                                    <span className="source-badge source-onet">O*NET</span>
+                                  )}
+                                </div>
                               </div>
                               {skill.reason && (
                                 <p className="skill-reason">{skill.reason}</p>
@@ -1032,7 +1111,7 @@ const CareerPathRecommendation = () => {
                                     Learned
                                   </>
                                 ) : (
-                                  '✓ Mark as Learned'
+                                  '+ Add to Profile'
                                 )}
                               </button>
                             </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { X } from 'lucide-react';
+import { CloseIcon } from './components/ChatIcons';
 import SkillenceChat from './SkillenceChat';
 import styles from '../../styles/chatbot/chat.module.css';
 
@@ -44,8 +44,9 @@ const SkillenceChatModal = ({ onClose }) => {
               className={styles.skillenceChatCloseButton}
               onClick={onClose}
               aria-label="Close chat"
+              title="Close chat (Esc)"
             >
-              <X size={24} strokeWidth={2.5} />
+              <CloseIcon size={22} />
             </button>
           </div>
           <SkillenceChat />

@@ -1,5 +1,6 @@
 import requests
 import json
+import re
 import os
 from typing import Dict, List, Any, Optional
 import logging
@@ -156,14 +157,15 @@ class GeminiService:
                     }]
                 }],
                 "generationConfig": {
-                    "temperature": 0.3,  # Lower temperature for more consistent JSON
+                    "temperature": 0.3,
                     "topK": 40,
                     "topP": 0.95,
-                    "maxOutputTokens": 8192,  # Increased for comprehensive learning plans
+                    "maxOutputTokens": 8192,
+                    "responseMimeType": "application/json",
                 }
             }
             
-            response = requests.post(url, headers=headers, json=payload, timeout=30)
+            response = requests.post(url, headers=headers, json=payload, timeout=120)
             
             if response.status_code == 200:
                 result = response.json()
@@ -183,36 +185,59 @@ class GeminiService:
     
     def _parse_gemini_response(self, response: str) -> Dict[str, Any]:
         """
-        Parse Gemini's JSON response with improved error handling
+        Parse Gemini's JSON response with multi-strategy error handling
         """
+        # Strategy 1: Direct parse (works when responseMimeType=application/json)
         try:
-            # First, try to find complete JSON blocks
+            parsed = json.loads(response)
+            return parsed
+        except json.JSONDecodeError:
+            pass
+
+        # Strategy 2: Extract JSON block from markdown/text wrapper
+        try:
             start = response.find('{')
             end = response.rfind('}') + 1
             
             if start >= 0 and end > start:
                 json_str = response[start:end]
-                
-                # Clean common JSON formatting issues
-                json_str = self._clean_json_string(json_str)
-                
                 parsed = json.loads(json_str)
                 return parsed
-            else:
-                self.logger.error("Could not find JSON in Gemini response")
-                return {}
-                
+        except json.JSONDecodeError:
+            pass
+
+        # Strategy 3: Clean common issues then parse
+        try:
+            start = response.find('{')
+            end = response.rfind('}') + 1
+            if start >= 0 and end > start:
+                json_str = response[start:end]
+                json_str = self._clean_json_string(json_str)
+                parsed = json.loads(json_str)
+                return parsed
         except json.JSONDecodeError as e:
             self.logger.error(f"Error parsing Gemini JSON response: {e}")
-            self.logger.warning("Using fallback learning plan generation")
-            return {}
+
+        # Strategy 4: Try to repair truncated JSON by closing brackets
+        try:
+            start = response.find('{')
+            end = response.rfind('}') + 1
+            if start >= 0 and end > start:
+                json_str = self._clean_json_string(response[start:end])
+                json_str = self._repair_truncated_json(json_str)
+                parsed = json.loads(json_str)
+                return parsed
+        except json.JSONDecodeError:
+            pass
+
+        self.logger.error("All JSON parsing strategies failed")
+        self.logger.warning("Using fallback learning plan generation")
+        return {}
     
     def _clean_json_string(self, json_str: str) -> str:
         """
         Clean common JSON formatting issues in Gemini responses
         """
-        import re
-        
         # Remove any non-JSON content at the beginning or end
         json_str = json_str.strip()
         
@@ -220,18 +245,53 @@ class GeminiService:
         json_str = re.sub(r'^```json\s*', '', json_str)
         json_str = re.sub(r'\s*```$', '', json_str)
         
+        # Remove single-line comments (// ...)
+        json_str = re.sub(r'//[^\n]*', '', json_str)
+        
         # Remove any trailing commas before closing brackets/braces
         json_str = re.sub(r',(\s*[}\]])', r'\1', json_str)
         
-        # Fix missing commas between array elements
-        json_str = re.sub(r'}\s*{', r'},{', json_str)
-        json_str = re.sub(r']\s*\[', r'],[', json_str)
+        # Fix missing commas between array elements:  }  {  →  },  {
+        json_str = re.sub(r'}\s*\n\s*{', r'},\n{', json_str)
         
-        # Fix missing commas between object properties
-        json_str = re.sub(r'"\s*\n\s*"', r'",\n    "', json_str)
+        # Fix missing commas: ]  "key" → ],  "key"
+        json_str = re.sub(r'(\])\s*\n(\s*")', r'\1,\n\2', json_str)
+        
+        # Fix missing commas: }  "key" → },  "key"
+        json_str = re.sub(r'(})\s*\n(\s*")', r'\1,\n\2', json_str)
         
         # Remove duplicate commas
         json_str = re.sub(r',,+', r',', json_str)
+        
+        return json_str
+    
+    def _repair_truncated_json(self, json_str: str) -> str:
+        """Attempt to close unclosed brackets/braces in truncated JSON."""
+        open_braces = json_str.count('{') - json_str.count('}')
+        open_brackets = json_str.count('[') - json_str.count(']')
+        
+        # Remove trailing comma
+        json_str = json_str.rstrip()
+        if json_str.endswith(','):
+            json_str = json_str[:-1]
+        
+        # Close any unclosed strings
+        in_string = False
+        escape_next = False
+        for ch in json_str:
+            if escape_next:
+                escape_next = False
+                continue
+            if ch == '\\':
+                escape_next = True
+                continue
+            if ch == '"':
+                in_string = not in_string
+        if in_string:
+            json_str += '"'
+        
+        json_str += ']' * max(0, open_brackets)
+        json_str += '}' * max(0, open_braces)
         
         return json_str
     

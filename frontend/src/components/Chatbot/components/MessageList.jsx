@@ -1,5 +1,5 @@
 import React from "react";
-import { Volume2 } from "lucide-react";
+import { VolumeIcon } from "./ChatIcons";
 import { useNavigate } from "react-router-dom";
 import { formatTimestamp } from "../utils/helpers";
 import styles from "../../../styles/chatbot/components.module.css";
@@ -191,7 +191,7 @@ const MessageList = ({ messages, onSpeak, isPlaying }) => {
                 disabled={isPlaying}
                 aria-label="Read message aloud"
               >
-                <Volume2 size={14} />
+                <VolumeIcon size={18} />
               </button>
             )}
           </div>
