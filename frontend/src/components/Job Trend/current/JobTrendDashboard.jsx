@@ -35,7 +35,7 @@ import './JobTrendDashboard.css';
 
 const JobTrendDashboardEnhanced = () => {
   const [selectedJob, setSelectedJob] = useState('');
-  const [timeRange, setTimeRange] = useState('6m');
+  const [timeRange, setTimeRange] = useState('all');
   const [loading, setLoading] = useState(true);
   const [availableJobs, setAvailableJobs] = useState([]);
   const [jobAnalysis, setJobAnalysis] = useState(null);

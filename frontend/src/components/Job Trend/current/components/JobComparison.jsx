@@ -21,7 +21,7 @@ const JobComparison = ({ availableJobs }) => {
       // ✅ SAFE: Only call your job trend API endpoints
       const comparisons = await Promise.all(
         selectedJobs.map(job => 
-          fetch(`http://localhost:8000/api/job-trends/analysis/${encodeURIComponent(job)}`)
+          fetch(`http://localhost:8000/api/job-trends/analysis/${encodeURIComponent(job)}?time_range=all`)
             .then(res => res.json())
         )
       );
