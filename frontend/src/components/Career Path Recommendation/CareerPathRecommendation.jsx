@@ -121,6 +121,14 @@ const ResourcesIcon = () => (
   </svg>
 );
 
+const ExternalLinkIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+    <polyline points="15,3 21,3 21,9"/>
+    <line x1="10" y1="14" x2="21" y2="3"/>
+  </svg>
+);
+
 const MLIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <path d="M12 2L2 7l10 5 10-5-10-5z"/>
@@ -831,7 +839,7 @@ const CareerPathRecommendation = () => {
                           <h4>High Priority Skills to Develop</h4>
                           <div className="gamified-skills-grid">
                             {learningPlan.skill_analysis.priority_skills.map((skill, index) => (
-                              <div key={index} className={`gamified-skill-card ${skill.source === 'ml' ? 'ml-sourced' : skill.source === 'onet' ? 'onet-sourced' : ''}`}>
+                              <div key={index} className="gamified-skill-card">
                                 <div className="skill-content">
                                   <div className="skill-info">
                                     <span className="skill-name">
@@ -841,12 +849,6 @@ const CareerPathRecommendation = () => {
                                       <span className={`priority-badge priority-${skill.priority}`}>
                                         {skill.priority}
                                       </span>
-                                      {skill.source === 'ml' && (
-                                        <span className="source-badge source-ml">ML</span>
-                                      )}
-                                      {skill.source === 'onet' && (
-                                        <span className="source-badge source-onet">O*NET</span>
-                                      )}
                                     </div>
                                   </div>
                                   {skill.reason && (
@@ -1023,18 +1025,24 @@ const CareerPathRecommendation = () => {
                                   <ResourcesIcon />
                                   Recommended Resources
                                 </h5>
-                                <div className="resources-container-grid">
+                                <div className="resources-list">
                                   {phase.tasks.filter(task => task.task_type === 'resource').map((task) => (
-                                    <a
-                                      key={task.task_id}
-                                      href={getResourceUrl(task.task_name)}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="resource-container-box"
-                                      style={{ textDecoration: 'none' }}
-                                    >
-                                      <span className="resource-name-text">{task.task_name}</span>
-                                    </a>
+                                    <div key={task.task_id} className="resource-item">
+                                      <ResourcesIcon />
+                                      <div className="resource-info">
+                                        <span className="resource-title">{task.task_name}</span>
+                                      </div>
+                                      <a
+                                        href={getResourceUrl(task.task_name)}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="resource-link-button"
+                                        title="Open resource"
+                                      >
+                                        <ExternalLinkIcon />
+                                        <span>Open</span>
+                                      </a>
+                                    </div>
                                   ))}
                                 </div>
                               </div>
@@ -1079,7 +1087,7 @@ const CareerPathRecommendation = () => {
                       <h4>High Priority Skills to Develop</h4>
                       <div className="gamified-skills-grid">
                         {learningPlan.skill_analysis.priority_skills.map((skill, index) => (
-                          <div key={index} className={`gamified-skill-card ${skill.source === 'ml' ? 'ml-sourced' : skill.source === 'onet' ? 'onet-sourced' : ''}`}>
+                          <div key={index} className="gamified-skill-card">
                             <div className="skill-content">
                               <div className="skill-info">
                                 <span className="skill-name">
@@ -1089,12 +1097,6 @@ const CareerPathRecommendation = () => {
                                   <span className={`priority-badge priority-${skill.priority}`}>
                                     {skill.priority}
                                   </span>
-                                  {skill.source === 'ml' && (
-                                    <span className="source-badge source-ml">ML</span>
-                                  )}
-                                  {skill.source === 'onet' && (
-                                    <span className="source-badge source-onet">O*NET</span>
-                                  )}
                                 </div>
                               </div>
                               {skill.reason && (
@@ -1184,24 +1186,31 @@ const CareerPathRecommendation = () => {
                             <h5>Recommended Resources</h5>
                             <div className="resources-list">
                               {phase.learning_resources.slice(0, 3).map((resource, resIdx) => (
-                                <a
+                                <div
                                   key={resIdx}
-                                  href={getResourceUrl(resource.title)}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
                                   className="resource-item"
-                                  style={{ textDecoration: 'none', cursor: 'pointer' }}
                                 >
                                   {resource.type === 'course' && <BookOpenIcon />}
                                   {resource.type === 'certification' && <CertificateIcon />}
                                   {resource.type === 'project' && <CodeIcon />}
+                                  {!['course', 'certification', 'project'].includes(resource.type) && <ResourcesIcon />}
                                   <div className="resource-info">
                                     <span className="resource-title">{resource.title}</span>
                                     <span className="resource-meta">
                                       {resource.provider || resource.platform} • {resource.duration}
                                     </span>
                                   </div>
-                                </a>
+                                  <a
+                                    href={resource.url || getResourceUrl(resource.title)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="resource-link-button"
+                                    title="Open resource"
+                                  >
+                                    <ExternalLinkIcon />
+                                    <span>Open</span>
+                                  </a>
+                                </div>
                               ))}
                             </div>
                           </div>

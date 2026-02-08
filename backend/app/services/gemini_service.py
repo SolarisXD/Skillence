@@ -60,6 +60,31 @@ class GeminiService:
         """
         Create a detailed prompt for Gemini to generate learning plan
         """
+        # Collect skill names that need AI-generated descriptions
+        skills_needing_descriptions = []
+        for ht in onet_data.get("hot_technologies", []):
+            name = ht.get("technology", "").strip()
+            if name:
+                skills_needing_descriptions.append(name)
+        for rec in onet_data.get("ml_recommended_skills", []):
+            name = rec.get("skill", "").strip()
+            if name and name not in skills_needing_descriptions:
+                skills_needing_descriptions.append(name)
+        # Cap to avoid prompt bloat
+        skills_needing_descriptions = skills_needing_descriptions[:20]
+
+        skills_desc_section = ""
+        skills_desc_schema = ""
+        if skills_needing_descriptions:
+            skills_list_str = ", ".join(skills_needing_descriptions)
+            skills_desc_section = f"""
+        **Additional Skills Context:**
+        The following skills have been identified as important for the {career_title} role through industry data analysis: {skills_list_str}
+        For each skill above, provide a brief professional reason (1 sentence, max 15 words) explaining why it matters for this role. Include these in the "skill_descriptions" field below.
+        """
+            skills_desc_schema = """
+            "skill_descriptions": {{"skill_name": "Brief reason why this skill matters for the role"}},"""
+
         prompt = f"""
         You are a career development expert. Create a comprehensive, personalized learning plan for someone pursuing a {career_title} role.
 
@@ -74,7 +99,7 @@ class GeminiService:
         3. Focus on industry-relevant, high-demand skills for 2024-2025
         4. Provide specific, actionable learning resources
         5. Include realistic timelines and milestones
-
+        {skills_desc_section}
         **Please respond in the following JSON format:**
         {{
             "skill_analysis": {{
@@ -130,7 +155,7 @@ class GeminiService:
                 }}
             }},
             "estimated_timeline": "9-18 months",
-            "weekly_commitment": "8-15 hours per week"
+            "weekly_commitment": "8-15 hours per week",{skills_desc_schema}
         }}
 
         Focus on modern, industry-relevant skills. For software development roles, prioritize current technologies like React, Node.js, Python, cloud platforms, etc. Avoid outdated or irrelevant tools.

@@ -482,6 +482,11 @@ class LearningPlanService:
             # Generate enhanced learning plan using Gemini AI
             gemini_plan = self.gemini_service.generate_learning_plan(career_title, user_profile, onet_requirements)
             
+            # Extract AI-generated skill descriptions (for ML/O*NET skills)
+            ai_skill_descriptions = {}
+            if gemini_plan:
+                ai_skill_descriptions = gemini_plan.get("skill_descriptions", {})
+
             # If Gemini plan is successful, use it; otherwise fall back to original logic
             if gemini_plan and not gemini_plan.get("fallback", False):
                 # Transform Gemini response to match our expected format
@@ -501,7 +506,7 @@ class LearningPlanService:
                 learning_plan["ml_powered"] = False
             
             # ── Merge ML recommendations into priority_skills for unified display ──
-            self._merge_ml_into_priority_skills(learning_plan, ml_recommendations, onet_requirements, user_profile)
+            self._merge_ml_into_priority_skills(learning_plan, ml_recommendations, onet_requirements, user_profile, ai_skill_descriptions)
             
             return learning_plan
             
@@ -531,6 +536,7 @@ class LearningPlanService:
         ml_recommendations: List[Dict],
         onet_requirements: Dict[str, Any],
         user_profile: Dict[str, Any],
+        ai_skill_descriptions: Dict[str, str] = None,
     ) -> None:
         """Merge ML recommendations and O*NET hot technologies into a single
         unified ``priority_skills`` list inside ``skill_analysis``. This
@@ -539,10 +545,14 @@ class LearningPlanService:
         The result is a combined list capped at 12 items with attributes:
           - skill (str)
           - priority: critical | high | medium
-          - reason (str)
-          - source: gemini | ml | onet
+          - reason (str)  — AI-generated description when available
           - confidence (float, 0-1, for ML items)
         """
+        if ai_skill_descriptions is None:
+            ai_skill_descriptions = {}
+
+        # Build a case-insensitive lookup for AI descriptions
+        desc_lookup = {k.lower(): v for k, v in ai_skill_descriptions.items()}
         skill_analysis = learning_plan.get("skill_analysis", {})
         existing_priority = list(skill_analysis.get("priority_skills", []))
 
@@ -565,7 +575,9 @@ class LearningPlanService:
                 continue
             if name.lower() in user_skills_raw:
                 continue
-            sk["source"] = sk.get("source", "gemini")
+            # Use AI description if available, keep existing reason otherwise
+            if name.lower() in desc_lookup:
+                sk["reason"] = desc_lookup[name.lower()]
             unified.append(sk)
             seen_skills.add(name.lower())
 
@@ -576,11 +588,11 @@ class LearningPlanService:
                 continue
             if name.lower() in self._GENERIC_SKILLS:
                 continue
+            reason = desc_lookup.get(name.lower(), f"High-demand technology for {name} professionals")
             unified.append({
                 "skill": name,
                 "priority": "critical",
-                "reason": f"In-demand technology for this occupation (O*NET Hot Technology)",
-                "source": "onet",
+                "reason": reason,
             })
             seen_skills.add(name.lower())
 
@@ -594,11 +606,11 @@ class LearningPlanService:
                     continue
                 confidence = rec.get("confidence", 0)
                 priority = "high" if confidence >= 0.15 else "medium"
+                reason = desc_lookup.get(name.lower(), f"Strongly correlated with success in this role")
                 unified.append({
                     "skill": name,
                     "priority": priority,
-                    "reason": f"Recommended by ML model ({confidence*100:.0f}% confidence)",
-                    "source": "ml",
+                    "reason": reason,
                     "confidence": confidence,
                 })
                 seen_skills.add(name.lower())

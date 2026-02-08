@@ -13,9 +13,11 @@ Output artefacts (saved to  backend/app/ml/data/processed/):
 """
 
 import os
+import re
 import json
 import logging
-from typing import Dict, List, Tuple, Any
+from typing import Dict, List, Tuple, Any, Set
+from collections import Counter
 
 import numpy as np
 import pandas as pd
@@ -32,6 +34,43 @@ _JOB_CSV     = os.path.join(_CAREER_DATA, "job_trend_data", "ai_job_dataset.csv"
 _ONET_JSON   = os.path.join(_CAREER_DATA, "onet_occupations_data.json")
 _OUTPUT_DIR  = os.path.join(_BASE_DIR, "processed")
 
+# API cache paths (populated by fetch_api_data.py)
+_API_CACHE       = os.path.join(_BASE_DIR, "api_cache")
+_ONET_CACHE      = os.path.join(_API_CACHE, "onet")
+_ONET_DETAILS    = os.path.join(_ONET_CACHE, "occupation_details")
+_JSEARCH_CACHE   = os.path.join(_API_CACHE, "jsearch")
+_JSEARCH_JOBS    = os.path.join(_JSEARCH_CACHE, "accumulated_jobs.json")
+_SOC_CROSSWALK   = os.path.join(_API_CACHE, "soc_crosswalk.json")
+
+# Minimum number of occupations a non-hot tech skill must appear in
+# to be included in the vocabulary
+_MIN_TECH_FREQUENCY = 10
+
+# Skill aliases for JSearch description extraction
+_SKILL_ALIASES = {
+    "golang": "go",
+    "js": "javascript",
+    "ts": "typescript",
+    "k8s": "kubernetes",
+    "postgres": "postgresql",
+    "mongo": "mongodb",
+    "react.js": "react",
+    "reactjs": "react",
+    "node.js": "node.js",
+    "nodejs": "node.js",
+    "vue.js": "vue.js",
+    "vuejs": "vue.js",
+    "express.js": "express",
+    "expressjs": "express",
+    "next.js": "next.js",
+    "nextjs": "next.js",
+    "scikit-learn": "scikit-learn",
+    "sklearn": "scikit-learn",
+    "aws": "amazon web services aws software",
+    "gcp": "google cloud platform",
+    "azure": "microsoft azure",
+}
+
 
 class SkillDataProcessor:
     """Build unified skill vocabulary and binary vectors from O*NET + CSV data."""
@@ -42,6 +81,11 @@ class SkillDataProcessor:
         self.knowledge_df: pd.DataFrame = None
         self.onet_json: List[Dict[str, Any]] = []
         self.job_csv_df: pd.DataFrame = None
+
+        # API cache data
+        self.api_occupation_details: Dict[str, Dict] = {}  # code -> detail dict
+        self.jsearch_jobs: List[Dict] = []
+        self.soc_crosswalk: Dict[str, str] = {}  # JSearch SOC -> O*NET code
 
         # Final artefacts
         self.skill_vocab: Dict[str, int] = {}  # skill_name → index
@@ -93,6 +137,34 @@ class SkillDataProcessor:
             logger.info(f"Job CSV: {len(self.job_csv_df)} rows")
         else:
             logger.warning(f"Job CSV not found: {_JOB_CSV}")
+
+        # ---------- API cache data ----------
+        # O*NET API occupation details
+        if os.path.exists(_ONET_DETAILS):
+            for fname in os.listdir(_ONET_DETAILS):
+                if not fname.endswith(".json"):
+                    continue
+                with open(os.path.join(_ONET_DETAILS, fname), "r", encoding="utf-8") as f:
+                    detail = json.load(f)
+                code = detail.get("code", fname.replace(".json", ""))
+                self.api_occupation_details[code] = detail
+            logger.info(f"O*NET API cache: {len(self.api_occupation_details)} occupations")
+        else:
+            logger.warning("O*NET API cache not found — run fetch_api_data.py first")
+
+        # JSearch accumulated jobs
+        if os.path.exists(_JSEARCH_JOBS):
+            with open(_JSEARCH_JOBS, "r", encoding="utf-8") as f:
+                self.jsearch_jobs = json.load(f)
+            logger.info(f"JSearch jobs: {len(self.jsearch_jobs)}")
+        else:
+            logger.info("JSearch cache not found — skipping")
+
+        # SOC crosswalk
+        if os.path.exists(_SOC_CROSSWALK):
+            with open(_SOC_CROSSWALK, "r", encoding="utf-8") as f:
+                self.soc_crosswalk = json.load(f)
+            logger.info(f"SOC crosswalk: {len(self.soc_crosswalk)} mappings")
 
     # ------------------------------------------------------------------
     # 2. Build vocabulary
@@ -172,6 +244,68 @@ class SkillDataProcessor:
                     skills.add(s)
         return skills
 
+    def _extract_api_tech_skills(self) -> set:
+        """Extract tech skill names from O*NET API cache.
+
+        Includes:
+        - ALL hot_technology or in_demand skills
+        - Non-hot skills that appear in >= _MIN_TECH_FREQUENCY occupations
+        """
+        skills = set()
+        if not self.api_occupation_details:
+            return skills
+
+        # Count how many occupations each tech skill appears in
+        tech_occ_counter: Counter = Counter()
+        hot_or_demand: Set[str] = set()
+
+        for _code, detail in self.api_occupation_details.items():
+            seen_in_occ: Set[str] = set()
+            for t in detail.get("tech_skills", []):
+                name = t["name"].strip().lower()
+                if not name:
+                    continue
+                if name not in seen_in_occ:
+                    seen_in_occ.add(name)
+                    tech_occ_counter[name] += 1
+                if t.get("hot") or t.get("in_demand"):
+                    hot_or_demand.add(name)
+
+        # Include hot/in-demand unconditionally
+        skills.update(hot_or_demand)
+
+        # Include non-hot if they appear in enough occupations
+        for name, count in tech_occ_counter.items():
+            if count >= _MIN_TECH_FREQUENCY:
+                skills.add(name)
+
+        logger.info(
+            f"API tech skills: {len(hot_or_demand)} hot/in-demand, "
+            f"{len(skills) - len(hot_or_demand)} frequent (>={_MIN_TECH_FREQUENCY} occs), "
+            f"total {len(skills)}"
+        )
+        return skills
+
+    def _extract_api_core_skills(self) -> set:
+        """Extract core skill names from O*NET API cache."""
+        skills = set()
+        for _code, detail in self.api_occupation_details.items():
+            for s in detail.get("skills", []):
+                name = s.get("name", "").strip().lower()
+                if name:
+                    skills.add(name)
+        return skills
+
+    def _extract_api_knowledge(self) -> set:
+        """Extract knowledge area names from O*NET API cache."""
+        knowledge = set()
+        for _code, detail in self.api_occupation_details.items():
+            for k in detail.get("knowledge", []):
+                name = k.get("name", "").strip().lower()
+                if name:
+                    knowledge.add(name)
+        return knowledge
+
     def build_vocabulary(self) -> Dict[str, int]:
         """Merge skill names from all sources into a deduplicated vocabulary."""
         logger.info("Building unified skill vocabulary...")
@@ -182,9 +316,15 @@ class SkillDataProcessor:
         onet_json  = self._extract_onet_json_skills()
         csv_skills = self._extract_csv_skills()
 
+        # API enrichment sources
+        api_tech   = self._extract_api_tech_skills()
+        api_core   = self._extract_api_core_skills()
+        api_know   = self._extract_api_knowledge()
+
         # Merge all — lowercase, stripped
         all_skills = set()
-        for source in [hot_tech, core, knowledge, onet_json, csv_skills]:
+        for source in [hot_tech, core, knowledge, onet_json, csv_skills,
+                       api_tech, api_core, api_know]:
             all_skills.update(source)
 
         # Remove very short or noisy entries
@@ -198,7 +338,9 @@ class SkillDataProcessor:
             f"Vocabulary size: {len(self.skill_vocab)}  "
             f"(hot_tech={len(hot_tech)}, core={len(core)}, "
             f"knowledge={len(knowledge)}, onet_json={len(onet_json)}, "
-            f"csv={len(csv_skills)})"
+            f"csv={len(csv_skills)}, "
+            f"api_tech={len(api_tech)}, api_core={len(api_core)}, "
+            f"api_knowledge={len(api_know)})"
         )
         return self.skill_vocab
 
@@ -302,23 +444,166 @@ class SkillDataProcessor:
         matrix = np.stack(rows) if rows else np.empty((0, V), dtype=np.float32)
         return matrix, labels
 
+    # ------------------------------------------------------------------
+    # API-enriched vector builders
+    # ------------------------------------------------------------------
+    def _build_api_vectors(self) -> Tuple[np.ndarray, List[str]]:
+        """Build vectors from O*NET API cached occupation details."""
+        V = len(self.skill_vocab)
+        if not self.api_occupation_details:
+            return np.empty((0, V), dtype=np.float32), []
+
+        labels = []
+        rows = []
+        for code in sorted(self.api_occupation_details.keys()):
+            detail = self.api_occupation_details[code]
+            vec = np.zeros(V, dtype=np.float32)
+
+            # Technology skills
+            for t in detail.get("tech_skills", []):
+                name = t["name"].strip().lower()
+                if name in self.skill_vocab:
+                    vec[self.skill_vocab[name]] = 1.0
+                # Also set the category name if it's in vocab
+                cat = t.get("category", "").strip().lower()
+                if cat and cat in self.skill_vocab:
+                    vec[self.skill_vocab[cat]] = 1.0
+
+            # Core skills
+            for s in detail.get("skills", []):
+                name = s.get("name", "").strip().lower()
+                if name in self.skill_vocab:
+                    vec[self.skill_vocab[name]] = 1.0
+
+            # Knowledge
+            for k in detail.get("knowledge", []):
+                name = k.get("name", "").strip().lower()
+                if name in self.skill_vocab:
+                    vec[self.skill_vocab[name]] = 1.0
+
+            if vec.sum() >= 1:  # at least 1 skill matched
+                rows.append(vec)
+                labels.append(code)
+
+        matrix = np.stack(rows) if rows else np.empty((0, V), dtype=np.float32)
+        logger.info(
+            f"API vectors: {matrix.shape[0]} occupations, "
+            f"avg {matrix.sum(axis=1).mean():.1f} skills/occupation"
+        )
+        return matrix, labels
+
+    def _extract_skills_from_description(self, description: str) -> Set[str]:
+        """Extract skill names from a job description using vocab matching."""
+        desc_lower = description.lower()
+        found: Set[str] = set()
+
+        # Check aliases first
+        for alias, canonical in _SKILL_ALIASES.items():
+            if alias in desc_lower and canonical in self.skill_vocab:
+                found.add(canonical)
+
+        # Sort vocab by length descending (match longer terms first)
+        sorted_vocab = sorted(self.skill_vocab.keys(), key=len, reverse=True)
+
+        for skill in sorted_vocab:
+            if len(skill) <= 2:
+                continue  # skip very short (avoid false positives)
+            if skill in found:
+                continue  # already matched
+
+            if len(skill) <= 5:
+                # Use word boundary matching for short skills
+                pattern = r"\b" + re.escape(skill) + r"\b"
+                if re.search(pattern, desc_lower):
+                    found.add(skill)
+            else:
+                # Substring matching is sufficient for longer skills
+                if skill in desc_lower:
+                    found.add(skill)
+
+        return found
+
+    def _build_jsearch_vectors(self) -> Tuple[np.ndarray, List[str]]:
+        """Build vectors from JSearch job descriptions using keyword extraction."""
+        V = len(self.skill_vocab)
+        if not self.jsearch_jobs:
+            return np.empty((0, V), dtype=np.float32), []
+
+        labels = []
+        rows = []
+        extract_counts = []
+
+        for job in self.jsearch_jobs:
+            desc = job.get("job_description", "") or ""
+            if len(desc) < 50:
+                continue
+
+            vec = np.zeros(V, dtype=np.float32)
+
+            # 1. Extract skills from description
+            extracted = self._extract_skills_from_description(desc)
+            for skill in extracted:
+                if skill in self.skill_vocab:
+                    vec[self.skill_vocab[skill]] = 1.0
+
+            # 2. If job has an O*NET SOC code, add baseline skills via crosswalk
+            soc = str(job.get("job_onet_soc", "") or "")
+            if soc and soc in self.soc_crosswalk:
+                onet_code = self.soc_crosswalk[soc]
+                if onet_code in self.api_occupation_details:
+                    occ_detail = self.api_occupation_details[onet_code]
+                    # Add hot/in-demand tech skills from the occupation
+                    for t in occ_detail.get("tech_skills", []):
+                        if t.get("hot") or t.get("in_demand"):
+                            name = t["name"].strip().lower()
+                            if name in self.skill_vocab:
+                                vec[self.skill_vocab[name]] = 1.0
+
+            skill_count = int(vec.sum())
+            extract_counts.append(skill_count)
+
+            if skill_count >= 3:  # minimum quality threshold
+                rows.append(vec)
+                labels.append(str(job.get("job_id", f"jsearch_{len(labels)}")))
+
+        matrix = np.stack(rows) if rows else np.empty((0, V), dtype=np.float32)
+        avg_extracted = sum(extract_counts) / max(len(extract_counts), 1)
+        logger.info(
+            f"JSearch vectors: {matrix.shape[0]}/{len(self.jsearch_jobs)} jobs kept "
+            f"(avg {avg_extracted:.1f} skills/job, min threshold=3)"
+        )
+        return matrix, labels
+
     def build_vectors(self) -> Tuple[np.ndarray, List[str]]:
-        """Build combined binary vectors from both O*NET and CSV sources."""
+        """Build combined binary vectors from O*NET, CSV, API, and JSearch sources."""
         logger.info("Building binary skill vectors...")
 
         onet_matrix, onet_labels = self._build_onet_vectors()
         csv_matrix, csv_labels = self._build_csv_vectors()
+        api_matrix, api_labels = self._build_api_vectors()
+        jsearch_matrix, jsearch_labels = self._build_jsearch_vectors()
 
-        # Stack vertically
-        if onet_matrix.size and csv_matrix.size:
-            self.vectors = np.vstack([onet_matrix, csv_matrix])
-            self.labels = onet_labels + csv_labels
-        elif onet_matrix.size:
-            self.vectors = onet_matrix
-            self.labels = onet_labels
+        # Stack all non-empty sources vertically
+        matrices = []
+        all_labels = []
+        for name, mat, lab in [
+            ("O*NET Excel", onet_matrix, onet_labels),
+            ("CSV", csv_matrix, csv_labels),
+            ("O*NET API", api_matrix, api_labels),
+            ("JSearch", jsearch_matrix, jsearch_labels),
+        ]:
+            if mat.size > 0:
+                matrices.append(mat)
+                all_labels.extend(lab)
+                logger.info(f"  {name}: {mat.shape[0]} samples")
+
+        if matrices:
+            self.vectors = np.vstack(matrices)
+            self.labels = all_labels
         else:
-            self.vectors = csv_matrix
-            self.labels = csv_labels
+            V = len(self.skill_vocab)
+            self.vectors = np.empty((0, V), dtype=np.float32)
+            self.labels = []
 
         # Remove rows that are all-zero (no matched skills at all)
         nonzero_mask = self.vectors.sum(axis=1) > 0
@@ -351,6 +636,9 @@ class SkillDataProcessor:
             "sparsity": float(1 - self.vectors.mean()),
             "onet_json_occupations": len(self.onet_json),
             "csv_rows": len(self.job_csv_df) if self.job_csv_df is not None else 0,
+            "api_occupations": len(self.api_occupation_details),
+            "jsearch_jobs": len(self.jsearch_jobs),
+            "soc_crosswalk_entries": len(self.soc_crosswalk),
         }
         with open(os.path.join(out, "vocab_metadata.json"), "w", encoding="utf-8") as f:
             json.dump(meta, f, indent=2)

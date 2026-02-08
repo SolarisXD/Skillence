@@ -150,10 +150,6 @@ celerybeat-schedule
 
 # Environments
 .env
-.env.*
-!.env.example
-backend/.env
-frontend/.env
 .venv
 env/
 venv/
@@ -186,5 +182,10 @@ backend/app/career_data/job_trend_data/Job_Dataset_Indeed_India.ldjson
 # O*NET skills data (large Excel exports) - ignore Excel/ODS files in skills_data
 backend/app/career_data/skills_data/*.xls*
 backend/app/career_data/skills_data/*.ods.
+
+# ML pipeline caches and backups
+backend/app/ml/data/api_cache/
+backend/app/ml/data/processed/backup_v1/
+backend/app/ml/models/checkpoints/backup_v1/
 
 C:/GitHubRepo/Skillence/NET_README.md
