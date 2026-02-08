@@ -150,6 +150,10 @@ celerybeat-schedule
 
 # Environments
 .env
+.env.*
+!.env.example
+backend/.env
+frontend/.env
 .venv
 env/
 venv/

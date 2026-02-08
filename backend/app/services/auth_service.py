@@ -5,6 +5,10 @@ from app.utils.email import send_password_reset_email
 from fastapi import HTTPException, status
 from datetime import datetime, timedelta
 from bson import ObjectId
+import os
+import secrets
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
 
 class AuthService:
     def __init__(self):
@@ -198,5 +202,79 @@ class AuthService:
             {"email": email},
             {"$set": {"password": hashed_password}}
         )
+
+    async def google_login(self, token: str):
+        """Authenticate a user via Google OAuth2 ID token (Gmail accounts only)"""
+        users_collection = self._get_collection()
+
+        google_client_id = os.getenv("GOOGLE_CLIENT_ID")
+        if not google_client_id:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Google Client ID not configured on server"
+            )
+
+        try:
+            idinfo = id_token.verify_oauth2_token(
+                token,
+                google_requests.Request(),
+                google_client_id
+            )
+        except ValueError:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid Google token"
+            )
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=f"Google token verification failed: {str(e)}"
+            )
+
+        email = idinfo.get("email", "")
+        name = idinfo.get("name", "")
+
+        # Enforce Gmail-only
+        if not email.endswith("@gmail.com"):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Only @gmail.com accounts are allowed"
+            )
+
+        # Check if user exists
+        user = await users_collection.find_one({"email": email})
+
+        if not user:
+            # Auto sign-up
+            random_password = secrets.token_urlsafe(32)
+            hashed_password = get_password_hash(random_password)
+            user_doc = {
+                "email": email,
+                "name": name,
+                "password": hashed_password,
+                "created_at": datetime.utcnow(),
+                "is_verified": True,
+                "auth_provider": "google"
+            }
+            result = await users_collection.insert_one(user_doc)
+            user_id = str(result.inserted_id)
+        else:
+            user_id = str(user["_id"])
+            name = user.get("name", name)
+
+        # Create JWT access token
+        access_token = create_access_token(
+            data={"sub": email, "user_id": user_id}
+        )
+
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "user": {
+                "id": user_id,
+                "email": email,
+                "name": name
+            }
+        }
         
         return {"message": "Password reset successfully"}
