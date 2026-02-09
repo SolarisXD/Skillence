@@ -379,24 +379,27 @@ What aspect of this analysis would you like to dive deeper into? I'm here to hel
           borderRadius: '20px',
           padding: '20px 30px',
           marginBottom: '30px',
-          border: '1px solid rgba(255, 255, 255, 0.15)',
+          border: '1px solid var(--border-color)',
           backdropFilter: 'blur(20px)',
           textAlign: 'center'
         }}>
           <h1 style={{
-            color: '#ffffff',
+            color: 'var(--text-primary)',
             fontSize: '28px',
             fontWeight: '700',
-            margin: '0 0 10px 0',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            backgroundClip: 'text',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
+            margin: '0 0 10px 0'
           }}>
-            💬 Reflection Engine AI Coach
+            <span style={{
+              background: 'var(--accent-gradient)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}>
+              💬 Reflection Engine AI Coach
+            </span>
           </h1>
           <p style={{
-            color: 'rgba(255, 255, 255, 0.7)',
+            color: 'var(--text-secondary)',
             fontSize: '16px',
             margin: 0,
             lineHeight: '1.5'
@@ -408,15 +411,16 @@ What aspect of this analysis would you like to dive deeper into? I'm here to hel
         {/* Messages Area */}
         <div style={{
           flex: 1,
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)',
+          background: 'var(--card-gradient)',
           borderRadius: '20px',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
+          border: '1px solid var(--border-color)',
           backdropFilter: 'blur(20px)',
           padding: '30px',
           marginBottom: '20px',
           overflow: 'hidden',
           display: 'flex',
-          flexDirection: 'column'
+          flexDirection: 'column',
+          boxShadow: 'var(--shadow)'
         }}>
           <div style={{
             flex: 1,
