@@ -356,77 +356,95 @@ What aspect of this analysis would you like to dive deeper into? I'm here to hel
   return (
     <>
       <Navbar />
-      <div style={{
+      <div className="App" style={{
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #0f0f23 0%, #1a1a37 100%)',
-        display: 'flex',
-        flexDirection: 'column',
-        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+        background: 'var(--bg-primary)',
+        position: 'relative'
       }}>
-      {/* Chat Container */}
-      <div style={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        maxWidth: '1000px',
-        margin: '0 auto',
-        padding: '20px',
-        width: '100%'
-      }}>
-        {/* Header */}
+        {/* Custom Reflection Engine Background Animation */}
+        <div className="reflection-bg">
+          <div className="floating-shape shape-1"></div>
+          <div className="floating-shape shape-2"></div>
+          <div className="floating-shape shape-3"></div>
+          <div className="floating-shape shape-4"></div>
+          <div className="floating-shape shape-5"></div>
+          <div className="gradient-beam beam-1"></div>
+          <div className="gradient-beam beam-2"></div>
+          <div className="gradient-beam beam-3"></div>
+          <div className="particle-field">
+            {Array.from({ length: 12 }, (_, i) => (
+              <div key={i} className={`particle particle-${i + 1}`}></div>
+            ))}
+          </div>
+        </div>
+
+        {/* Content Container */}
         <div style={{
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
-          borderRadius: '20px',
-          padding: '20px 30px',
-          marginBottom: '30px',
-          border: '1px solid var(--border-color)',
-          backdropFilter: 'blur(20px)',
-          textAlign: 'center'
+          position: 'relative',
+          zIndex: 10,
+          padding: '40px 20px',
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column'
         }}>
-          <h1 style={{
-            color: 'var(--text-primary)',
-            fontSize: '28px',
-            fontWeight: '700',
-            margin: '0 0 10px 0'
+          {/* Header */}
+          <div className="container" style={{
+            background: 'var(--card-gradient)',
+            borderRadius: '20px',
+            padding: '30px',
+            border: '1px solid var(--border-color)',
+            backdropFilter: 'blur(20px)',
+            textAlign: 'center',
+            boxShadow: 'var(--shadow)',
+            marginBottom: '30px'
           }}>
-            <span style={{
+            <h1 style={{
+              fontSize: '32px',
+              fontWeight: '800',
+              color: 'var(--text-primary)',
+              marginBottom: '16px',
               background: 'var(--accent-gradient)',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
             }}>
               💬 Reflection Engine AI Coach
-            </span>
-          </h1>
-          <p style={{
-            color: 'var(--text-secondary)',
-            fontSize: '16px',
-            margin: 0,
-            lineHeight: '1.5'
-          }}>
-            Transform your interview experiences into stepping stones for success
-          </p>
-        </div>
+            </h1>
+            <p style={{
+              fontSize: '18px',
+              color: 'var(--text-primary)',
+              fontWeight: '500',
+              margin: 0,
+              lineHeight: '1.5',
+              opacity: 0.9
+            }}>
+              Transform your interview experiences into stepping stones for success
+            </p>
+          </div>
 
-        {/* Messages Area */}
-        <div style={{
-          flex: 1,
-          background: 'var(--card-gradient)',
-          borderRadius: '20px',
-          border: '1px solid var(--border-color)',
-          backdropFilter: 'blur(20px)',
-          padding: '30px',
-          marginBottom: '20px',
-          overflow: 'hidden',
-          display: 'flex',
-          flexDirection: 'column',
-          boxShadow: 'var(--shadow)'
-        }}>
+          {/* Chat Container */}
           <div style={{
-            flex: 1,
-            overflowY: 'auto',
-            paddingRight: '10px'
+            width: '100%',
+            maxWidth: '1200px',
+            margin: '0 auto',
+            background: 'var(--card-gradient)',
+            borderRadius: '20px',
+            border: '1px solid var(--border-color)',
+            backdropFilter: 'blur(20px)',
+            padding: '0',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+            height: '600px',
+            boxShadow: 'var(--shadow)',
+            marginBottom: '20px'
           }}>
+            {/* Messages Area */}
+            <div style={{
+              flex: 1,
+              padding: '30px',
+              overflowY: 'auto'
+            }}>
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -442,17 +460,17 @@ What aspect of this analysis would you like to dive deeper into? I'm here to hel
                     padding: '16px 20px',
                     borderRadius: message.type === 'user' ? '20px 20px 8px 20px' : '20px 20px 20px 8px',
                     background: message.type === 'user' 
-                      ? 'linear-gradient(135deg, #4169E1 0%, #87CEEB 100%)'
+                      ? 'var(--accent-gradient)'
                       : message.isThinking || message.isAnalyzing
-                      ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                      : 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
-                    color: '#ffffff',
+                      ? 'var(--accent-gradient)'
+                      : 'var(--bg-secondary)',
+                    color: message.type === 'user' ? '#ffffff' : 'var(--text-primary)',
                     fontSize: '15px',
                     lineHeight: '1.6',
                     boxShadow: message.type === 'user' 
                       ? '0 8px 25px rgba(65, 105, 225, 0.3)'
                       : '0 4px 15px rgba(0, 0, 0, 0.1)',
-                    border: message.type === 'ai' ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+                    border: message.type === 'ai' ? '1px solid var(--border-color)' : 'none',
                     whiteSpace: 'pre-wrap',
                     wordWrap: 'break-word'
                   }}
@@ -471,9 +489,9 @@ What aspect of this analysis would you like to dive deeper into? I'm here to hel
                 <div style={{
                   padding: '16px 20px',
                   borderRadius: '20px 20px 20px 8px',
-                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  color: 'rgba(255, 255, 255, 0.7)',
+                  background: 'var(--bg-secondary)',
+                  border: '1px solid var(--border-color)',
+                  color: 'var(--text-secondary)',
                   fontSize: '15px'
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -509,14 +527,18 @@ What aspect of this analysis would you like to dive deeper into? I'm here to hel
 
         {/* Input Area */}
         <div style={{
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
+          width: '100%',
+          maxWidth: '1200px',
+          margin: '0 auto',
+          background: 'var(--card-gradient)',
           borderRadius: '20px',
-          border: '1px solid rgba(255, 255, 255, 0.15)',
+          border: '1px solid var(--border-color)',
           backdropFilter: 'blur(20px)',
           padding: '20px',
           display: 'flex',
           gap: '15px',
-          alignItems: 'flex-end'
+          alignItems: 'flex-end',
+          boxShadow: 'var(--shadow)'
         }}>
           <textarea
             ref={textareaRef}
@@ -531,9 +553,9 @@ What aspect of this analysis would you like to dive deeper into? I'm here to hel
               maxHeight: '120px',
               padding: '15px 20px',
               borderRadius: '15px',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              background: 'rgba(255, 255, 255, 0.05)',
-              color: '#ffffff',
+              border: '1px solid var(--border-color)',
+              background: 'var(--bg-secondary)',
+              color: 'var(--text-primary)',
               fontSize: '15px',
               fontFamily: 'inherit',
               resize: 'none',
@@ -547,11 +569,11 @@ What aspect of this analysis would you like to dive deeper into? I'm here to hel
             style={{
               padding: '15px 25px',
               borderRadius: '15px',
-              border: 'none',
+              border: loading || !currentInput.trim() ? '2px solid var(--border-color)' : 'none',
               background: loading || !currentInput.trim() 
-                ? 'rgba(100, 100, 100, 0.5)' 
-                : 'linear-gradient(135deg, #4169E1 0%, #87CEEB 100%)',
-              color: '#ffffff',
+                ? 'var(--bg-secondary)' 
+                : 'var(--accent-gradient)',
+              color: loading || !currentInput.trim() ? 'var(--text-secondary)' : '#ffffff',
               fontSize: '15px',
               fontWeight: '600',
               cursor: loading || !currentInput.trim() ? 'not-allowed' : 'pointer',
@@ -561,7 +583,8 @@ What aspect of this analysis would you like to dive deeper into? I'm here to hel
               gap: '8px',
               boxShadow: loading || !currentInput.trim() 
                 ? 'none' 
-                : '0 4px 15px rgba(65, 105, 225, 0.4)'
+                : 'var(--shadow-glow)',
+              opacity: loading || !currentInput.trim() ? 0.6 : 1
             }}
           >
             Send →
@@ -570,6 +593,183 @@ What aspect of this analysis would you like to dive deeper into? I'm here to hel
       </div>
 
       <style jsx>{`
+        .reflection-bg {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          overflow: hidden;
+          pointer-events: none;
+          z-index: 1;
+        }
+
+        .floating-shape {
+          position: absolute;
+          border-radius: 50%;
+          background: var(--accent-gradient);
+          opacity: 0.15;
+          animation: float 8s ease-in-out infinite;
+          filter: blur(1px);
+        }
+
+        .shape-1 {
+          width: 120px;
+          height: 120px;
+          top: 10%;
+          left: 10%;
+          animation-delay: 0s;
+          animation-duration: 12s;
+        }
+
+        .shape-2 {
+          width: 80px;
+          height: 80px;
+          top: 70%;
+          right: 20%;
+          animation-delay: -3s;
+          animation-duration: 10s;
+        }
+
+        .shape-3 {
+          width: 100px;
+          height: 100px;
+          bottom: 20%;
+          left: 15%;
+          animation-delay: -6s;
+          animation-duration: 14s;
+        }
+
+        .shape-4 {
+          width: 60px;
+          height: 60px;
+          top: 40%;
+          right: 10%;
+          animation-delay: -2s;
+          animation-duration: 11s;
+        }
+
+        .shape-5 {
+          width: 90px;
+          height: 90px;
+          top: 20%;
+          left: 50%;
+          animation-delay: -8s;
+          animation-duration: 13s;
+        }
+
+        .gradient-beam {
+          position: absolute;
+          height: 2px;
+          background: var(--accent-gradient);
+          opacity: 0.4;
+          animation: beam 15s linear infinite;
+        }
+
+        .beam-1 {
+          width: 200px;
+          top: 25%;
+          left: -200px;
+          animation-delay: 0s;
+          transform: rotate(15deg);
+        }
+
+        .beam-2 {
+          width: 150px;
+          top: 60%;
+          right: -150px;
+          animation-delay: -5s;
+          transform: rotate(-20deg);
+        }
+
+        .beam-3 {
+          width: 180px;
+          bottom: 30%;
+          left: -180px;
+          animation-delay: -10s;
+          transform: rotate(10deg);
+        }
+
+        .particle-field {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+        }
+
+        .particle {
+          position: absolute;
+          width: 3px;
+          height: 3px;
+          background: #ffffff;
+          border-radius: 50%;
+          opacity: 0.7;
+          animation: particle 20s linear infinite;
+        }
+
+        .particle-1 { top: 10%; left: 20%; animation-delay: 0s; }
+        .particle-2 { top: 30%; left: 70%; animation-delay: -2s; }
+        .particle-3 { top: 50%; left: 30%; animation-delay: -4s; }
+        .particle-4 { top: 70%; left: 80%; animation-delay: -6s; }
+        .particle-5 { top: 20%; left: 60%; animation-delay: -8s; }
+        .particle-6 { top: 80%; left: 40%; animation-delay: -10s; }
+        .particle-7 { top: 40%; left: 10%; animation-delay: -12s; }
+        .particle-8 { top: 60%; left: 90%; animation-delay: -14s; }
+        .particle-9 { top: 15%; left: 85%; animation-delay: -16s; }
+        .particle-10 { top: 85%; left: 25%; animation-delay: -18s; }
+        .particle-11 { top: 35%; left: 55%; animation-delay: -3s; }
+        .particle-12 { top: 75%; left: 65%; animation-delay: -7s; }
+
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+          }
+          25% {
+            transform: translateY(-20px) rotate(5deg);
+          }
+          50% {
+            transform: translateY(-10px) rotate(-3deg);
+          }
+          75% {
+            transform: translateY(-15px) rotate(2deg);
+          }
+        }
+
+        @keyframes beam {
+          0% {
+            transform: translateX(-100vw) rotate(15deg);
+            opacity: 0;
+          }
+          10% {
+            opacity: 0.4;
+          }
+          90% {
+            opacity: 0.4;
+          }
+          100% {
+            transform: translateX(100vw) rotate(15deg);
+            opacity: 0;
+          }
+        }
+
+        @keyframes particle {
+          0% {
+            opacity: 0;
+            transform: translateY(0px) scale(0.5);
+          }
+          10% {
+            opacity: 0.7;
+            transform: translateY(-10px) scale(1);
+          }
+          80% {
+            opacity: 0.7;
+            transform: translateY(-80px) scale(1);
+          }
+          100% {
+            opacity: 0;
+            transform: translateY(-100px) scale(0.5);
+          }
+        }
+
         @keyframes pulse {
           0%, 100% {
             opacity: 0.4;
@@ -587,17 +787,17 @@ What aspect of this analysis would you like to dive deeper into? I'm here to hel
         }
         
         ::-webkit-scrollbar-track {
-          background: rgba(255, 255, 255, 0.1);
+          background: var(--bg-secondary);
           border-radius: 10px;
         }
         
         ::-webkit-scrollbar-thumb {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: var(--accent-gradient);
           border-radius: 10px;
         }
         
         ::-webkit-scrollbar-thumb:hover {
-          background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+          opacity: 0.8;
         }
       `}</style>
     </div>

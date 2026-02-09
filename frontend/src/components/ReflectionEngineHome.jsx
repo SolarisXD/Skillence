@@ -54,7 +54,7 @@ export default function ReflectionEngineHome() {
           </p>
           <div className="hero-buttons">
             <button className="cta-button primary" onClick={handleStartJourney}>
-              Start Your Journey →
+              Get Started
             </button>
           </div>
           
@@ -171,7 +171,18 @@ export default function ReflectionEngineHome() {
             margin: '0 auto'
           }}>
             <div>
-              <div className="badge">
+              <div style={{
+                display: 'inline-block',
+                padding: '8px 16px',
+                background: 'var(--accent-gradient)',
+                borderRadius: '20px',
+                fontSize: '12px',
+                fontWeight: '600',
+                color: '#ffffff',
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+                marginBottom: '24px'
+              }}>
                 Why Choose Us
               </div>
               <h2 style={{

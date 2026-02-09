@@ -274,11 +274,41 @@ const JobTrendDashboardEnhanced = () => {
     <>
       <Navbar />
       <div className="job-trend-dashboard enhanced">
-        {/* Header with Controls */}
+        {/* Header with Reflection Engine Background Animation */}
         <div className="dashboard-header">
+          {/* Custom Reflection Engine Background Animation */}
+          <div className="reflection-bg">
+            {/* Animated Floating Shapes */}
+            <div className="floating-shape shape-1"></div>
+            <div className="floating-shape shape-2"></div>
+            <div className="floating-shape shape-3"></div>
+            <div className="floating-shape shape-4"></div>
+            <div className="floating-shape shape-5"></div>
+            
+            {/* Animated Gradient Beams */}
+            <div className="gradient-beam beam-1"></div>
+            <div className="gradient-beam beam-2"></div>
+            <div className="gradient-beam beam-3"></div>
+            
+            {/* Particle Effects */}
+            <div className="particle-field">
+              {Array.from({ length: 15 }, (_, i) => (
+                <div key={i} className={`particle particle-${i + 1}`}></div>
+              ))}
+            </div>
+          </div>
+          
           <div className="header-content">
             <h1 className="dashboard-title">
-              Enhanced Job Trend Analysis
+              Enhanced{' '}
+              <span style={{
+                background: 'var(--accent-gradient)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}>
+                Job Trend Analysis
+              </span>
             </h1>
             <p className="dashboard-subtitle">
               Advanced insights with filtering, export, and auto-refresh capabilities

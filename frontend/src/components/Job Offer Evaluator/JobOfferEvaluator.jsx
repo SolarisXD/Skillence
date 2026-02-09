@@ -1117,10 +1117,42 @@ const JobOfferEvaluator = () => {
       <Navbar />
 
       <div className="job-offer-evaluator">
-        {/* Hero Section with Blue Background */}
+        {/* Hero Section with Reflection Engine Background Animation */}
         <div className="hero-section">
+          {/* Custom Reflection Engine Background Animation */}
+          <div className="reflection-bg">
+            {/* Animated Floating Shapes */}
+            <div className="floating-shape shape-1"></div>
+            <div className="floating-shape shape-2"></div>
+            <div className="floating-shape shape-3"></div>
+            <div className="floating-shape shape-4"></div>
+            <div className="floating-shape shape-5"></div>
+            
+            {/* Animated Gradient Beams */}
+            <div className="gradient-beam beam-1"></div>
+            <div className="gradient-beam beam-2"></div>
+            <div className="gradient-beam beam-3"></div>
+            
+            {/* Particle Effects */}
+            <div className="particle-field">
+              {Array.from({ length: 15 }, (_, i) => (
+                <div key={i} className={`particle particle-${i + 1}`}></div>
+              ))}
+            </div>
+          </div>
+          
           <div className="hero-content">
-            <h1 className="hero-title">Discover your earning potential</h1>
+            <h1 className="hero-title">
+              Discover your{' '}
+              <span style={{
+                background: 'var(--accent-gradient)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}>
+                earning potential
+              </span>
+            </h1>
             <p className="joboffer-hero-subtitle">
               Evaluate job offers, compare salaries and benefits by industry and location.
             </p>
