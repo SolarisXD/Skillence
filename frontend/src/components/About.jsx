@@ -12,36 +12,31 @@ const About = () => {
       name: 'Namit Rustagi',
       login: 'Karma121221',
       avatar_url: 'https://github.com/Karma121221.png',
-      html_url: 'https://github.com/Karma121221',
-      role: 'Lead Developer'
+      html_url: 'https://github.com/Karma121221'
     },
     {
       name: 'Rahul Gehlot',
       login: 'SolarisXD',
       avatar_url: 'https://github.com/SolarisXD.png',
-      html_url: 'https://github.com/SolarisXD',
-      role: 'Full Stack Developer'
+      html_url: 'https://github.com/SolarisXD'
     },
     {
-      name: 'Manan',
+      name: 'Manansinh Sandhaliya',
       login: 'Manan-S85',
       avatar_url: 'https://github.com/Manan-S85.png',
-      html_url: 'https://github.com/Manan-S85',
-      role: 'Backend Developer'
+      html_url: 'https://github.com/Manan-S85'
     },
     {
       name: 'Rajeev Ranjan Pratap Singh',
       login: 'RAJEEVRANJAN0001',
       avatar_url: 'https://github.com/RAJEEVRANJAN0001.png',
-      html_url: 'https://github.com/RAJEEVRANJAN0001',
-      role: 'Frontend Developer'
+      html_url: 'https://github.com/RAJEEVRANJAN0001'
     },
     {
       name: 'Kshitiz Srivastava',
       login: 'KshitizCodeHub',
       avatar_url: 'https://github.com/KshitizCodeHub.png',
-      html_url: 'https://github.com/KshitizCodeHub',
-      role: 'UI/UX Developer'
+      html_url: 'https://github.com/KshitizCodeHub'
     }
   ];
 
@@ -302,16 +297,6 @@ const About = () => {
                         marginBottom: '6px'
                       }}>
                         @{contributor.login}
-                      </p>
-                    )}
-                    {contributor.role && (
-                      <p style={{
-                        fontSize: '0.85rem',
-                        color: 'var(--accent-color)',
-                        marginBottom: '12px',
-                        fontWeight: '600'
-                      }}>
-                        {contributor.role}
                       </p>
                     )}
                     <div style={{

@@ -165,13 +165,13 @@ const Contact = () => {
                   {
                     icon: <Phone size={24} />,
                     title: 'Phone',
-                    value: '+1 (555) 123-4567',
-                    link: 'tel:+15551234567'
+                    value: '+91 98765 43210',
+                    link: 'tel:+919876543210'
                   },
                   {
                     icon: <MapPin size={24} />,
                     title: 'Office',
-                    value: 'San Francisco, CA 94102',
+                    value: 'India',
                     link: null
                   }
                 ].map((item, index) => (
@@ -239,7 +239,7 @@ const Contact = () => {
                   color: 'var(--text-primary)',
                   marginBottom: '16px'
                 }}>
-                  Business Hours
+                  Business Hours (IST)
                 </h3>
                 <div style={{
                   fontSize: '1rem',
