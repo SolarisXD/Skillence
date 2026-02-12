@@ -1,0 +1,10 @@
+{
+  "vocab_size": 692,
+  "num_samples": 17375,
+  "sparsity": 0.9831259623169899,
+  "onet_json_occupations": 894,
+  "csv_rows": 15000,
+  "api_occupations": 1016,
+  "jsearch_jobs": 539,
+  "soc_crosswalk_entries": 20
+}

@@ -13,6 +13,7 @@ import logging
 from datetime import datetime, timedelta
 from app.utils.security import verify_token
 from app.services.learning_plan_service import LearningPlanService
+from app.services.career_recommendation_service import CareerRecommendationService
 from app.models.learning_roadmap import (
     LearningRoadmapProgress, 
     PhaseProgress, 
@@ -400,68 +401,50 @@ def score_occupations(profile, jobs, top_k=10):
 
 @router.post("/recommendations", response_model=CareerRecommendationResponse)
 async def get_career_recommendations(user_id: str = Depends(get_current_user_id)):
-    """Get career path recommendations for the authenticated user"""
+    """Get career path recommendations using ML pre-filter + Gemini ranking."""
     try:
         # Load user profile from MongoDB
         mongo_uri = os.getenv('MONGODB_URI')
         if not mongo_uri:
             raise HTTPException(status_code=500, detail="Database configuration error")
-        
+
         client = MongoClient(mongo_uri, tlsAllowInvalidCertificates=True)
         db = client.skillence_db
         profile = db.profiles.find_one({'user_id': user_id})
         client.close()
-        
+
         if not profile:
             raise HTTPException(status_code=404, detail="Profile not found")
-        
-        # Load O*NET jobs data
-        onet_file = os.path.join(os.path.dirname(__file__), '..', 'career_data', 'onet_occupations_data.json')
-        if not os.path.exists(onet_file):
-            raise HTTPException(status_code=500, detail="Job data not found")
-        
-        with open(onet_file, 'r', encoding='utf-8') as f:
-            jobs = json.load(f)
-        
-        # Load and enhance with technology skills
-        tech_skills_by_job = load_technology_skills()
-        jobs = enhance_jobs_with_tech(jobs, tech_skills_by_job)
-        
-        # Filter to relevant technical jobs
-        relevant_jobs = filter_relevant_jobs(jobs)
-        
-        # Score occupations
-        results = score_occupations(profile, relevant_jobs, top_k=10)
-        
-        # Extract profile information for response
-        tech_skills, _ = extract_profile_tokens(profile)
-        profile_summary = create_profile_summary(profile)
-        
-        # Convert results to response format
-        recommendations = []
-        for result in results:
-            recommendations.append(CareerRecommendation(
-                occupation_code=result['occupation_code'],
-                title=result['title'],
-                score=result['final_score'],
-                tech_score=result['tech_score'],
-                traditional_score=result['traditional_score'],
-                ai_score=result['ai_score'],
-                hot_tech_matches=result['tech_matches']['hot_matches'],
-                regular_tech_matches=result['tech_matches']['regular_matches'],
-                required_skills=result['required_matches'][:5],
-                hot_technologies=result['hot_technologies'],
-                explanation=f"This role matches {len(result['tech_matches']['hot_matches']) + len(result['tech_matches']['regular_matches'])} of your technical skills."
-            ))
-        
+
+        # Use the new ML + Gemini recommendation service
+        svc = CareerRecommendationService.get_instance()
+        results, profile_summary, total_skills = svc.get_recommendations(profile, top_k=10)
+
+        recommendations = [
+            CareerRecommendation(
+                occupation_code=r["occupation_code"],
+                title=r["title"],
+                score=r["score"],
+                tech_score=r["tech_score"],
+                traditional_score=r["traditional_score"],
+                ai_score=r["ai_score"],
+                hot_tech_matches=r["hot_tech_matches"],
+                regular_tech_matches=r["regular_tech_matches"],
+                required_skills=r["required_skills"],
+                hot_technologies=r["hot_technologies"],
+                explanation=r["explanation"],
+            )
+            for r in results
+        ]
+
         return CareerRecommendationResponse(
             success=True,
             recommendations=recommendations,
             profile_summary=profile_summary,
-            total_tech_skills=len(tech_skills),
-            message=f"Found {len(recommendations)} relevant career recommendations"
+            total_tech_skills=total_skills,
+            message=f"Found {len(recommendations)} relevant career recommendations",
         )
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -633,6 +616,15 @@ async def get_learning_plan(
         
         # Generate learning plan (just skills analysis)
         learning_plan = learning_plan_service.generate_learning_plan(profile, career_path)
+        
+        # Persist the learning plan in the career_path document so it survives page reloads
+        try:
+            await profiles_collection.update_one(
+                {"user_id": user_id},
+                {"$set": {"career_path.saved_learning_plan": learning_plan}}
+            )
+        except Exception as save_err:
+            logger.warning(f"Failed to persist learning plan: {save_err}")
         
         return LearningPlanResponse(
             success=True,
@@ -816,6 +808,15 @@ async def regenerate_learning_plan(
         # Force regenerate learning plan (could add cache invalidation here)
         learning_plan = learning_plan_service.generate_learning_plan(profile, career_path)
         
+        # Persist the regenerated plan so it survives page reloads
+        try:
+            await profiles_collection.update_one(
+                {"user_id": user_id},
+                {"$set": {"career_path.saved_learning_plan": learning_plan}}
+            )
+        except Exception as save_err:
+            logger.warning(f"Failed to persist regenerated learning plan: {save_err}")
+        
         return LearningPlanResponse(
             success=True,
             message="Learning plan regenerated successfully with updated skills",
@@ -902,7 +903,12 @@ async def create_learning_roadmap(
             
             # 2. Add skills as skills (for Skills Focus section)
             for skill_idx, skill in enumerate(phase_data.get("skills_to_learn", [])):
-                skill_name = skill.get("skill", skill) if isinstance(skill, dict) else skill
+                if isinstance(skill, dict):
+                    skill_name = (skill.get("skill") or skill.get("technology")
+                                  or skill.get("name") or skill.get("knowledge")
+                                  or str(skill))
+                else:
+                    skill_name = str(skill)
                 tasks.append(TaskProgress(
                     task_id=f"skill_{idx}_{skill_idx}",
                     task_name=skill_name,
@@ -911,7 +917,11 @@ async def create_learning_roadmap(
             
             # 3. Add learning resources as resources (for Recommended Resources section)
             for res_idx, resource in enumerate(phase_data.get("learning_resources", [])):
-                resource_title = resource.get("title", resource) if isinstance(resource, dict) else resource
+                if isinstance(resource, dict):
+                    resource_title = (resource.get("title") or resource.get("name")
+                                      or str(resource))
+                else:
+                    resource_title = str(resource)
                 tasks.append(TaskProgress(
                     task_id=f"resource_{idx}_{res_idx}",
                     task_name=resource_title,
@@ -920,9 +930,10 @@ async def create_learning_roadmap(
             
             # 4. Add milestones as milestones (for Key Milestones section)
             for mil_idx, milestone in enumerate(phase_data.get("milestones", [])):
+                milestone_name = milestone if isinstance(milestone, str) else str(milestone)
                 tasks.append(TaskProgress(
                     task_id=f"milestone_{idx}_{mil_idx}",
-                    task_name=milestone,
+                    task_name=milestone_name,
                     task_type="milestone"
                 ))
             

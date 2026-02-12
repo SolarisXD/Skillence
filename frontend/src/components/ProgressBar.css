@@ -8,8 +8,8 @@
   --progress-text: #374151;
   
   /* Dark mode overrides */
-  --progress-bg-dark: #374151;
-  --progress-text-dark: #d1d5db;
+  --progress-bg-dark: #2d3748;
+  --progress-text-dark: #e6edf3;
 }
 
 [data-theme="dark"] {

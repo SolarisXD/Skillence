@@ -1,7 +1,8 @@
-/* Skillence Chat Components - Professional Design */
+/* Skillence Chat Components - Modern Minimalistic Design */
 
+/* ===== MESSAGE STYLES ===== */
 .skillenceMessage {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
 }
@@ -15,44 +16,45 @@
 }
 
 .skillenceMessageBubble {
-  max-width: 75%;
-  padding: 16px 20px;
-  border-radius: 12px;
-  font-size: 15px;
-  line-height: 1.6;
+  max-width: 80%;
+  padding: 14px 18px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.65;
   word-wrap: break-word;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   font-weight: 400;
   letter-spacing: -0.1px;
   text-align: left;
+  position: relative;
 }
 
 .skillenceMessageBubbleUser {
-  background: #f1f5f9;
-  color: #334155;
-  border: 1px solid #e2e8f0;
-  border-bottom-right-radius: 4px;
+  background: #3b82f6;
+  color: #ffffff;
+  border-bottom-right-radius: 6px;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
 }
 
 .skillenceMessageBubbleBot {
   background: #ffffff;
   color: #1e293b;
   border: 1px solid #e2e8f0;
-  border-bottom-left-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border-bottom-left-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 [data-theme="dark"] .skillenceMessageBubbleUser {
-  background: #1e293b;
-  color: #e2e8f0;
-  border-color: #334155;
+  background: #3b82f6;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
 }
 
 [data-theme="dark"] .skillenceMessageBubbleBot {
-  background: #1a1a1a;
-  color: #e2e8f0;
-  border-color: #2a2a2a;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  background: #151b23;
+  color: #e6edf3;
+  border-color: #2d3748;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Professional welcome message formatting */
@@ -80,10 +82,14 @@
 
 .skillenceMessageBubbleBot ul li:before {
   content: '•';
-  color: #1e40af;
+  color: #3b82f6;
   font-weight: 700;
   position: absolute;
   left: 0;
+}
+
+[data-theme="dark"] .skillenceMessageBubbleBot ul li:before {
+  color: #60a5fa;
 }
 
 .skillenceMessageBubbleBot p {
@@ -93,51 +99,52 @@
 
 .skillenceMessageTimestamp {
   font-size: 11px;
-  color: #64748b;
+  color: #94a3b8;
   margin-top: 6px;
   padding: 0 4px;
   font-weight: 500;
 }
 
 [data-theme="dark"] .skillenceMessageTimestamp {
-  color: #94a3b8;
+  color: #64748b;
 }
 
+/* ===== TYPING INDICATOR ===== */
 .skillenceTypingIndicator {
   display: flex;
   align-items: center;
-  padding: 16px 20px;
+  padding: 14px 18px;
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  border-bottom-left-radius: 4px;
-  max-width: 180px;
-  margin-bottom: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  border-bottom-left-radius: 6px;
+  max-width: 140px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 [data-theme="dark"] .skillenceTypingIndicator {
-  background: #1a1a1a;
-  border-color: #2a2a2a;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  background: #151b23;
+  border-color: #2d3748;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .skillenceTypingDots {
   display: flex;
-  gap: 4px;
-  margin-right: 12px;
+  gap: 5px;
+  margin-right: 10px;
 }
 
 .skillenceTypingDot {
-  width: 6px;
-  height: 6px;
-  background: #64748b;
+  width: 7px;
+  height: 7px;
+  background: #94a3b8;
   border-radius: 50%;
   animation: skillenceTypingBounce 1.4s infinite;
 }
 
 [data-theme="dark"] .skillenceTypingDot {
-  background: #94a3b8;
+  background: #64748b;
 }
 
 .skillenceTypingDot:nth-child(1) {
@@ -162,72 +169,93 @@
   color: #94a3b8;
 }
 
+/* ===== INPUT CONTAINER ===== */
 .skillenceInputContainer {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
 }
 
 .skillenceInputField {
   flex: 1;
-  background: #ffffff;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
+  background: #f1f5f9;
+  border: 2px solid transparent;
+  border-radius: 12px;
   padding: 12px 16px;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.5;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   resize: none;
   height: 48px;
   transition: all 0.2s ease;
   font-weight: 400;
+  color: #1e293b;
 }
 
 .skillenceInputField:focus {
   outline: none;
-  border-color: #1e40af;
-  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
-}
-
-.skillenceInputField::placeholder {
-  color: #9ca3af;
-  font-weight: 400;
-}
-
-[data-theme="dark"] .skillenceInputField {
-  background: #1a1a1a;
-  border-color: #374151;
-  color: #e5e7eb;
-}
-
-[data-theme="dark"] .skillenceInputField:focus {
+  background: #ffffff;
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-[data-theme="dark"] .skillenceInputField::placeholder {
-  color: #6b7280;
+.skillenceInputField::placeholder {
+  color: #94a3b8;
+  font-weight: 400;
 }
 
+[data-theme="dark"] .skillenceInputField {
+  background: #0d1117;
+  border-color: #2d3748;
+  color: #e6edf3;
+}
+
+[data-theme="dark"] .skillenceInputField:focus {
+  background: #151b23;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+[data-theme="dark"] .skillenceInputField::placeholder {
+  color: #64748b;
+}
+
+/* ===== BUTTON STYLES ===== */
 .skillenceInputButton {
-  background: #1e40af;
+  background: #3b82f6;
   border: none;
   color: white;
-  width: 48px;
-  height: 48px;
-  border-radius: 8px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
   font-weight: 500;
+  flex-shrink: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+/* Force SVG icons inside all chatbot buttons to be visible */
+.skillenceInputButton svg,
+.skillenceSendButton svg,
+.skillenceMicButton svg,
+.skillenceClearButton svg {
+  width: 22px !important;
+  height: 22px !important;
+  min-width: 22px !important;
+  min-height: 22px !important;
+  display: block !important;
+  flex-shrink: 0 !important;
 }
 
 .skillenceInputButton:hover:not(:disabled) {
-  background: #1d4ed8;
+  background: #2563eb;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
 }
 
 .skillenceInputButton:disabled {
@@ -241,20 +269,120 @@
   transform: translateY(0);
 }
 
-.skillenceSpeakButton {
-  background: none !important;
-  border: none !important;
-  color: inherit !important;
-  cursor: pointer !important;
-  margin-left: 8px !important;
-  opacity: 0.6 !important;
-  padding: 4px !important;
-  border-radius: 4px !important;
-  transition: opacity 0.2s ease !important;
+/* Send Button - Primary */
+.skillenceSendButton {
+  background: #3b82f6;
 }
 
-.skillenceSpeakButton:hover {
-  opacity: 1 !important;
+.skillenceSendButton:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+[data-theme="dark"] .skillenceSendButton {
+  background: #3b82f6;
+}
+
+[data-theme="dark"] .skillenceSendButton:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+/* Mic Button - Secondary */
+.skillenceMicButton {
+  background: #64748b;
+}
+
+.skillenceMicButton:hover:not(:disabled) {
+  background: #475569;
+  box-shadow: 0 4px 12px rgba(100, 116, 139, 0.35);
+}
+
+.skillenceMicActive {
+  background: #ef4444 !important;
+  animation: skillencePulse 1.5s infinite;
+}
+
+.skillenceMicActive:hover:not(:disabled) {
+  background: #dc2626 !important;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+}
+
+[data-theme="dark"] .skillenceMicButton {
+  background: #3d4a5f;
+}
+
+[data-theme="dark"] .skillenceMicButton:hover:not(:disabled) {
+  background: #4d5a70;
+}
+
+/* Clear Chat Button - Ghost/Subtle */
+.skillenceClearButton {
+  background: #f8fafc;
+  border: 2px solid #cbd5e1;
+  color: #64748b;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+.skillenceClearButton:hover:not(:disabled) {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #ef4444;
+}
+
+.skillenceClearButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+[data-theme="dark"] .skillenceClearButton {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: #3d4a5f;
+  color: #9ca3af;
+}
+
+[data-theme="dark"] .skillenceClearButton:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: #7f1d1d;
+  color: #f87171;
+}
+
+/* Speak Button */
+.skillenceSpeakButton {
+  background: transparent !important;
+  border: none !important;
+  color: #94a3b8 !important;
+  cursor: pointer !important;
+  margin-left: 8px !important;
+  padding: 6px !important;
+  border-radius: 6px !important;
+  transition: all 0.2s ease !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+}
+
+.skillenceSpeakButton svg {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  display: block !important;
+  flex-shrink: 0 !important;
+}
+
+.skillenceSpeakButton:hover:not(:disabled) {
+  background: rgba(59, 130, 246, 0.1) !important;
+  color: #3b82f6 !important;
 }
 
 .skillenceSpeakButton:disabled {
@@ -262,7 +390,16 @@
   cursor: not-allowed !important;
 }
 
-/* Animations */
+[data-theme="dark"] .skillenceSpeakButton {
+  color: #64748b !important;
+}
+
+[data-theme="dark"] .skillenceSpeakButton:hover:not(:disabled) {
+  background: rgba(59, 130, 246, 0.15) !important;
+  color: #60a5fa !important;
+}
+
+/* ===== ANIMATIONS ===== */
 @keyframes skillenceTypingBounce {
   0%, 80%, 100% {
     transform: scale(0.8);
@@ -271,5 +408,14 @@
   40% {
     transform: scale(1);
     opacity: 1;
+  }
+}
+
+@keyframes skillencePulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
   }
 }

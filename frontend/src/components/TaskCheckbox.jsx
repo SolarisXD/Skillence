@@ -1,10 +1,27 @@
 import React from 'react';
 import './TaskCheckbox.css';
 
-// SVG Icons
+// Minimal check SVG
 const CheckIcon = () => (
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="20,6 9,17 4,12"/>
+  </svg>
+);
+
+// Target Icon (replacing 🎯)
+const TargetIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '4px'}}>
+    <circle cx="12" cy="12" r="10"/>
+    <circle cx="12" cy="12" r="6"/>
+    <circle cx="12" cy="12" r="2"/>
+  </svg>
+);
+
+// Book Icon (replacing 📚)
+const BookIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '4px'}}>
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
   </svg>
 );
 
@@ -29,13 +46,13 @@ const TaskCheckbox = ({
   const getTaskIcon = () => {
     switch (taskType) {
       case 'skill':
-        return '🎯';
+        return <TargetIcon />;
       case 'milestone':
-        return ''; // Remove trophy emoji from individual milestones
+        return null; // Remove trophy emoji from individual milestones
       case 'resource':
-        return '📚';
+        return <BookIcon />;
       default:
-        return '';
+        return null;
     }
   };
 

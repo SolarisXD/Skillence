@@ -372,7 +372,7 @@ async def generate_ai_insights_gemini(request: Dict[str, Any]):
     try:
         # Configure Gemini API
         genai.configure(api_key=os.getenv('GEMINI_API'))
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = genai.GenerativeModel('gemini-2.5-flash')
         
         # Extract request data
         job_title = request.get('jobTitle', 'Software Engineer')
@@ -452,3 +452,134 @@ async def generate_ai_insights_gemini(request: Dict[str, Any]):
             "skillsRecommendations": ["Communication", "Problem Solving", "Technical Skills", "Leadership"],
             "salaryInsights": "Research industry standards for your role and location."
         }
+
+# ============================================================================
+# ML-POWERED ENDPOINTS
+# ============================================================================
+
+@router.post("/predict-salary")
+async def predict_salary_ml(
+    skills: List[str] = Query(..., description="List of skills"),
+    experience_years: float = Query(..., description="Years of experience"),
+    location: str = Query(..., description="Job location"),
+    industry: str = Query(..., description="Industry"),
+    job_title: Optional[str] = Query(None, description="Job title for comparison"),
+    company_size: Optional[str] = Query("Unknown", description="Company size"),
+    education: Optional[str] = Query("Bachelor's Degree", description="Education level"),
+    employment_type: Optional[str] = Query("Full-time", description="Employment type"),
+    experience_level: Optional[str] = Query("Mid-Level", description="Experience level")
+):
+    """
+    Predict salary using ML model based on profile.
+    
+    Returns personalized salary prediction with market comparison.
+    """
+    try:
+        prediction = await job_trend_service.predict_salary_ml(
+            skills=skills,
+            experience_years=experience_years,
+            location=location,
+            industry=industry,
+            job_title=job_title,
+            company_size=company_size,
+            education=education,
+            employment_type=employment_type,
+            experience_level=experience_level
+        )
+        
+        return prediction
+        
+    except Exception as e:
+        logger.error(f"Error predicting salary: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to predict salary")
+
+
+@router.get("/salary-trends-ml/{job_title}")
+async def get_salary_trends_ml(
+    job_title: str,
+    months: Optional[int] = Query(12, description="Number of months of historical data")
+):
+    """
+    Get salary trends over time with ML analysis.
+    
+    Returns historical trends and growth analysis.
+    """
+    try:
+        trends = await job_trend_service.get_salary_trends_ml(job_title, months)
+        
+        if not trends:
+            raise HTTPException(
+                status_code=404, 
+                detail=f"No salary data found for job title: {job_title}"
+            )
+        
+        return trends
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting salary trends: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to get salary trends")
+
+
+@router.get("/ml-status")
+async def get_ml_model_status():
+    """
+    Get status of ML models (salary predictor, etc.).
+    
+    Returns model loading status and capabilities.
+    """
+    try:
+        status = await job_trend_service.get_ml_model_status()
+        return status
+        
+    except Exception as e:
+        logger.error(f"Error getting ML status: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to get ML model status")
+
+
+@router.post("/bulk-salary-predict")
+async def bulk_salary_predict(
+    profiles: List[Dict[str, Any]]
+):
+    """
+    Predict salaries for multiple profiles at once.
+    
+    Each profile should contain:
+        - skills: List[str]
+        - experience_years: float
+        - location: str
+        - industry: str
+        - job_title: Optional[str]
+        - ... (other optional fields)
+    """
+    try:
+        predictions = []
+        
+        for profile in profiles:
+            prediction = await job_trend_service.predict_salary_ml(
+                skills=profile.get('skills', []),
+                experience_years=profile.get('experience_years', 0),
+                location=profile.get('location', 'Unknown'),
+                industry=profile.get('industry', 'Unknown'),
+                job_title=profile.get('job_title'),
+                company_size=profile.get('company_size', 'Unknown'),
+                education=profile.get('education', "Bachelor's Degree"),
+                employment_type=profile.get('employment_type', 'Full-time'),
+                experience_level=profile.get('experience_level', 'Mid-Level')
+            )
+            
+            predictions.append({
+                "profile": profile.get('job_title', 'Unknown'),
+                "prediction": prediction
+            })
+        
+        return {
+            "total_profiles": len(profiles),
+            "predictions": predictions
+        }
+        
+    except Exception as e:
+        logger.error(f"Error in bulk salary prediction: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to process bulk predictions")
+

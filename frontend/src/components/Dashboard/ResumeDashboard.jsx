@@ -958,6 +958,7 @@ const ProfileBuilder = () => {
   const [uploadState, setUploadState] = useState('idle'); // idle, uploading, processing, success, error
   const [uploadProgress, setUploadProgress] = useState(0);
   const [processingStep, setProcessingStep] = useState('');
+  const [processingStepIndex, setProcessingStepIndex] = useState(0);
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedFileURL, setSelectedFileURL] = useState(null);
@@ -1171,6 +1172,7 @@ const ProfileBuilder = () => {
 
         for (let i = 0; i < steps.length; i++) {
           setProcessingStep(steps[i]);
+          setProcessingStepIndex(i);
           await new Promise(resolve => setTimeout(resolve, 1000));
         }
 
@@ -1359,22 +1361,71 @@ const ProfileBuilder = () => {
     }
 
     if (uploadState === 'processing') {
+      const allSteps = [
+        { label: 'Uploading to Azure Document Intelligence', num: '01' },
+        { label: 'Extracting text content with OCR', num: '02' },
+        { label: 'Processing with Gemini AI', num: '03' },
+        { label: 'Structuring personal information', num: '04' },
+        { label: 'Identifying work experience', num: '05' },
+        { label: 'Extracting education details', num: '06' },
+        { label: 'Analyzing skills and competencies', num: '07' },
+        { label: 'Finalizing profile data', num: '08' },
+      ];
+      // Only reach 100% after the last step is fully done (i.e. state transitions to success)
+      const progressPercent = Math.min(
+        Math.round((processingStepIndex / allSteps.length) * 100 + (100 / allSteps.length) * 0.5),
+        99
+      );
+
       return (
         <div className="resume-upload-container">
-          <div className="processing-progress">
-            <div className="progress-icon">
-              <ProcessingIcon size={32} />
+          <div className="processing-progress processing-enhanced">
+            <div className="processing-header-anim">
+              <div className="processing-pulse-ring">
+                <div className="processing-pulse-core">
+                  <ProcessingIcon size={36} />
+                </div>
+              </div>
+              <h3>Processing Your Resume</h3>
+              <p className="processing-subtitle">Analyzing and extracting your professional information</p>
             </div>
-            <h3>Processing Your Resume</h3>
-            <p>Analyzing your resume and extracting key information...</p>
 
-            <div className="processing-steps">
-              <div className="step active">{processingStep}</div>
+            <div className="processing-steps-timeline">
+              {allSteps.map((step, idx) => {
+                let status = 'pending';
+                if (idx < processingStepIndex) status = 'completed';
+                else if (idx === processingStepIndex) status = 'active';
+                return (
+                  <div className={`timeline-step ${status}`} key={idx}>
+                    <div className="timeline-indicator">
+                      {status === 'completed' ? (
+                        <span className="timeline-check">&#10003;</span>
+                      ) : status === 'active' ? (
+                        <span className="timeline-dot-active" />
+                      ) : (
+                        <span className="timeline-dot" />
+                      )}
+                    </div>
+                    <div className="timeline-content">
+                      <span className="timeline-step-num">{step.num}</span>
+                      <span className="timeline-label">{step.label}</span>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
-            <div className="progress-bar">
-              <div className="progress-fill processing" style={{ width: '100%' }}></div>
+            <div className="processing-progress-section">
+              <div className="progress-bar processing-bar-enhanced">
+                <div
+                  className="progress-fill processing"
+                  style={{ width: `${progressPercent}%` }}
+                />
+              </div>
+              <div className="processing-percent">{progressPercent}%</div>
             </div>
+
+            <p className="processing-tip">For best results, use a well-structured PDF resume</p>
           </div>
         </div>
       );

@@ -59,7 +59,7 @@ const NeuralBg = ({
         hue: themeHue,
         saturation: saturation,
         chroma: chroma,
-        backgroundColor: [0.0, 0.0, 0.0] // Black background for dark mode
+        backgroundColor: [0.051, 0.067, 0.09] // #0d1117 - Slate dark background
       };
     } else {
       return {

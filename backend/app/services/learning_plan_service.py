@@ -6,6 +6,22 @@ from datetime import datetime, timedelta
 import json
 from .gemini_service import GeminiService
 
+# ML Skill Recommender (lazy-loaded singleton)
+_skill_recommender = None
+
+def _get_skill_recommender():
+    """Lazily load the ML skill recommender to avoid startup overhead."""
+    global _skill_recommender
+    if _skill_recommender is None:
+        try:
+            from app.ml.inference.skill_recommender import SkillRecommender
+            _skill_recommender = SkillRecommender()
+            _skill_recommender.load()
+        except Exception as e:
+            logging.getLogger(__name__).warning(f"ML recommender unavailable: {e}")
+            _skill_recommender = None
+    return _skill_recommender
+
 class LearningPlanService:
     """
     Service to generate personalized learning plans based on career path and user profile.
@@ -421,7 +437,7 @@ class LearningPlanService:
         return resources[:5]  # Limit to 5 resources per phase
     
     def generate_learning_plan(self, user_profile: Dict[str, Any], career_path: Dict[str, Any]) -> Dict[str, Any]:
-        """Generate complete personalized learning plan using Gemini AI"""
+        """Generate complete personalized learning plan using ML recommendations + Gemini AI."""
         try:
             occupation_code = career_path.get("occupation_code", "")
             career_title = career_path.get("title", "")
@@ -429,9 +445,48 @@ class LearningPlanService:
             # Extract O*NET career requirements for reference
             onet_requirements = self.extract_career_requirements(occupation_code)
             
+            # ── ML Skill Recommender Integration ──
+            ml_recommendations = []
+            recommender = _get_skill_recommender()
+            if recommender and recommender.is_loaded:
+                try:
+                    # Collect user's current skills
+                    profile_data = user_profile.get("profile_data", {})
+                    user_skills_obj = profile_data.get("skills", {})
+                    current_skills = list(user_skills_obj.get("technical", []))
+                    # Also pull skills from projects
+                    for proj in profile_data.get("projects", []):
+                        if isinstance(proj, dict):
+                            current_skills.extend(proj.get("technologies", []))
+                    current_skills = list(set(s.strip() for s in current_skills if s.strip()))
+
+                    ml_recommendations = recommender.recommend(
+                        current_skills=current_skills,
+                        target_occupation_code=occupation_code,
+                        top_k=20,
+                    )
+                    self.logger.info(
+                        f"ML recommender returned {len(ml_recommendations)} skill suggestions "
+                        f"(from {len(current_skills)} user skills)"
+                    )
+                except Exception as ml_err:
+                    self.logger.warning(f"ML recommender failed, continuing without it: {ml_err}")
+
+            # Inject ML recommendations into O*NET requirements so Gemini sees them
+            if ml_recommendations:
+                onet_requirements["ml_recommended_skills"] = [
+                    {"skill": r["skill"], "confidence": r["confidence"], "source": r["source"]}
+                    for r in ml_recommendations
+                ]
+
             # Generate enhanced learning plan using Gemini AI
             gemini_plan = self.gemini_service.generate_learning_plan(career_title, user_profile, onet_requirements)
             
+            # Extract AI-generated skill descriptions (for ML/O*NET skills)
+            ai_skill_descriptions = {}
+            if gemini_plan:
+                ai_skill_descriptions = gemini_plan.get("skill_descriptions", {})
+
             # If Gemini plan is successful, use it; otherwise fall back to original logic
             if gemini_plan and not gemini_plan.get("fallback", False):
                 # Transform Gemini response to match our expected format
@@ -442,6 +497,16 @@ class LearningPlanService:
                 skill_gaps = self.analyze_skill_gaps(user_profile, onet_requirements)
                 roadmap = self.generate_learning_roadmap(skill_gaps)
                 learning_plan = self._create_original_format_plan(career_title, occupation_code, skill_gaps, roadmap)
+            
+            # Attach ML recommendations to the final plan for frontend display
+            if ml_recommendations:
+                learning_plan["ml_skill_recommendations"] = ml_recommendations
+                learning_plan["ml_powered"] = True
+            else:
+                learning_plan["ml_powered"] = False
+            
+            # ── Merge ML recommendations into priority_skills for unified display ──
+            self._merge_ml_into_priority_skills(learning_plan, ml_recommendations, onet_requirements, user_profile, ai_skill_descriptions)
             
             return learning_plan
             
@@ -455,6 +520,113 @@ class LearningPlanService:
                 "generated_at": datetime.utcnow().isoformat()
             }
     
+    # ── Generic / non-actionable skills to filter out ──
+    _GENERIC_SKILLS = {
+        "mathematics", "math", "statistics", "english", "communication",
+        "writing", "reading", "comprehension", "critical thinking",
+        "problem solving", "active listening", "speaking", "monitoring",
+        "social perceptiveness", "coordination", "time management",
+        "judgment and decision making", "complex problem solving",
+        "science", "instructing", "learning strategies",
+    }
+
+    def _merge_ml_into_priority_skills(
+        self,
+        learning_plan: Dict[str, Any],
+        ml_recommendations: List[Dict],
+        onet_requirements: Dict[str, Any],
+        user_profile: Dict[str, Any],
+        ai_skill_descriptions: Dict[str, str] = None,
+    ) -> None:
+        """Merge ML recommendations and O*NET hot technologies into a single
+        unified ``priority_skills`` list inside ``skill_analysis``. This
+        replaces the need for a separate ML section on the frontend.
+        
+        The result is a combined list capped at 12 items with attributes:
+          - skill (str)
+          - priority: critical | high | medium
+          - reason (str)  — AI-generated description when available
+          - confidence (float, 0-1, for ML items)
+        """
+        if ai_skill_descriptions is None:
+            ai_skill_descriptions = {}
+
+        # Build a case-insensitive lookup for AI descriptions
+        desc_lookup = {k.lower(): v for k, v in ai_skill_descriptions.items()}
+        skill_analysis = learning_plan.get("skill_analysis", {})
+        existing_priority = list(skill_analysis.get("priority_skills", []))
+
+        # Collect user's known skills to filter them out
+        pd = user_profile.get("profile_data", {})
+        user_skills_raw = set()
+        for s in pd.get("skills", {}).get("technical", []):
+            user_skills_raw.add(str(s).strip().lower())
+        for proj in pd.get("projects", []):
+            if isinstance(proj, dict):
+                for t in proj.get("technologies", []):
+                    user_skills_raw.add(str(t).strip().lower())
+
+        # Tag existing Gemini skills with source
+        seen_skills = set()
+        unified: List[Dict] = []
+        for sk in existing_priority:
+            name = (sk.get("skill") or sk.get("technology") or "").strip()
+            if not name or name.lower() in self._GENERIC_SKILLS:
+                continue
+            if name.lower() in user_skills_raw:
+                continue
+            # Use AI description if available, keep existing reason otherwise
+            if name.lower() in desc_lookup:
+                sk["reason"] = desc_lookup[name.lower()]
+            unified.append(sk)
+            seen_skills.add(name.lower())
+
+        # Add O*NET hot technologies not already present
+        for ht in onet_requirements.get("hot_technologies", []):
+            name = ht.get("technology", "").strip()
+            if not name or name.lower() in seen_skills or name.lower() in user_skills_raw:
+                continue
+            if name.lower() in self._GENERIC_SKILLS:
+                continue
+            reason = desc_lookup.get(name.lower(), f"High-demand technology for {name} professionals")
+            unified.append({
+                "skill": name,
+                "priority": "critical",
+                "reason": reason,
+            })
+            seen_skills.add(name.lower())
+
+        # Add ML recommendations not already present
+        if ml_recommendations:
+            for rec in ml_recommendations:
+                name = rec.get("skill", "").strip()
+                if not name or name.lower() in seen_skills or name.lower() in user_skills_raw:
+                    continue
+                if name.lower() in self._GENERIC_SKILLS:
+                    continue
+                confidence = rec.get("confidence", 0)
+                priority = "high" if confidence >= 0.15 else "medium"
+                reason = desc_lookup.get(name.lower(), f"Strongly correlated with success in this role")
+                unified.append({
+                    "skill": name,
+                    "priority": priority,
+                    "reason": reason,
+                    "confidence": confidence,
+                })
+                seen_skills.add(name.lower())
+
+        # Sort: critical first, then high, then medium; within same priority by confidence desc
+        priority_order = {"critical": 0, "high": 1, "medium": 2}
+        unified.sort(key=lambda x: (priority_order.get(x.get("priority", "medium"), 2), -(x.get("confidence", 0.5))))
+
+        # Cap at 12 items
+        unified = unified[:12]
+
+        # Update the plan
+        skill_analysis["priority_skills"] = unified
+        skill_analysis["total_gaps"] = len(unified)
+        learning_plan["skill_analysis"] = skill_analysis
+
     def _transform_gemini_plan(self, gemini_plan: Dict[str, Any], career_title: str, occupation_code: str, user_profile: Dict[str, Any]) -> Dict[str, Any]:
         """Transform Gemini plan to match our frontend expectations"""
         skill_analysis = gemini_plan.get("skill_analysis", {})

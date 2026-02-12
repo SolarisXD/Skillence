@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../navbar';
+import MapLocationPicker from './MapLocationPicker';
 import './JobOfferEvaluator.css';
 // Professional SVG Icons
 import {
@@ -67,7 +68,7 @@ const ADZUNA_CONFIG = {
 // Gemini API configuration
 const GEMINI_CONFIG = {
   API_KEY: import.meta.env.VITE_GEMINI_API_KEY,
-  BASE_URL: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent',
+  BASE_URL: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
 };
 
 // Country code mapping for Adzuna API
@@ -429,6 +430,7 @@ const JobOfferEvaluator = () => {
   const [showJobSuggestions, setShowJobSuggestions] = useState(false);
   const [showCitySuggestions, setShowCitySuggestions] = useState(false);
   const [showCountrySuggestions, setShowCountrySuggestions] = useState(false);
+  const [locationCoordinates, setLocationCoordinates] = useState(null);
 
   // Job roles data
   const jobRoles = [
@@ -814,7 +816,7 @@ const JobOfferEvaluator = () => {
 
         // If all API calls failed, fall back to demo data
         if (!marketData.jobs && !marketData.histogram && !marketData.history) {
-          console.log('⚠️ All API calls failed, using fallback data');
+          console.log('[WARN] All API calls failed, using fallback data');
           const countryFallbackData = FALLBACK_MARKET_DATA[formData.country] || FALLBACK_MARKET_DATA['India'];
           marketData = {
             ...countryFallbackData,
@@ -824,7 +826,7 @@ const JobOfferEvaluator = () => {
         }
       } else {
         // Use fallback data when API is not configured
-        console.log('⚠️ Using fallback market data - API not configured properly');
+        console.log('[WARN] Using fallback market data - API not configured properly');
         const countryFallbackData = FALLBACK_MARKET_DATA[formData.country] || FALLBACK_MARKET_DATA['India'];
         marketData = {
           ...countryFallbackData,
@@ -849,9 +851,9 @@ const JobOfferEvaluator = () => {
           setCostOfLivingData(costOfLivingAnalysis);
           console.log('Cost of living analysis completed:', costOfLivingAnalysis);
         } else if (!formData.city) {
-          console.log('⚠️ City not specified - skipping cost of living analysis');
+          console.log('[WARN] City not specified - skipping cost of living analysis');
         } else {
-          console.log('⚠️ Gemini API key not configured - skipping cost of living analysis');
+          console.log('[WARN] Gemini API key not configured - skipping cost of living analysis');
         }
       } catch (costError) {
         console.error('❌ Cost of living analysis failed:', costError);
@@ -900,7 +902,7 @@ const JobOfferEvaluator = () => {
     if (marketData.jobs && marketData.jobs.results && marketData.jobs.results.length > 0) {
       let jobs = marketData.jobs.results.filter(job => job.salary_min && job.salary_max);
       
-      console.log('📊 Raw jobs before filtering:', jobs.length);
+      console.log('[DATA] Raw jobs before filtering:', jobs.length);
       
       if (jobs.length > 0) {
         // Calculate average salaries for each job
@@ -914,7 +916,7 @@ const JobOfferEvaluator = () => {
           };
         });
 
-        console.log('💵 Raw salary data:', salaries);
+        console.log('[DATA] Raw salary data:', salaries);
 
         // Filter out unrealistic salaries for Indian market
         if (offerData.country === 'India') {
@@ -943,7 +945,7 @@ const JobOfferEvaluator = () => {
                              job.salary > 2000000; // Above 20 lacs likely senior for entry level
               
               if (isSenior) {
-                console.log('🎓 Filtered out senior role for entry-level:', job);
+                console.log('[FILTER] Filtered out senior role for entry-level:', job);
               }
               return !isSenior;
             });
@@ -956,10 +958,10 @@ const JobOfferEvaluator = () => {
               const isVeryJunior = job.salary < 600000; // Below 6 lacs
               
               if (isVerySenior) {
-                console.log('🎓 Filtered out very senior role for mid-level:', job);
+                console.log('[FILTER] Filtered out very senior role for mid-level:', job);
               }
               if (isVeryJunior) {
-                console.log('🎓 Filtered out junior role for mid-level:', job);
+                console.log('[FILTER] Filtered out junior role for mid-level:', job);
               }
               return !isVerySenior && !isVeryJunior;
             });
@@ -967,7 +969,7 @@ const JobOfferEvaluator = () => {
           // For senior level, we keep most roles but still filter extreme outliers
         }
 
-        console.log('✅ Filtered salary data for analysis:', salaries);
+        console.log('[OK] Filtered salary data for analysis:', salaries);
 
         if (salaries.length > 0) {
           const salaryValues = salaries.map(job => job.salary);
@@ -977,7 +979,7 @@ const JobOfferEvaluator = () => {
           
           const percentile = calculatePercentile(offerSalary, salaryValues);
           
-          console.log('📈 Calculated market metrics:', {
+          console.log('[CALC] Calculated market metrics:', {
             avgMarketSalary: Math.round(avgMarketSalary),
             minSalary: Math.round(minSalary),
             maxSalary: Math.round(maxSalary),
@@ -1003,7 +1005,7 @@ const JobOfferEvaluator = () => {
           else if (percentile >= 25) evaluation.overall_score += 20;
           else evaluation.overall_score += 10;
         } else {
-          console.log('⚠️ No valid salary data after filtering, using fallback');
+          console.log('[WARN] No valid salary data after filtering, using fallback');
           // Use fallback data if no valid salaries found
           const countryFallbackData = FALLBACK_MARKET_DATA[offerData.country] || FALLBACK_MARKET_DATA['India'];
           return evaluateJobOffer(offerData, countryFallbackData);
@@ -1117,10 +1119,42 @@ const JobOfferEvaluator = () => {
       <Navbar />
 
       <div className="job-offer-evaluator">
-        {/* Hero Section with Blue Background */}
+        {/* Hero Section with Reflection Engine Background Animation */}
         <div className="hero-section">
+          {/* Custom Reflection Engine Background Animation */}
+          <div className="reflection-bg">
+            {/* Animated Floating Shapes */}
+            <div className="floating-shape shape-1"></div>
+            <div className="floating-shape shape-2"></div>
+            <div className="floating-shape shape-3"></div>
+            <div className="floating-shape shape-4"></div>
+            <div className="floating-shape shape-5"></div>
+            
+            {/* Animated Gradient Beams */}
+            <div className="gradient-beam beam-1"></div>
+            <div className="gradient-beam beam-2"></div>
+            <div className="gradient-beam beam-3"></div>
+            
+            {/* Particle Effects */}
+            <div className="particle-field">
+              {Array.from({ length: 15 }, (_, i) => (
+                <div key={i} className={`particle particle-${i + 1}`}></div>
+              ))}
+            </div>
+          </div>
+          
           <div className="hero-content">
-            <h1 className="hero-title">Discover your earning potential</h1>
+            <h1 className="hero-title">
+              Discover your{' '}
+              <span style={{
+                background: 'var(--accent-gradient)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}>
+                earning potential
+              </span>
+            </h1>
             <p className="joboffer-hero-subtitle">
               Evaluate job offers, compare salaries and benefits by industry and location.
             </p>
@@ -1227,6 +1261,13 @@ const JobOfferEvaluator = () => {
                   )}
                 </div>
               </div>
+
+              {/* Map Location Picker */}
+              <MapLocationPicker
+                city={formData.city}
+                country={formData.country}
+                onLocationChange={setLocationCoordinates}
+              />
 
               <div className="form-group">
                 <label className="form-label">

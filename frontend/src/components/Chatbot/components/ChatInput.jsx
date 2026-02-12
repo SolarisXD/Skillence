@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Send, Mic, MicOff } from 'lucide-react';
-import { validateMessage } from '../utils/helpers';
-import styles from '../../../styles/chatbot/components.module.css';
+import React, { useState, useEffect } from "react";
+import { SendIcon, MicIcon, MicOffIcon, TrashIcon } from "./ChatIcons";
+import { validateMessage } from "../utils/helpers";
+import styles from "../../../styles/chatbot/components.module.css";
 
-const ChatInput = ({ 
-  onSendMessage, 
-  isLoading, 
+const ChatInput = ({
+  onSendMessage,
+  isLoading,
   onSpeechResult,
   transcript,
   isListening,
   onStartListening,
   onStopListening,
-  speechSupported 
+  speechSupported,
+  onClearChat,
 }) => {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     if (transcript && !isListening) {
@@ -26,12 +27,12 @@ const ChatInput = ({
     e.preventDefault();
     if (validateMessage(message) && !isLoading) {
       onSendMessage(message);
-      setMessage('');
+      setMessage("");
     }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
     }
@@ -45,8 +46,28 @@ const ChatInput = ({
     }
   };
 
+  const handleClearChat = () => {
+    if (window.confirm("Clear all chat history? This cannot be undone.")) {
+      onClearChat?.();
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit} className={styles.skillenceInputContainer}>
+      {/* Clear chat button - subtle ghost style on the left */}
+      {onClearChat && (
+        <button
+          type="button"
+          onClick={handleClearChat}
+          className={styles.skillenceClearButton}
+          disabled={isLoading}
+          aria-label="Clear chat history"
+          title="Clear chat history"
+        >
+          <TrashIcon size={22} />
+        </button>
+      )}
+
       <input
         type="text"
         value={message}
@@ -57,31 +78,30 @@ const ChatInput = ({
         disabled={isLoading}
         maxLength={1000}
       />
-      
+
+      {/* Voice input button */}
       {speechSupported && (
         <button
           type="button"
           onClick={toggleListening}
-          className={styles.skillenceInputButton}
+          className={`${styles.skillenceInputButton} ${styles.skillenceMicButton} ${isListening ? styles.skillenceMicActive : ''}`}
           disabled={isLoading}
           aria-label={isListening ? "Stop recording" : "Start voice input"}
-          style={{
-            background: isListening 
-              ? '#ef4444'
-              : '#6b7280'
-          }}
+          title={isListening ? "Stop recording" : "Start voice input"}
         >
-          {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+          {isListening ? <MicOffIcon size={22} /> : <MicIcon size={22} />}
         </button>
       )}
-      
+
+      {/* Send button - primary action */}
       <button
         type="submit"
-        className={styles.skillenceInputButton}
+        className={`${styles.skillenceInputButton} ${styles.skillenceSendButton}`}
         disabled={!validateMessage(message) || isLoading}
         aria-label="Send message"
+        title="Send message"
       >
-        <Send size={18} />
+        <SendIcon size={22} />
       </button>
     </form>
   );

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import '../styles/AuthModal.css';
 
 const AuthModal = ({ isOpen, onClose, mode, onSwitchMode, onSuccess }) => {
@@ -12,6 +13,7 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode, onSuccess }) => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -212,6 +214,52 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode, onSuccess }) => {
             {isLoading ? 'Loading...' : (mode === 'login' ? 'Sign In' : 'Create Account')}
           </button>
         </form>
+
+        <div className="auth-divider">
+          <span>or</span>
+        </div>
+
+        <div className="google-login-wrapper">
+          <GoogleLogin
+            onSuccess={async (credentialResponse) => {
+              setGoogleLoading(true);
+              setError('');
+              try {
+                const response = await fetch('http://localhost:8000/api/auth/google-login', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ token: credentialResponse.credential }),
+                });
+                if (response.ok) {
+                  const data = await response.json();
+                  localStorage.setItem('token', data.access_token);
+                  if (data.user) {
+                    localStorage.setItem('userId', data.user.id);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                  }
+                  if (typeof onSuccess === 'function') {
+                    onSuccess(data.user || { email: '' });
+                  }
+                  onClose();
+                } else {
+                  const errorData = await response.json();
+                  setError(errorData.detail || 'Google sign-in failed');
+                }
+              } catch (err) {
+                setError('Network error during Google sign-in');
+              } finally {
+                setGoogleLoading(false);
+              }
+            }}
+            onError={() => {
+              setError('Google sign-in was unsuccessful');
+            }}
+            text={mode === 'login' ? 'signin_with' : 'signup_with'}
+            shape="rectangular"
+            theme="outline"
+          />
+          {googleLoading && <p className="google-loading-text">Signing in with Google...</p>}
+        </div>
 
         <div className="auth-switch">
           <p>

@@ -122,7 +122,7 @@ const MainPage = () => {
             
             {/* AI-Powered Upskilling Roadmap */}
             <div className="learning-card roadmap">
-              <h3>🎯 AI-Generated Learning Roadmaps</h3>
+              <h3>◆ AI-Generated Learning Roadmaps</h3>
               <p>Machine learning algorithms create personalized learning paths with recommended courses, certifications, and skill-building resources based on your career goals and current competencies.</p>
               <div className="roadmap-preview">
                 <div className="step completed">Python Fundamentals</div>
@@ -133,16 +133,16 @@ const MainPage = () => {
 
             {/* Intelligent Progress Tracker */}
             <div className="learning-card progress">
-              <h3>📊 Smart Achievement Analytics</h3>
+              <h3>■ Smart Achievement Analytics</h3>
               <p>AI-powered progress tracking with predictive insights, personalized milestones, and intelligent recommendations to optimize your learning journey.</p>
               <div className="progress-bar">
                 <div className="progress-fill" style={{width: '72%'}}></div>
                 <span className="progress-text">72% Complete</span>
               </div>
               <div className="achievement-badges">
-                <div className="badge earned">🏆</div>
-                <div className="badge earned">⭐</div>
-                <div className="badge locked">🔒</div>
+                <div className="badge earned">◆</div>
+                <div className="badge earned">★</div>
+                <div className="badge locked">■</div>
               </div>
             </div>
 
@@ -163,7 +163,9 @@ const MainPage = () => {
             <div className="business-card chatbot">
               <div className="chat-preview">
                 <div className="chat-header">
-                  <div className="bot-avatar">🤖</div>
+                  <div className="bot-avatar">
+                    <svg width='16' height='16' viewBox='0 0 24 24' fill='currentColor'><circle cx='12' cy='12' r='10' fill='none' stroke='currentColor' strokeWidth='2'/><circle cx='12' cy='12' r='4' fill='currentColor'/></svg>
+                  </div>
                   <h3>AI Career Advisor</h3>
                 </div>
                 <div className="chat-preview">
@@ -175,12 +177,12 @@ const MainPage = () => {
 
             {/* AI Sentiment Analysis */}
             <div className="business-card emotion">
-              <h3>💭 AI Career Sentiment Analysis</h3>
+              <h3>◇ AI Career Sentiment Analysis</h3>
               <p>Advanced natural language processing analyzes your career journal entries and provides intelligent insights about job satisfaction and growth opportunities.</p>
               <div className="emotion-example">
                 <div className="journal-entry">"I feel overwhelmed by the rapidly changing tech landscape."</div>
                 <div className="sentiment-result">
-                  <span className="sentiment-tag negative">😰 Learning Anxiety Detected</span>
+                  <span className="sentiment-tag negative">[!] Learning Anxiety Detected</span>
                   <span className="recommendation">AI suggests: Structured learning plan with achievable milestones</span>
                 </div>
               </div>
@@ -201,7 +203,7 @@ const MainPage = () => {
             
             {/* AI Location Intelligence */}
             <div className="analytics-card location">
-              <h3>🗺️ AI-Powered Geographic Intelligence</h3>
+              <h3>■ AI-Powered Geographic Intelligence</h3>
               <p>Machine learning algorithms analyze job market data to provide intelligent heatmaps showing opportunities, salary ranges, and emerging tech hubs by location.</p>
               <div className="heatmap-preview">
                 <div className="map-placeholder">
@@ -214,7 +216,7 @@ const MainPage = () => {
 
             {/* AI Resume Intelligence */}
             <div className="analytics-card resume">
-              <h3>📄 AI Resume Intelligence Engine</h3>
+              <h3>□ AI Resume Intelligence Engine</h3>
               <p>Advanced natural language processing provides comprehensive resume analysis with intelligent optimization suggestions and ATS compatibility scoring.</p>
               <div className="resume-score">
                 <div className="score-circle">

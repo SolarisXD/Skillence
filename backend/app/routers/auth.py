@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from app.models.user import UserCreate, UserLogin, UserResponse, Token, PasswordReset, PasswordResetConfirm
+from app.models.user import UserCreate, UserLogin, UserResponse, Token, PasswordReset, PasswordResetConfirm, GoogleLoginRequest
 from app.services.auth_service import AuthService
 
 router = APIRouter()
@@ -30,6 +30,10 @@ async def forgot_password(password_reset: PasswordReset, auth_service: AuthServi
 @router.post("/reset-password")
 async def reset_password(reset_data: PasswordResetConfirm, auth_service: AuthService = Depends(get_auth_service)):
     return await auth_service.reset_password(reset_data.token, reset_data.new_password)
+
+@router.post("/google-login")
+async def google_login(request: GoogleLoginRequest, auth_service: AuthService = Depends(get_auth_service)):
+    return await auth_service.google_login(request.token)
 
 @router.get("/me", response_model=UserResponse)
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security), auth_service: AuthService = Depends(get_auth_service)):
