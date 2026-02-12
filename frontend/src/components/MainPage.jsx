@@ -12,6 +12,11 @@ const MainPage = () => {
   const [showChatModal, setShowChatModal] = useState(false);
   const navigate = useNavigate();
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Check if user is already authenticated and redirect to dashboard
   // useEffect(() => {
   //   const token = localStorage.getItem('token');
@@ -240,24 +245,16 @@ const MainPage = () => {
             
             <div className="footer-links">
               <div className="footer-column">
-                <h4>Product</h4>
-                <a href="#features">Features</a>
-                <a href="#pricing">Pricing</a>
-                <a href="#roadmap">Roadmap</a>
-              </div>
-              
-              <div className="footer-column">
                 <h4>Company</h4>
-                <a href="#about">About</a>
-                <a href="#careers">Careers</a>
-                <a href="#blog">Blog</a>
+                <a href="/about" onClick={(e) => { e.preventDefault(); navigate('/about'); }}>About</a>
+                <a href="/blog" onClick={(e) => { e.preventDefault(); navigate('/blog'); }}>Blog</a>
               </div>
               
               <div className="footer-column">
                 <h4>Support</h4>
-                <a href="#help">Help Center</a>
-                <a href="#contact">Contact</a>
-                <a href="#status">Status</a>
+                <a href="/help-center" onClick={(e) => { e.preventDefault(); navigate('/help-center'); }}>Help Center</a>
+                <a href="/contact" onClick={(e) => { e.preventDefault(); navigate('/contact'); }}>Contact</a>
+                <a href="/status" onClick={(e) => { e.preventDefault(); navigate('/status'); }}>Status</a>
               </div>
             </div>
           </div>

@@ -89,9 +89,14 @@ const ProfilePage = () => {
       if (data.success && data.profile) {
         console.log('Loaded profile for user:', data.profile.user_email || 'unknown');
         setProfileData(data.profile.profile_data);
-      } else {
+      } else if (!data.success && data.message === "No profile found for user") {
+        // User doesn't have a profile yet - this is normal, show empty state
         setProfileData(null);
-        setError('No profile data found');
+        setError(''); // Clear any error so empty state shows
+      } else {
+        // Actual error occurred
+        setProfileData(null);
+        setError('Failed to load profile data');
       }
     } catch (error) {
       console.error('Error fetching profile:', error);

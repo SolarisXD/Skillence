@@ -9,6 +9,11 @@ import CareerPathRecommendation from './components/Career Path Recommendation/Ca
 import JobTrendDashboard from './components/Job Trend/current/JobTrendDashboard';
 import ReflectionEngineHome from './components/ReflectionEngineHome';
 import ReflectionEngineInterviewDiagnostic from './components/ReflectionEngineInterviewDiagnostic';
+import About from './components/About';
+import HelpCenter from './components/HelpCenter';
+import Contact from './components/Contact';
+import Status from './components/Status';
+import Blog from './components/Blog';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -36,6 +41,11 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<MainPage />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/help-center" element={<HelpCenter />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/status" element={<Status />} />
+          <Route path="/blog" element={<Blog />} />
           <Route 
             path="/dashboard/resume" 
             element={
