@@ -490,8 +490,16 @@ async def predict_salary_ml(
         return prediction
         
     except Exception as e:
-        logger.error(f"Error predicting salary: {str(e)}")
-        raise HTTPException(status_code=500, detail="Failed to predict salary")
+        logger.error(f"Error predicting salary: {str(e)}", exc_info=True)
+        # Return more detailed error message
+        error_msg = str(e)
+        if "not loaded" in error_msg.lower():
+            detail = "ML model is not available. Please ensure the model files are present."
+        elif "location" in error_msg.lower() or "industry" in error_msg.lower():
+            detail = f"Invalid input: {error_msg}"
+        else:
+            detail = f"Failed to predict salary. Error: {error_msg}"
+        raise HTTPException(status_code=500, detail=detail)
 
 
 @router.get("/salary-trends-ml/{job_title}")

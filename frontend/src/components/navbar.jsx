@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { ChevronRight, LayoutDashboard, User, Palette, LogOut } from 'lucide-react';
 import AuthModal from './AuthModal';
 import ThemeSelector from './ThemeSelector';
 import '../styles/navbar.css';
@@ -185,9 +186,7 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
               <li className="nav-item services-dropdown" onClick={() => setShowServices(!showServices)}>
                 <button className={`nav-link services-toggle ${showServices ? 'open' : ''}`} type="button">
                   Services
-                  <svg viewBox="0 0 24 24" className="chevron-icon">
-                    <path fill="currentColor" d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
-                  </svg>
+                  <ChevronRight className="chevron-icon" size={20} />
                 </button>
                 {showServices && (
                   <div className="services-menu dropdown-menu">
@@ -258,9 +257,7 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
                   onClick={() => navigate('/dashboard/resume')}
                   title="Dashboard"
                 >
-                  <svg viewBox="0 0 24 24" className="dashboard-icon">
-                    <path fill="currentColor" d="M13,3V9H21V3M13,21H21V11H13M3,21H11V15H3M3,13H11V3H3V13Z" />
-                  </svg>
+                  <LayoutDashboard className="dashboard-icon" size={20} />
                   <span>Dashboard</span>
                 </button>
                 
@@ -282,9 +279,7 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
                         }} 
                         className="dropdown-item"
                       >
-                        <svg viewBox="0 0 24 24" className="dropdown-icon">
-                          <path fill="currentColor" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
-                        </svg>
+                        <User className="dropdown-icon" size={20} />
                         Profile
                       </button>
                       <div className="dropdown-item theme-dropdown-container">
@@ -292,13 +287,9 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
                           className="theme-dropdown-btn"
                           onClick={handleThemeClick}
                         >
-                          <svg viewBox="0 0 24 24" className="dropdown-icon">
-                            <path fill="currentColor" d="M12,18V6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,15.31L23.31,12L20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31Z" />
-                          </svg>
+                          <Palette className="dropdown-icon" size={20} />
                           Theme
-                          <svg viewBox="0 0 24 24" className="chevron-icon">
-                            <path fill="currentColor" d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
-                          </svg>
+                          <ChevronRight className="chevron-icon" size={20} />
                         </button>
                         {showThemeSelector && (
                           <ThemeSelector
@@ -309,9 +300,7 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
                         )}
                       </div>
                       <button onClick={handleSignOut} className="dropdown-item">
-                        <svg viewBox="0 0 24 24" className="dropdown-icon">
-                          <path fill="currentColor" d="M16,17V14H9V10H16V7L21,12L16,17M14,2A2,2 0 0,1 16,4V6H14V4H5V20H14V18H16V20A2,2 0 0,1 14,22H5A2,2 0 0,1 3,20V4A2,2 0 0,1 5,2H14Z" />
-                        </svg>
+                        <LogOut className="dropdown-icon" size={20} />
                         Sign Out
                       </button>
                     </div>

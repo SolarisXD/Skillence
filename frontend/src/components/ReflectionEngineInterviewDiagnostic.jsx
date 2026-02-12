@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { MessageSquare } from 'lucide-react';
 import Navbar from "./navbar";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
@@ -266,7 +267,7 @@ export default function ReflectionEngineInterviewDiagnostic() {
     const analysisMessage = {
       id: Date.now(),
       type: "ai",
-      content: "*Analyzing your interview experience...*\n\n<svg width='16' height='16' viewBox='0 0 24 24' fill='currentColor' style='display:inline-block;vertical-align:middle'><circle cx='11' cy='11' r='8' fill='none' stroke='currentColor' stroke-width='2'/><path d='M21 21l-4.35-4.35'/></svg> **Processing your reflection**\n<svg width='16' height='16' viewBox='0 0 24 24' fill='currentColor' style='display:inline-block;vertical-align:middle'><path d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/></svg> **Identifying key patterns**\n<svg width='16' height='16' viewBox='0 0 24 24' fill='currentColor' style='display:inline-block;vertical-align:middle'><circle cx='12' cy='12' r='10' fill='none' stroke='currentColor' stroke-width='2'/><circle cx='12' cy='12' r='3'/></svg> **Generating personalized feedback**\n<svg width='16' height='16' viewBox='0 0 24 24' fill='currentColor' style='display:inline-block;vertical-align:middle'><path d='M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z'/></svg> **Creating action plan**",
+      content: "*Analyzing your interview experience...*\n\n🔍 **Processing your reflection**\n✅ **Identifying key patterns**\n🎯 **Generating personalized feedback**\n📝 **Creating action plan**",
       timestamp: new Date(),
       isAnalyzing: true
     };
@@ -436,7 +437,7 @@ What aspect of this analysis would you like to dive deeper into? I'm here to hel
               gap: '8px',
               justifyContent: 'center'
             }}>
-              <svg width='24' height='24' viewBox='0 0 24 24' fill='currentColor' style={{flexShrink: 0}}><path d='M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z'/></svg>
+              <MessageSquare size={24} style={{flexShrink: 0, color: '#667eea'}} />
               Reflection Engine AI Coach
             </h1>
             <p style={{

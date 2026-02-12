@@ -1,126 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart3, Target, Briefcase, TrendingUp, AlertTriangle, Bot, CheckCircle, Lightbulb, Sparkles, Book, X, MapPin, Building, Settings, Check } from 'lucide-react';
 import './SalaryPredictor.css';
-
-// SVG Icon Components
-const ChartIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="18" y1="20" x2="18" y2="10"></line>
-    <line x1="12" y1="20" x2="12" y2="4"></line>
-    <line x1="6" y1="20" x2="6" y2="14"></line>
-  </svg>
-);
-
-const TargetIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"></circle>
-    <circle cx="12" cy="12" r="6"></circle>
-    <circle cx="12" cy="12" r="2"></circle>
-  </svg>
-);
-
-const BriefcaseIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-  </svg>
-);
-
-const TrendingUpIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-    <polyline points="17 6 23 6 23 12"></polyline>
-  </svg>
-);
-
-const AlertTriangleIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-    <line x1="12" y1="9" x2="12" y2="13"></line>
-    <line x1="12" y1="17" x2="12.01" y2="17"></line>
-  </svg>
-);
-
-const RobotIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="11" width="18" height="10" rx="2"></rect>
-    <circle cx="12" cy="5" r="2"></circle>
-    <path d="M12 7v4"></path>
-    <line x1="8" y1="16" x2="8" y2="16"></line>
-    <line x1="16" y1="16" x2="16" y2="16"></line>
-  </svg>
-);
-
-const CheckCircleIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-  </svg>
-);
-
-const LightBulbIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="9" y1="18" x2="15" y2="18"></line>
-    <line x1="10" y1="22" x2="14" y2="22"></line>
-    <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"></path>
-  </svg>
-);
-
-const SparklesIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 3l1.912 5.813 6.088.387-4.773 3.869 1.679 5.931L12 15.497 7.094 19l1.679-5.931-4.773-3.869 6.088-.387L12 3z"></path>
-  </svg>
-);
-
-const BookIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-  </svg>
-);
-
-const XIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="18" y1="6" x2="6" y2="18"></line>
-    <line x1="6" y1="6" x2="18" y2="18"></line>
-  </svg>
-);
-
-const MapPinIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-    <circle cx="12" cy="10" r="3"></circle>
-  </svg>
-);
-
-const BuildingIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
-    <path d="M9 22v-4h6v4"></path>
-    <path d="M8 6h.01"></path>
-    <path d="M16 6h.01"></path>
-    <path d="M12 6h.01"></path>
-    <path d="M12 10h.01"></path>
-    <path d="M12 14h.01"></path>
-    <path d="M16 10h.01"></path>
-    <path d="M16 14h.01"></path>
-    <path d="M8 10h.01"></path>
-    <path d="M8 14h.01"></path>
-  </svg>
-);
-
-const SettingsIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="3"></circle>
-    <path d="M12 1v6m0 6v6m5.657-13.657l-4.243 4.243m-6.828 6.828l-4.243 4.243m15.556 0l-4.243-4.243m-6.828-6.828L1.686 2.343"></path>
-  </svg>
-);
-
-const CheckIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="20 6 9 17 4 12"></polyline>
-  </svg>
-);
 
 // API Configuration
 const API_BASE_URL = 'http://localhost:8000/api/job-trends';
@@ -147,7 +28,8 @@ const predictSalary = async (profileData) => {
   });
 
   if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
   }
 
   return await response.json();
@@ -193,6 +75,7 @@ const SalaryPredictor = () => {
   const [salaryTrends, setSalaryTrends] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [warnings, setWarnings] = useState([]);
   const [modelStatus, setModelStatus] = useState(null);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [showSkillSuggestions, setShowSkillSuggestions] = useState(false);
@@ -304,6 +187,7 @@ const SalaryPredictor = () => {
 
     setLoading(true);
     setError(null);
+    setWarnings([]);
     setPrediction(null);
     setSalaryTrends(null);
 
@@ -322,6 +206,11 @@ const SalaryPredictor = () => {
       });
 
       setPrediction(predictionResult);
+      
+      // Check for warnings in the ML prediction
+      if (predictionResult.ml_prediction?.warnings && predictionResult.ml_prediction.warnings.length > 0) {
+        setWarnings(predictionResult.ml_prediction.warnings);
+      }
 
       // If job title provided, fetch salary trends
       if (formData.job_title) {
@@ -334,7 +223,8 @@ const SalaryPredictor = () => {
       }
 
     } catch (err) {
-      setError('Failed to predict salary. Please check your inputs and try again.');
+      const errorMsg = err.message || 'Failed to predict salary. Please check your inputs and try again.';
+      setError(errorMsg);
       console.error('Prediction error:', err);
     } finally {
       setLoading(false);
@@ -365,11 +255,11 @@ const SalaryPredictor = () => {
   return (
     <div className="salary-predictor">
       <div className="predictor-header">
-        <h2><RobotIcon /> AI Salary Predictor</h2>
+        <h2><Bot size={20} /> AI Salary Predictor</h2>
         <p>Get personalized salary predictions powered by machine learning</p>
         {modelStatus?.salary_predictor?.loaded && (
           <div className="model-badge">
-            <span className="badge-icon"><CheckCircleIcon /></span>
+            <span className="badge-icon"><CheckCircle size={16} /></span>
             <span>ML Model Active</span>
           </div>
         )}
@@ -379,7 +269,7 @@ const SalaryPredictor = () => {
         {/* Skills Input */}
         <div className="form-section">
           <label className="form-label required">Your Skills</label>
-          <p className="skill-hint"><LightBulbIcon /> Start typing to see {validSkills.length} recognized skills, or add any custom skill</p>
+          <p className="skill-hint"><Lightbulb size={16} /> Start typing to see {validSkills.length} recognized skills, or add any custom skill</p>
           <div className="skills-input-wrapper">
             <div className="skills-input-container" ref={skillInputRef}>
               <input
@@ -406,7 +296,7 @@ const SalaryPredictor = () => {
             {showSkillSuggestions && formData.skillInput && filteredSuggestions.length > 0 && (
               <div className="skill-suggestions" ref={dropdownRef}>
               <div className="suggestions-header">
-                <span className="suggestions-title"><SparklesIcon /> Recognized Skills</span>
+                <span className="suggestions-title"><Sparkles size={16} /> Recognized Skills</span>
                 <span className="suggestions-count">{filteredSuggestions.length} matches</span>
               </div>
               {filteredSuggestions.slice(0, 8).map(skill => (
@@ -419,7 +309,7 @@ const SalaryPredictor = () => {
                     handleAddSkill(skill);
                   }}
                 >
-                  <span className="suggestion-icon"><CheckIcon /></span>
+                  <span className="suggestion-icon"><Check size={14} strokeWidth={2.5} /></span>
                   {skill}
                 </div>
               ))}
@@ -430,7 +320,7 @@ const SalaryPredictor = () => {
             {showSkillSuggestions && !formData.skillInput && (
               <div className="skill-suggestions all-skills" ref={dropdownRef}>
               <div className="suggestions-header">
-                <span className="suggestions-title"><BookIcon /> All Recognized Skills ({validSkills.length})</span>
+                <span className="suggestions-title"><Book size={16} /> All Recognized Skills ({validSkills.length})</span>
                 <button 
                   type="button" 
                   className="close-suggestions"
@@ -440,7 +330,7 @@ const SalaryPredictor = () => {
                     setShowSkillSuggestions(false);
                   }}
                 >
-                  <XIcon />
+                  <X size={16} />
                 </button>
               </div>
               <div className="all-skills-grid">
@@ -631,8 +521,19 @@ const SalaryPredictor = () => {
 
         {error && (
           <div className="error-message">
-            <span className="error-icon"><AlertTriangleIcon /></span>
+            <span className="error-icon"><AlertTriangle size={16} /></span>
             {error}
+          </div>
+        )}
+        
+        {warnings.length > 0 && (
+          <div className="warning-message">
+            <span className="warning-icon"><AlertTriangle size={16} /></span>
+            <div>
+              {warnings.map((warning, idx) => (
+                <div key={idx}>{warning}</div>
+              ))}
+            </div>
           </div>
         )}
 
@@ -648,7 +549,7 @@ const SalaryPredictor = () => {
             </>
           ) : (
             <>
-              <span className="btn-icon"><TargetIcon /></span>
+              <span className="btn-icon"><Target size={16} /></span>
               Predict My Salary
             </>
           )}
@@ -659,7 +560,7 @@ const SalaryPredictor = () => {
       {prediction && (
         <div className="prediction-results">
           <div className="result-header">
-            <h3><ChartIcon /> Your Salary Prediction</h3>
+            <h3><BarChart3 size={16} /> Your Salary Prediction</h3>
           </div>
 
           <div className="result-main">
@@ -713,7 +614,7 @@ const SalaryPredictor = () => {
                       {prediction.ml_prediction.confidence_breakdown.skills !== undefined && (
                         <div className="breakdown-item">
                           <div className="breakdown-item-header">
-                            <span className="breakdown-icon"><TargetIcon /></span>
+                            <span className="breakdown-icon"><Target size={16} /></span>
                             <span className="breakdown-label">Skills Match</span>
                           </div>
                           <div className="breakdown-bar">
@@ -728,7 +629,7 @@ const SalaryPredictor = () => {
                       {prediction.ml_prediction.confidence_breakdown.experience !== undefined && (
                         <div className="breakdown-item">
                           <div className="breakdown-item-header">
-                            <span className="breakdown-icon"><BriefcaseIcon /></span>
+                            <span className="breakdown-icon"><Briefcase size={16} /></span>
                             <span className="breakdown-label">Experience</span>
                           </div>
                           <div className="breakdown-bar">
@@ -743,7 +644,7 @@ const SalaryPredictor = () => {
                       {prediction.ml_prediction.confidence_breakdown.location !== undefined && (
                         <div className="breakdown-item">
                           <div className="breakdown-item-header">
-                            <span className="breakdown-icon"><MapPinIcon /></span>
+                            <span className="breakdown-icon"><MapPin size={16} /></span>
                             <span className="breakdown-label">Location</span>
                           </div>
                           <div className="breakdown-bar">
@@ -758,7 +659,7 @@ const SalaryPredictor = () => {
                       {prediction.ml_prediction.confidence_breakdown.industry !== undefined && (
                         <div className="breakdown-item">
                           <div className="breakdown-item-header">
-                            <span className="breakdown-icon"><BuildingIcon /></span>
+                            <span className="breakdown-icon"><Building size={16} /></span>
                             <span className="breakdown-label">Industry</span>
                           </div>
                           <div className="breakdown-bar">
@@ -773,7 +674,7 @@ const SalaryPredictor = () => {
                       {prediction.ml_prediction.confidence_breakdown.optional_details !== undefined && (
                         <div className="breakdown-item">
                           <div className="breakdown-item-header">
-                            <span className="breakdown-icon"><SettingsIcon /></span>
+                            <span className="breakdown-icon"><Settings size={16} /></span>
                             <span className="breakdown-label">Details</span>
                           </div>
                           <div className="breakdown-bar">
@@ -829,7 +730,7 @@ const SalaryPredictor = () => {
           {prediction.insights && (
             <div className={`insights ${prediction.insights.above_market ? 'positive' : 'neutral'}`}>
               <div className="insights-icon">
-                {prediction.insights.above_market ? <TrendingUpIcon /> : <ChartIcon />}
+                {prediction.insights.above_market ? <TrendingUp size={16} /> : <BarChart3 size={16} />}
               </div>
               <div className="insights-text">
                 {prediction.insights.above_market ? (
@@ -848,7 +749,7 @@ const SalaryPredictor = () => {
           {/* Matched Skills */}
           {prediction.ml_prediction.matched_skills && prediction.ml_prediction.matched_skills.length > 0 && (
             <div className="matched-skills">
-              <h5><CheckIcon /> Skills Recognized by ML Model</h5>
+              <h5><Check size={14} strokeWidth={2.5} /> Skills Recognized by ML Model</h5>
               <div className="matched-skills-list">
                 {prediction.ml_prediction.matched_skills.map((skill, index) => (
                   <span key={index} className="matched-skill-tag">
@@ -878,7 +779,7 @@ const SalaryPredictor = () => {
                 ))}
               </div>
               <p className="warning-note">
-                <LightBulbIcon /> Tip: Try skills like python, sql, tensorflow, docker, aws, azure, etc. for better predictions.
+                <Lightbulb size={16} /> Tip: Try skills like python, sql, tensorflow, docker, aws, azure, etc. for better predictions.
               </p>
             </div>
           )}
@@ -886,7 +787,7 @@ const SalaryPredictor = () => {
           {/* Salary Trends Chart */}
           {salaryTrends && salaryTrends.historical_trends && (
             <div className="salary-trends-section">
-              <h4><TrendingUpIcon /> Salary Trends: {salaryTrends.job_title}</h4>
+              <h4><TrendingUp size={16} /> Salary Trends: {salaryTrends.job_title}</h4>
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={salaryTrends.historical_trends}>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
