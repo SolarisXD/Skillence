@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../navbar';
+import MapLocationPicker from './MapLocationPicker';
 import './JobOfferEvaluator.css';
 // Professional SVG Icons
 import {
@@ -429,6 +430,7 @@ const JobOfferEvaluator = () => {
   const [showJobSuggestions, setShowJobSuggestions] = useState(false);
   const [showCitySuggestions, setShowCitySuggestions] = useState(false);
   const [showCountrySuggestions, setShowCountrySuggestions] = useState(false);
+  const [locationCoordinates, setLocationCoordinates] = useState(null);
 
   // Job roles data
   const jobRoles = [
@@ -1259,6 +1261,13 @@ const JobOfferEvaluator = () => {
                   )}
                 </div>
               </div>
+
+              {/* Map Location Picker */}
+              <MapLocationPicker
+                city={formData.city}
+                country={formData.country}
+                onLocationChange={setLocationCoordinates}
+              />
 
               <div className="form-group">
                 <label className="form-label">

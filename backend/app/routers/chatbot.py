@@ -184,7 +184,48 @@ Continue the conversation naturally, remembering what was discussed before."""
         
         return base_prompt
 
-    def sanitize_response(self, text: str) -> str:
+    def get_reflection_coach_prompt(self, conversation_context: str = "", user_context: str = "") -> str:
+        base_prompt = """You are Reflection Engine, an AI Interview Coach.
+
+ROLE AND SCOPE
+- You only provide interview-focused coaching.
+- Allowed topics: interview reflection, technical interview preparation, behavioral interview preparation, communication, confidence, mock interview strategy, and interview-specific action plans.
+- If the user asks about unrelated topics, politely redirect to interview coaching and ask one interview-focused follow-up question.
+
+STYLE REQUIREMENTS
+- Sound natural, conversational, and empathetic.
+- Do not use rigid templates or repetitive fixed phrasing.
+- Keep answers practical and personalized to the user's latest message.
+- Ask at most one short follow-up question when useful.
+
+FORMAT RULES
+- Plain text only.
+- No markdown symbols (no **, *, #, backticks, numbered markdown headings).
+- No emojis.
+- Use short paragraphs and clear sentences.
+"""
+
+        if user_context:
+            base_prompt += f"""
+
+USER CONTEXT
+{user_context}
+
+Use this only to personalize interview coaching. Do not switch to unrelated topics.
+"""
+
+        if conversation_context:
+            base_prompt += f"""
+
+CONVERSATION HISTORY
+{conversation_context}
+
+Continue naturally from this history and stay fully within interview coaching scope.
+"""
+
+        return base_prompt
+
+    def sanitize_response(self, text: str, remove_emojis: bool = False) -> str:
         """Clean and format the AI response by removing markdown and ensuring professional presentation"""
         # Remove markdown bold (**text**)
         text = re.sub(r'\*\*(.*?)\*\*', r'\1', text)
@@ -207,6 +248,9 @@ Continue the conversation naturally, remembering what was discussed before."""
         
         # Clean up any remaining markdown characters
         text = re.sub(r'[`~]', '', text)
+
+        if remove_emojis:
+            text = re.sub(r'[\U0001F300-\U0001FAFF\U00002700-\U000027BF\U000024C2-\U0001F251]', '', text)
         
         # Ensure proper spacing around bullet points
         text = re.sub(r'\n•', '\n\n•', text)
@@ -294,6 +338,35 @@ Please provide a helpful response as Skillence, the career guidance assistant.""
             logger.error(f"Error processing message: {str(e)}")
             return "I apologize, but I'm experiencing some technical difficulties right now. Please try again in a moment."
 
+    async def process_reflection_message(self, message: str, session_id: str, history: List[HistoryItem] = None, user_info: UserInfo = None) -> str:
+        try:
+            logger.info(f"Processing reflection message for session {session_id}: {message[:50]}...")
+
+            conversation_context = self.format_conversation_context(history or [])
+            user_context = self.format_user_context(user_info)
+            full_prompt = f"""{self.get_reflection_coach_prompt(conversation_context, user_context)}
+
+User Message: {message}
+
+Respond as Reflection Engine interview coach using plain text only."""
+
+            response = await asyncio.get_event_loop().run_in_executor(
+                None,
+                self.model.generate_content,
+                full_prompt
+            )
+
+            raw_text = getattr(response, "text", "") if response else ""
+            if not raw_text:
+                return "I can help with interview coaching. Please share what happened in your latest interview and where you felt stuck."
+
+            sanitized_response = self.sanitize_response(raw_text, remove_emojis=True)
+            return sanitized_response
+
+        except Exception as e:
+            logger.error(f"Error processing reflection message: {str(e)}")
+            return "I can help with interview coaching. Please try again and share your interview experience in a bit more detail."
+
 # Initialize service
 chat_service = ChatService()
 
@@ -323,6 +396,33 @@ async def chat_endpoint(chat_message: ChatMessage):
         raise HTTPException(
             status_code=500, 
             detail="Failed to process chat message"
+        )
+
+@router.post("/reflection-coach", response_model=ChatResponse)
+async def reflection_coach_endpoint(chat_message: ChatMessage):
+    """Handle Reflection Engine interview coach messages via Gemini"""
+    try:
+        logger.info(f"Received reflection coach message from session {chat_message.session_id}: {chat_message.message[:50]}...")
+
+        response_text = await chat_service.process_reflection_message(
+            chat_message.message,
+            chat_message.session_id,
+            chat_message.history,
+            chat_message.user_info,
+        )
+
+        return ChatResponse(
+            response=response_text,
+            session_id=chat_message.session_id,
+            timestamp=datetime.now().isoformat(),
+            status="success"
+        )
+
+    except Exception as e:
+        logger.error(f"Reflection coach endpoint error: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to process reflection coach message"
         )
 
 @router.get("/health")

@@ -1,19 +1,46 @@
 import { useState, useRef, useEffect } from "react";
 import Navbar from "./navbar";
-import Icons from "./Icons/ReflectionEngineIcons.jsx";
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const STORAGE_KEYS = {
+  SESSION_ID: "reflection_engine_session_id",
+  MESSAGES: "reflection_engine_messages",
+};
+
+const getDefaultWelcomeMessage = () => ({
+  id: 1,
+  type: "ai",
+  content: "Welcome to Reflection Engine. I am your AI interview coach. Share your latest interview situation and what felt difficult, and I will help you improve for your next interview.",
+  timestamp: new Date().toISOString(),
+});
 
 export default function ReflectionEngineInterviewDiagnostic() {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState(() => {
+    try {
+      const storedMessages = localStorage.getItem(STORAGE_KEYS.MESSAGES);
+      if (storedMessages) {
+        const parsedMessages = JSON.parse(storedMessages);
+        if (Array.isArray(parsedMessages) && parsedMessages.length > 0) {
+          return parsedMessages;
+        }
+      }
+    } catch (error) {
+      console.error("Failed to parse stored reflection messages:", error);
+    }
+    return [getDefaultWelcomeMessage()];
+  });
   const [currentInput, setCurrentInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [conversationState, setConversationState] = useState("greeting");
-  const [userContext, setUserContext] = useState({
-    status: "",
-    skills: "",
-    sentiment: "",
-    interviewReflection: "",
-    pastMistakes: []
+  const [sessionId] = useState(() => {
+    const existingSessionId = localStorage.getItem(STORAGE_KEYS.SESSION_ID);
+    if (existingSessionId) {
+      return existingSessionId;
+    }
+    const newSessionId = `reflection-${Date.now()}`;
+    localStorage.setItem(STORAGE_KEYS.SESSION_ID, newSessionId);
+    return newSessionId;
   });
+  const [userInfo, setUserInfo] = useState(null);
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
 
@@ -28,18 +55,104 @@ export default function ReflectionEngineInterviewDiagnostic() {
   };
 
   useEffect(() => {
-    // Initial greeting message - no user authentication required
-    if (messages.length === 0) {
-      setMessages([
-        {
-          id: 1,
-          type: "ai",
-          content: `Welcome to Reflection Engine! I'm your AI Interview Coach, and I'm here to help you transform your interview experiences into your next success story. I know interviews can feel overwhelming, but remember - every experience is a stepping stone toward your goals.\n\nLet's start by getting to know you better. What's your current situation? Are you a student preparing for placements, someone looking to switch careers, or perhaps a recent graduate navigating the job market? I want to understand your journey so I can provide the most relevant guidance.`,
-          timestamp: new Date()
+    localStorage.setItem(STORAGE_KEYS.MESSAGES, JSON.stringify(messages));
+  }, [messages]);
+
+  useEffect(() => {
+    const fetchUserContext = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          return;
         }
-      ]);
-    }
-  }, [messages.length]);
+
+        const headers = {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        };
+
+        const [authResponse, profileResponse] = await Promise.all([
+          fetch(`${API_BASE_URL}/api/auth/me`, { headers }),
+          fetch(`${API_BASE_URL}/api/profile/`, { headers }),
+        ]);
+
+        let userName = null;
+        let userEmail = null;
+
+        if (authResponse.ok) {
+          const authData = await authResponse.json();
+          userName = authData.name || null;
+          userEmail = authData.email || null;
+        }
+
+        let skills = [];
+        let softSkills = [];
+        let education = null;
+        let cgpa = null;
+        let experience = null;
+        let projects = [];
+        let certifications = [];
+        let achievements = [];
+
+        if (profileResponse.ok) {
+          const profileData = await profileResponse.json();
+          if (profileData.success && profileData.profile?.profile_data) {
+            const profile = profileData.profile.profile_data;
+            skills = profile.skills?.technical?.slice(0, 10) || [];
+            softSkills = profile.skills?.soft?.slice(0, 5) || [];
+
+            const educationItem = profile.education?.[0];
+            if (educationItem) {
+              const institution = educationItem.institution || educationItem.school || "";
+              education = educationItem.degree
+                ? `${educationItem.degree}${institution ? ` from ${institution}` : ""}`
+                : null;
+              cgpa = educationItem.gpa || null;
+            }
+
+            const experienceItem = profile.experience?.[0];
+            if (experienceItem) {
+              experience = experienceItem.title
+                ? `${experienceItem.title}${experienceItem.company ? ` at ${experienceItem.company}` : ""}`
+                : null;
+            }
+
+            projects = (profile.projects || [])
+              .slice(0, 5)
+              .map((item) => item.name || item.description?.slice(0, 60))
+              .filter(Boolean);
+
+            certifications = (profile.certifications || [])
+              .slice(0, 5)
+              .map((item) => item.name)
+              .filter(Boolean);
+
+            achievements = (profile.achievements || [])
+              .slice(0, 3)
+              .map((item) => item.title)
+              .filter(Boolean);
+          }
+        }
+
+        setUserInfo({
+          name: userName,
+          email: userEmail,
+          skills,
+          soft_skills: softSkills,
+          education,
+          cgpa,
+          experience,
+          projects,
+          certifications,
+          achievements,
+        });
+      } catch (error) {
+        console.error("Failed to fetch user context for Reflection Engine:", error);
+      }
+    };
+
+    fetchUserContext();
+  }, []);
 
   useEffect(() => {
     if (messages.length > 0) {
@@ -50,19 +163,43 @@ export default function ReflectionEngineInterviewDiagnostic() {
     }
   }, [messages]);
 
-  const generateContextualResponse = () => {
-    const sentiment = userContext.sentiment.toLowerCase();
-    if (sentiment.includes('anxious') || sentiment.includes('nervous')) {
-      return "I hear that anxiety in your response, and that's completely normal. Interview anxiety affects most people, even experienced professionals. The fact that you're aware of it is the first step toward managing it.";
-    } else if (sentiment.includes('frustrated') || sentiment.includes('annoyed')) {
-      return "I can sense your frustration, and honestly, that passion can be a strength when channeled right. Sometimes frustration means you care deeply about succeeding, which is valuable.";
-    } else if (sentiment.includes('excited') || sentiment.includes('optimistic')) {
-      return "I love your positive energy! That enthusiasm will serve you well. Let's make sure your next interview matches that excitement.";
-    } else if (sentiment.includes('overwhelmed') || sentiment.includes('stressed')) {
-      return "Feeling overwhelmed is so common in job searching. Let's break things down into manageable pieces together.";
-    } else {
-      return "Thank you for sharing how you're feeling. Understanding your emotional state helps me provide better guidance.";
+  const sanitizeCoachText = (text) => {
+    if (!text || typeof text !== "string") {
+      return "I can help with interview coaching. Please share your interview experience in more detail.";
     }
+
+    let cleaned = text;
+    cleaned = cleaned.replace(/\*\*(.*?)\*\*/g, "$1");
+    cleaned = cleaned.replace(/\*(.*?)\*/g, "$1");
+    cleaned = cleaned.replace(/^#{1,6}\s*/gm, "");
+    cleaned = cleaned.replace(/[\u{1F300}-\u{1FAFF}\u{2700}-\u{27BF}\u{24C2}-\u{1F251}]/gu, "");
+    cleaned = cleaned.replace(/\n{3,}/g, "\n\n").trim();
+
+    return cleaned;
+  };
+
+  const buildHistoryPayload = () => {
+    return messages.slice(-12).map((message) => ({
+      role: message.type === "user" ? "user" : "bot",
+      content: sanitizeCoachText(message.content),
+    }));
+  };
+
+  const sendCoachRequest = async (endpoint, payload) => {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`${response.status}: ${errorText}`);
+    }
+
+    return response.json();
   };
 
   const handleSendMessage = async () => {
@@ -80,270 +217,49 @@ export default function ReflectionEngineInterviewDiagnostic() {
     setCurrentInput("");
     setLoading(true);
 
-    let aiResponse = "";
-    let nextState = conversationState;
-
     try {
-      switch (conversationState) {
-        case "greeting":
-          setUserContext(prev => ({ ...prev, status: inputValue }));
-          
-          setTimeout(() => {
-            aiResponse = `I understand you're ${inputValue.toLowerCase()}. That context really helps me tailor my guidance to your specific situation!\n\nNow, let's dive into the technical side - what specific skills, technologies, or role were you interviewing for? The more specific you can be (like "Full Stack Developer with React and Node.js" or "Data Scientist with Python and Machine Learning"), the better I can understand the expectations and challenges you faced.`;
-            nextState = "skills";
-            
-            const aiMessage = {
-              id: Date.now() + 1,
-              type: "ai",
-              content: aiResponse,
-              timestamp: new Date()
-            };
-            setMessages(prev => [...prev, aiMessage]);
-            setConversationState(nextState);
-            setLoading(false);
-          }, 1000);
-          return;
-          
-        case "skills":
-          setUserContext(prev => ({ ...prev, skills: inputValue }));
-          
-          setTimeout(() => {
-            aiResponse = `Perfect! ${inputValue} - I have a clear picture of the technical landscape you're navigating. These skills are definitely in demand, which is great!\n\nNow, I want to understand how you're feeling about all this. Job searching and interviews can be an emotional rollercoaster - are you feeling anxious about your performance, frustrated with the process, excited but nervous, or maybe overwhelmed? There's no wrong answer here, and understanding your emotional state helps me provide the right kind of support.`;
-            nextState = "sentiment";
-            
-            const aiMessage = {
-              id: Date.now() + 1,
-              type: "ai",
-              content: aiResponse,
-              timestamp: new Date()
-            };
-            setMessages(prev => [...prev, aiMessage]);
-            setConversationState(nextState);
-            setLoading(false);
-          }, 1200);
-          return;
-          
-        case "sentiment":
-          setUserContext(prev => ({ ...prev, sentiment: inputValue }));
-          
-          setTimeout(() => {
-            const contextualResponse = generateContextualResponse();
-            aiResponse = `${contextualResponse}\n\nNow that I understand your background and how you're feeling, I'm ready to dive into the main event - your interview experience. Take your time and tell me everything that happened. I want to hear about:\n\n• The questions that caught you off guard\n• Moments when you felt confident\n• Times when you stumbled or felt uncertain\n• Technical challenges you faced\n• Anything you wish you had said differently\n\nRemember, there's no judgment here - every detail helps me understand your experience better and provide more personalized guidance. The more honest and detailed you are, the better I can help you turn this experience into preparation for your next success.`;
-            nextState = "reflection";
-            
-            const aiMessage = {
-              id: Date.now() + 1,
-              type: "ai",
-              content: aiResponse,
-              timestamp: new Date()
-            };
-            setMessages(prev => [...prev, aiMessage]);
-            setConversationState(nextState);
-            setLoading(false);
-          }, 1500);
-          return;
-          
-        case "reflection":
-          setUserContext(prev => ({ ...prev, interviewReflection: inputValue }));
-          
-          const thinkingMessage = {
-            id: Date.now(),
-            type: "ai",
-            content: "Let me carefully read through your interview experience and understand what happened...\n\n*Reading and processing your reflection...*",
-            timestamp: new Date(),
-            isThinking: true
-          };
-          setMessages(prev => [...prev, thinkingMessage]);
-          
-          setTimeout(() => {
-            setMessages(prev => prev.filter(m => !m.isThinking));
-            aiResponse = `Thank you for sharing your interview experience so openly. I can tell you've put real thought into reflecting on what happened, and that self-awareness is already a huge strength.\n\nBefore I analyze your experience, are there any recurring patterns or mistakes from past interviews that you'd like me to consider? For example, things like "I always get nervous with coding challenges" or "I struggle with behavioral questions" or "I tend to ramble in my answers"?\n\nYou can either tell me about any patterns you've noticed, or just say "none" or "let's proceed" if you'd prefer to jump straight into the analysis.`;
-            nextState = "pastMistakes";
-            
-            const aiMessage = {
-              id: Date.now() + 1,
-              type: "ai",
-              content: aiResponse,
-              timestamp: new Date()
-            };
-            setMessages(prev => [...prev, aiMessage]);
-            setConversationState(nextState);
-            setLoading(false);
-          }, 2500);
-          return;
-          
-        case "pastMistakes":
-          if (inputValue.toLowerCase().includes("none") || inputValue.toLowerCase().includes("proceed")) {
-            setUserContext(prev => ({ ...prev, pastMistakes: [] }));
-          } else {
-            const mistakes = inputValue.split(',').map(m => m.trim()).filter(m => m.length > 0);
-            setUserContext(prev => ({ ...prev, pastMistakes: mistakes }));
-          }
-          
-          aiResponse = "Perfect! I now have all the context I need. Let me analyze your interview experience and provide personalized feedback and actionable strategies. This might take a moment as I'm processing everything you've shared...";
-          nextState = "analyzing";
-          
-          setTimeout(() => {
-            handleAnalysis();
-          }, 1000);
-          break;
+      const payload = {
+        message: inputValue,
+        session_id: sessionId,
+        history: buildHistoryPayload(),
+        user_info: userInfo,
+      };
 
-        case "completed":
-          setTimeout(() => {
-            let contextualResponse = "";
-            
-            if (inputValue.toLowerCase().includes('higher studies') || inputValue.toLowerCase().includes('masters')) {
-              contextualResponse = `That's a great question about higher studies vs job opportunities! Based on our previous conversation about your interview experiences, I can definitely help you think through this decision.\n\nHere are some key factors to consider:\n\n**For Higher Studies:**\n• **Specialization**: Advanced degrees allow deeper expertise in your field\n• **Research opportunities**: If you're interested in innovation and cutting-edge work\n• **Long-term career growth**: Some roles require advanced degrees\n• **Network building**: Academic connections can be valuable\n\n**For Job First:**\n• **Real-world experience**: Practical skills and industry exposure\n• **Financial independence**: Start earning and gaining work experience\n• **Immediate impact**: Apply your current skills right away\n• **Learning while working**: Many companies offer continuous learning opportunities\n\nWhat specific field are you considering for higher studies? And what are your main concerns about choosing between the two paths?`;
-            } else {
-              contextualResponse = `That's a great follow-up question! Based on everything we've discussed, here are some additional insights:\n\n**Remember the key takeaways from our analysis:**\n• Focus on the patterns we identified in your interview experience\n• Practice the specific areas where you felt less confident\n• Use the STAR method for behavioral questions\n• Prepare concrete examples that showcase your skills\n\n**For your next interview:**\n• Review the technical concepts we discussed\n• Practice explaining your thought process out loud\n• Prepare questions that show your genuine interest in the role\n• Remember that confidence comes from preparation\n\nIs there any specific aspect of interview preparation you'd like me to elaborate on?`;
-            }
-            
-            const aiMessage = {
-              id: Date.now() + 1,
-              type: "ai",
-              content: contextualResponse,
-              timestamp: new Date()
-            };
-            setMessages(prev => [...prev, aiMessage]);
-            setLoading(false);
-          }, 1200);
-          return;
-
-        default:
-          aiResponse = "I'm here to help you with your interview preparation. What would you like to know more about?";
-          break;
+      let data;
+      try {
+        data = await sendCoachRequest("/api/chatbot/reflection-coach", payload);
+      } catch (primaryError) {
+        console.warn("Primary reflection coach endpoint failed, trying fallback:", primaryError);
+        data = await sendCoachRequest("/api/chatbot/chat", {
+          message: inputValue,
+          session_id: sessionId,
+          history: buildHistoryPayload(),
+          user_info: userInfo,
+        });
       }
 
-      if (aiResponse) {
-        const aiMessage = {
-          id: Date.now() + 1,
-          type: "ai",
-          content: aiResponse,
-          timestamp: new Date()
-        };
-        setMessages(prev => [...prev, aiMessage]);
-        setConversationState(nextState);
-      }
+      const aiResponse = sanitizeCoachText(data.response);
+
+      const aiMessage = {
+        id: Date.now() + 1,
+        type: "ai",
+        content: aiResponse || "I can help with interview coaching. Tell me what happened in your interview and what you want to improve.",
+        timestamp: new Date(),
+      };
+
+      setMessages(prev => [...prev, aiMessage]);
     } catch (error) {
       console.error("Error processing message:", error);
       const errorMessage = {
         id: Date.now() + 1,
         type: "ai",
-        content: "I apologize, but I encountered an error processing your message. Please try again.",
+        content: "I could not reach the interview coach right now. Please ensure backend is running and try again.",
         timestamp: new Date()
       };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleAnalysis = () => {
-    const analysisMessage = {
-      id: Date.now(),
-      type: "ai",
-      content: "*Analyzing your interview experience...*\n\n🔍 **Processing your reflection**\n✅ **Identifying key patterns**\n🎯 **Generating personalized feedback**\n📋 **Creating action plan**",
-      timestamp: new Date(),
-      isAnalyzing: true
-    };
-    setMessages(prev => [...prev, analysisMessage]);
-
-    setTimeout(() => {
-      setMessages(prev => prev.filter(m => !m.isAnalyzing));
-      
-      const detailedAnalysis = generateDetailedAnalysis();
-      const analysisResult = {
-        id: Date.now() + 1,
-        type: "ai",
-        content: detailedAnalysis,
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, analysisResult]);
-      setConversationState("completed");
-      setLoading(false);
-    }, 3000);
-  };
-
-  const generateDetailedAnalysis = () => {
-    const { status, skills, sentiment, interviewReflection, pastMistakes } = userContext;
-    
-    return `## 🎯 **Your Reflection Engine Analysis Complete**
-
-**Profile Summary:**
-• **Status**: ${status}
-• **Target Skills**: ${skills}
-• **Current Mindset**: ${sentiment}
-
----
-
-### 📊 **Key Patterns Identified**
-
-Based on your reflection, I've identified several important patterns:
-
-**Strengths to Leverage:**
-• Your self-awareness about areas for improvement
-• Technical knowledge in ${skills}
-• Willingness to reflect honestly on your experience
-
-**Growth Opportunities:**
-• Communication during technical discussions
-• Managing interview anxiety/nerves
-• Structuring responses more effectively
-
----
-
-### 🚀 **Personalized Action Plan**
-
-**Immediate Next Steps (Next 1-2 weeks):**
-1. **Practice Technical Communication**: Explain your code/solutions out loud daily
-2. **Mock Interview Sessions**: Practice with friends or use online platforms
-3. **STAR Method**: Structure behavioral answers (Situation, Task, Action, Result)
-
-**Medium-term Goals (Next month):**
-1. **Build Confidence**: Work on 2-3 strong project examples you can discuss
-2. **Technical Deep Dive**: Strengthen areas where you felt uncertain
-3. **Interview Simulation**: Record yourself answering common questions
-
-**Long-term Development (Ongoing):**
-1. **Continuous Learning**: Stay updated with latest trends in ${skills}
-2. **Networking**: Connect with professionals in your target field
-3. **Portfolio Enhancement**: Showcase your best work prominently
-
----
-
-### 💡 **Specific Recommendations**
-
-**For Technical Questions:**
-• Use the "rubber duck" debugging method - explain your thinking process step by step
-• Break down complex problems into smaller, manageable parts
-• Don't be afraid to ask clarifying questions
-
-**For Behavioral Questions:**
-• Prepare 5-7 strong examples using the STAR method
-• Focus on specific achievements and learnings
-• Show growth mindset and adaptability
-
-**For Managing Nerves:**
-• Practice deep breathing techniques before the interview
-• Arrive early but not too early (10-15 minutes)
-• Remember: they already like your resume, now they want to meet you!
-
----
-
-### 🔄 **Your Reflection Engine Loop**
-
-Moving forward, use this cycle for continuous improvement:
-1. **Experience** → New interview or practice session
-2. **Reflect** → What went well? What could improve?
-3. **Analyze** → Identify patterns and root causes
-4. **Act** → Implement specific improvements
-5. **Review** → Measure progress and adjust approach
-
----
-
-**Remember**: Every interview is a learning experience. The goal isn't perfection - it's progress. You're already ahead of most candidates simply by taking the time to reflect deeply on your experiences.
-
-What aspect of this analysis would you like to dive deeper into? I'm here to help you prepare for your next interview success! 🌟`;
   };
 
   const handleKeyPress = (e) => {
@@ -408,7 +324,7 @@ What aspect of this analysis would you like to dive deeper into? I'm here to hel
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
             }}>
-              💬 Reflection Engine AI Coach
+              Reflection Engine AI Coach
             </h1>
             <p style={{
               fontSize: '18px',
