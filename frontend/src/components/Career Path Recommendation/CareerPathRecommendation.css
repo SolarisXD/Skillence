@@ -4,25 +4,38 @@
 
 .career-path-page {
   min-height: 100vh;
-  background: var(--bg-primary);
+  background: var(--bg-secondary);
   color: var(--text-primary);
-  padding-top: 80px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Hero Section with Animated Background */
+.career-path-hero {
+  position: relative;
+  min-height: 40vh;
+  background: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 100px 2rem 60px;
+  margin-bottom: 2rem;
 }
 
 .career-path-container {
   width: 100%;
   margin: 0 auto;
-  padding: 2rem 3rem;
+  padding: 0 3rem 2rem;
   max-width: 1400px;
 }
 
 /* Header Section */
 .career-path-header {
   text-align: center;
-  margin-bottom: 3rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid var(--border-color);
+  position: relative;
+  z-index: 10;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .career-path-title {
@@ -36,7 +49,7 @@
 .career-path-subtitle {
   font-size: 1.125rem;
   color: var(--text-secondary);
-  max-width: 600px;
+  max-width: 700px;
   margin: 0 auto;
   line-height: 1.6;
 }
@@ -2918,6 +2931,237 @@
   box-shadow:
     0 2px 8px rgba(0, 0, 0, 0.2),
     0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+/* ===================================
+   Animated Background (Reflection BG)
+   =================================== */
+
+.reflection-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Floating Geometric Shapes */
+.floating-shape {
+  position: absolute;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.1) 100%);
+  backdrop-filter: blur(20px);
+  animation: floatAndRotate 20s ease-in-out infinite;
+}
+
+[data-theme="dark"] .floating-shape {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(99, 102, 241, 0.15) 100%);
+}
+
+.shape-1 {
+  width: 120px;
+  height: 120px;
+  top: 15%;
+  right: 15%;
+  animation-duration: 25s;
+  animation-delay: 0s;
+}
+
+.shape-2 {
+  width: 80px;
+  height: 80px;
+  top: 60%;
+  left: 10%;
+  animation-duration: 30s;
+  animation-delay: 5s;
+  border-radius: 20%;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(59, 130, 246, 0.08) 100%);
+}
+
+[data-theme="dark"] .shape-2 {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(59, 130, 246, 0.12) 100%);
+}
+
+.shape-3 {
+  width: 200px;
+  height: 200px;
+  bottom: 20%;
+  right: 20%;
+  animation-duration: 35s;
+  animation-delay: 10s;
+  opacity: 0.6;
+}
+
+.shape-4 {
+  width: 60px;
+  height: 60px;
+  top: 35%;
+  left: 25%;
+  animation-duration: 22s;
+  animation-delay: 8s;
+  border-radius: 30%;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+}
+
+[data-theme="dark"] .shape-4 {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(59, 130, 246, 0.1) 100%);
+}
+
+.shape-5 {
+  width: 160px;
+  height: 160px;
+  top: 70%;
+  right: 45%;
+  animation-duration: 28s;
+  animation-delay: 15s;
+  border-radius: 40%;
+}
+
+/* Animated Gradient Beams */
+.gradient-beam {
+  position: absolute;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+  animation: slideBeam 15s ease-in-out infinite;
+}
+
+[data-theme="dark"] .gradient-beam {
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.4), transparent);
+}
+
+.beam-1 {
+  width: 2px;
+  height: 100%;
+  left: 20%;
+  animation-duration: 18s;
+  animation-delay: 0s;
+}
+
+.beam-2 {
+  width: 100%;
+  height: 1px;
+  top: 30%;
+  animation-duration: 22s;
+  animation-delay: 7s;
+  background: linear-gradient(0deg, transparent, rgba(99, 102, 241, 0.25), transparent);
+}
+
+[data-theme="dark"] .beam-2 {
+  background: linear-gradient(0deg, transparent, rgba(99, 102, 241, 0.35), transparent);
+}
+
+.beam-3 {
+  width: 1px;
+  height: 100%;
+  right: 35%;
+  animation-duration: 20s;
+  animation-delay: 12s;
+}
+
+/* Particle Field */
+.particle-field {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: rgba(59, 130, 246, 0.8);
+  border-radius: 50%;
+  animation: particleFloat 25s ease-in-out infinite;
+}
+
+[data-theme="dark"] .particle {
+  background: rgba(59, 130, 246, 1);
+}
+
+.particle-1 { top: 10%; left: 15%; animation-delay: 0s; }
+.particle-2 { top: 25%; left: 85%; animation-delay: 3s; }
+.particle-3 { top: 45%; left: 25%; animation-delay: 6s; }
+.particle-4 { top: 65%; left: 75%; animation-delay: 9s; }
+.particle-5 { top: 80%; left: 15%; animation-delay: 12s; }
+.particle-6 { top: 15%; left: 60%; animation-delay: 15s; }
+.particle-7 { top: 35%; left: 45%; animation-delay: 18s; }
+.particle-8 { top: 55%; left: 80%; animation-delay: 21s; }
+.particle-9 { top: 75%; left: 35%; animation-delay: 24s; }
+.particle-10 { top: 20%; left: 40%; animation-delay: 27s; }
+.particle-11 { top: 40%; left: 15%; animation-delay: 30s; }
+.particle-12 { top: 60%; left: 65%; animation-delay: 33s; }
+.particle-13 { top: 85%; left: 55%; animation-delay: 36s; }
+.particle-14 { top: 30%; left: 70%; animation-delay: 39s; }
+.particle-15 { top: 50%; left: 50%; animation-delay: 42s; }
+
+/* Keyframe Animations */
+@keyframes floatAndRotate {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translateY(-30px) translateX(20px) rotate(90deg) scale(1.1);
+  }
+  50% {
+    transform: translateY(-50px) translateX(-15px) rotate(180deg) scale(0.9);
+  }
+  75% {
+    transform: translateY(-20px) translateX(-30px) rotate(270deg) scale(1.05);
+  }
+}
+
+@keyframes slideBeam {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes particleFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+    opacity: 0.3;
+  }
+  33% {
+    transform: translateY(-40px) scale(1.5);
+    opacity: 0.8;
+  }
+  66% {
+    transform: translateY(-20px) scale(0.8);
+    opacity: 0.5;
+  }
+}
+
+/* Responsive adjustments for animations */
+@media (max-width: 768px) {
+  .career-path-hero .floating-shape {
+    display: none;
+  }
+  .career-path-hero .gradient-beam {
+    opacity: 0.5;
+  }
+  .career-path-hero .particle {
+    width: 2px;
+    height: 2px;
+  }
+  
+  .career-path-hero {
+    padding: 80px 1rem 40px;
+    min-height: 30vh;
+  }
+  
+  .career-path-title {
+    font-size: 2rem;
+  }
+  
+  .career-path-subtitle {
+    font-size: 1rem;
+  }
 }
 
 /* Responsive */

@@ -453,14 +453,51 @@ const CareerPathRecommendation = () => {
   return (
     <div className="career-path-page">
       <Navbar />
-      <div className="career-path-container">
-        {/* Header Section */}
+      
+      {/* Hero Section with Background Animation */}
+      <div className="career-path-hero">
+        {/* Animated Background */}
+        <div className="reflection-bg">
+          {/* Animated Floating Shapes */}
+          <div className="floating-shape shape-1"></div>
+          <div className="floating-shape shape-2"></div>
+          <div className="floating-shape shape-3"></div>
+          <div className="floating-shape shape-4"></div>
+          <div className="floating-shape shape-5"></div>
+          
+          {/* Animated Gradient Beams */}
+          <div className="gradient-beam beam-1"></div>
+          <div className="gradient-beam beam-2"></div>
+          <div className="gradient-beam beam-3"></div>
+          
+          {/* Particle Effects */}
+          <div className="particle-field">
+            {Array.from({ length: 15 }, (_, i) => (
+              <div key={i} className={`particle particle-${i + 1}`}></div>
+            ))}
+          </div>
+        </div>
+        
+        {/* Header Content */}
         <div className="career-path-header">
-          <h1 className="career-path-title">Career Path Intelligence</h1>
+          <h1 className="career-path-title">
+            Career Path{' '}
+            <span style={{
+              background: 'var(--accent-gradient)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}>
+              Intelligence
+            </span>
+          </h1>
           <p className="career-path-subtitle">
             Leverage advanced analytics to discover your most suitable career opportunities based on your professional profile and skill portfolio.
           </p>
         </div>
+      </div>
+      
+      <div className="career-path-container">
 
         {/* Action Section */}
         <div className="analyze-section">
