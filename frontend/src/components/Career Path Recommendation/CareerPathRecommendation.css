@@ -1797,10 +1797,11 @@
 }
 
 .skill-name {
-  font-size: 0.75rem;
+  font-size: 0.8rem; /* increased for better readability */
   font-weight: 500;
   color: var(--text-primary);
   flex: 1;
+  letter-spacing: -0.01em;
 }
 
 .skill-checkbox-container.learned .skill-name {

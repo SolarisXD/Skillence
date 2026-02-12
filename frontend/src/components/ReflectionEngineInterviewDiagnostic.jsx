@@ -262,8 +262,6 @@ export default function ReflectionEngineInterviewDiagnostic() {
     }
   };
 
-<<<<<<< HEAD
-=======
   const handleAnalysis = () => {
     const analysisMessage = {
       id: Date.now(),
@@ -372,7 +370,6 @@ Moving forward, use this cycle for continuous improvement:
 What aspect of this analysis would you like to dive deeper into? I'm here to help you prepare for your next interview success!`;
   };
 
->>>>>>> 3e1bb1b9fc9dcfdec2313424a3cb796a26244dce
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -439,10 +436,7 @@ What aspect of this analysis would you like to dive deeper into? I'm here to hel
               gap: '8px',
               justifyContent: 'center'
             }}>
-<<<<<<< HEAD
-=======
               <svg width='24' height='24' viewBox='0 0 24 24' fill='currentColor' style={{flexShrink: 0}}><path d='M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z'/></svg>
->>>>>>> 3e1bb1b9fc9dcfdec2313424a3cb796a26244dce
               Reflection Engine AI Coach
             </h1>
             <p style={{

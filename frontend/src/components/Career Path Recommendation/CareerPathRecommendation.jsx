@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../navbar';
-import ProgressBar, { PhaseProgressBar, RoadmapProgressBar, DetailedProgressBar, ThinProgressBar } from '../ProgressBar';
-import TaskCheckbox, { SkillCheckbox, MilestoneCheckbox, ResourceCheckbox } from '../TaskCheckbox';
-import DeadlineTracker, { PhaseDeadlineTracker, CompactDeadlineButton } from '../DeadlineTracker';
+import ProgressBar, { PhaseProgressBar, DetailedProgressBar } from '../ProgressBar';
 import './CareerPathRecommendation.css';
 
 // SVG Icons
@@ -89,31 +87,6 @@ const CodeIcon = () => (
   </svg>
 );
 
-// Learning Roadmap SVG Icons
-const SkillsIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="12" r="10"/>
-    <circle cx="12" cy="12" r="6"/>
-    <circle cx="12" cy="12" r="2"/>
-  </svg>
-);
-
-const TasksIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-    <path d="M9 9h6"/>
-    <path d="M9 13h6"/>
-    <path d="M9 17h6"/>
-  </svg>
-);
-
-const MilestonesIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="8" r="7"/>
-    <polyline points="8.21,13.89 7,23 12,20 17,23 15.79,13.88"/>
-  </svg>
-);
-
 const ResourcesIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
@@ -154,13 +127,7 @@ const CareerPathRecommendation = () => {
   const [addingSkills, setAddingSkills] = useState(false);
   const [learnedSkills, setLearnedSkills] = useState(new Set());
   const [hasStartedRoadmap, setHasStartedRoadmap] = useState(false);
-  
-  // New state for roadmap progress tracking
-  const [roadmapProgress, setRoadmapProgress] = useState(null);
-  const [loadingRoadmapProgress, setLoadingRoadmapProgress] = useState(false);
-  const [taskCompletionState, setTaskCompletionState] = useState({});
-  const [updatingTask, setUpdatingTask] = useState(null);
-  const [generatingRoadmap, setGeneratingRoadmap] = useState(false);
+
   const [mlRecommendations, setMlRecommendations] = useState(null);
   const [careerPathChanged, setCareerPathChanged] = useState(false);
 
@@ -243,8 +210,14 @@ const CareerPathRecommendation = () => {
         const data = await response.json();
         if (data.success && data.career_path) {
           setCurrentCareerPath(data.career_path);
-          // Load existing roadmap progress if career path exists
-          await loadRoadmapProgress(data.career_path.occupation_code);
+          // Restore saved learning plan if it exists
+          if (data.career_path.saved_learning_plan) {
+            setLearningPlan(data.career_path.saved_learning_plan);
+            setHasStartedRoadmap(true);
+            if (data.career_path.saved_learning_plan.ml_skill_recommendations) {
+              setMlRecommendations(data.career_path.saved_learning_plan.ml_skill_recommendations);
+            }
+          }
         }
       }
     } catch (err) {
@@ -279,171 +252,6 @@ const CareerPathRecommendation = () => {
       console.error('Error loading learning plan:', err);
     } finally {
       setLoadingLearningPlan(false);
-    }
-  };
-
-  // New functions for roadmap progress management
-  const loadRoadmapProgress = async (currentOccupationCode = null) => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-
-    setLoadingRoadmapProgress(true);
-    try {
-      const response = await fetch('http://localhost:8000/api/career-path/roadmap/progress', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success && data.roadmap_progress) {
-          setRoadmapProgress(data.roadmap_progress);
-          
-          // Restore learning plan from saved roadmap data so skill analysis persists
-          if (data.roadmap_progress.learning_plan_data) {
-            setLearningPlan(data.roadmap_progress.learning_plan_data);
-            if (data.roadmap_progress.learning_plan_data.ml_skill_recommendations) {
-              setMlRecommendations(data.roadmap_progress.learning_plan_data.ml_skill_recommendations);
-            }
-          }
-          
-          // Detect if career path has changed since roadmap was generated
-          if (currentOccupationCode && data.roadmap_progress.career_path_id !== currentOccupationCode) {
-            setCareerPathChanged(true);
-          } else {
-            setCareerPathChanged(false);
-          }
-          
-          // Initialize task completion state
-          const completionState = {};
-          data.roadmap_progress.phases.forEach(phase => {
-            phase.tasks.forEach(task => {
-              completionState[task.task_id] = task.status === 'completed';
-            });
-          });
-          setTaskCompletionState(completionState);
-          setHasStartedRoadmap(true);
-        }
-      }
-    } catch (err) {
-      console.error('Error loading roadmap progress:', err);
-    } finally {
-      setLoadingRoadmapProgress(false);
-    }
-  };
-
-  const generateAndSaveRoadmap = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-
-    setGeneratingRoadmap(true);
-    try {
-      const response = await fetch('http://localhost:8000/api/career-path/generate-roadmap', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          setLearningPlan(data.learning_plan);
-          if (data.learning_plan?.ml_skill_recommendations) {
-            setMlRecommendations(data.learning_plan.ml_skill_recommendations);
-          }
-          setRoadmapProgress(data.roadmap_progress);
-          setHasStartedRoadmap(true);
-          
-          // Initialize task completion state
-          const completionState = {};
-          data.roadmap_progress.phases.forEach(phase => {
-            phase.tasks.forEach(task => {
-              completionState[task.task_id] = task.status === 'completed';
-            });
-          });
-          setTaskCompletionState(completionState);
-        }
-      }
-    } catch (err) {
-      console.error('Error generating roadmap:', err);
-    } finally {
-      setGeneratingRoadmap(false);
-    }
-  };
-
-  const updateTaskCompletion = async (taskId, isCompleted) => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-
-    setUpdatingTask(taskId);
-    
-    // Optimistically update UI
-    setTaskCompletionState(prev => ({
-      ...prev,
-      [taskId]: isCompleted
-    }));
-
-    try {
-      const response = await fetch('http://localhost:8000/api/career-path/roadmap/update-task', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          task_id: taskId,
-          status: isCompleted ? 'completed' : 'not_started'
-        })
-      });
-
-      if (response.ok) {
-        // Reload roadmap progress to get updated percentages
-        await loadRoadmapProgress();
-      } else {
-        // Revert optimistic update
-        setTaskCompletionState(prev => ({
-          ...prev,
-          [taskId]: !isCompleted
-        }));
-      }
-    } catch (err) {
-      console.error('Error updating task:', err);
-      // Revert optimistic update
-      setTaskCompletionState(prev => ({
-        ...prev,
-        [taskId]: !isCompleted
-      }));
-    } finally {
-      setUpdatingTask(null);
-    }
-  };
-
-  const updatePhaseDeadline = async (phaseNumber, newDeadline) => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-
-    try {
-      const response = await fetch('http://localhost:8000/api/career-path/roadmap/update-deadline', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          phase_number: phaseNumber,
-          new_deadline: newDeadline.toISOString()
-        })
-      });
-
-      if (response.ok) {
-        // Reload roadmap progress to get updated deadlines
-        await loadRoadmapProgress();
-      }
-    } catch (err) {
-      console.error('Error updating deadline:', err);
     }
   };
 
@@ -697,13 +505,7 @@ const CareerPathRecommendation = () => {
         {/* Learning Plan Section */}
         {currentCareerPath && (
           <div className="learning-plan-section">
-            {/* Roadmap Progress Bar at the top */}
-            {roadmapProgress && (
-              <RoadmapProgressBar 
-                progress={roadmapProgress.overall_progress_percentage} 
-                className="learning-roadmap-progress" 
-              />
-            )}
+
             
             <div className="learning-plan-header">
               <div className="header-content">
@@ -740,17 +542,17 @@ const CareerPathRecommendation = () => {
               </div>
             </div>
 
-            {!hasStartedRoadmap && !learningPlan && !roadmapProgress ? (
+            {!hasStartedRoadmap && !learningPlan ? (
               <div className="start-roadmap-section">
                 <div className="start-roadmap-content">
                   <h3>Ready to Begin Your Learning Journey?</h3>
                   <p>Generate a personalized learning roadmap tailored to your career goals and current skills. Our AI will analyze your profile and create a step-by-step plan to help you reach your target role.</p>
                   <button
                     className="simple-start-button"
-                    onClick={generateAndSaveRoadmap}
-                    disabled={generatingRoadmap}
+                    onClick={loadLearningPlan}
+                    disabled={loadingLearningPlan}
                   >
-                    {generatingRoadmap ? (
+                    {loadingLearningPlan ? (
                       <>
                         <LoadingSpinner />
                         Generating...
@@ -768,10 +570,10 @@ const CareerPathRecommendation = () => {
                   <p>Your career path has changed since your last roadmap was generated. Generate a new roadmap aligned with your updated career goals.</p>
                   <button
                     className="simple-start-button"
-                    onClick={() => { setCareerPathChanged(false); generateAndSaveRoadmap(); }}
-                    disabled={generatingRoadmap}
+                    onClick={() => { setCareerPathChanged(false); loadLearningPlan(); }}
+                    disabled={loadingLearningPlan}
                   >
-                    {generatingRoadmap ? (
+                    {loadingLearningPlan ? (
                       <>
                         <LoadingSpinner />
                         Generating...
@@ -782,283 +584,14 @@ const CareerPathRecommendation = () => {
                   </button>
                 </div>
               </div>
-            ) : (loadingLearningPlan || generatingRoadmap) ? (
+            ) : loadingLearningPlan ? (
               <div className="learning-plan-loading">
                 <LoadingSpinner />
                 <p>Analyzing your profile and generating personalized learning roadmap...</p>
               </div>
-            ) : roadmapProgress ? (
-              <>
-                {/* Skills Analysis Section (render first if learning plan exists) */}
-                {!learningPlan ? (
-                  <div className="skills-generation-section">
-                    <button
-                      className="generate-skills-button"
-                      onClick={loadLearningPlan}
-                      disabled={loadingLearningPlan}
-                    >
-                      {loadingLearningPlan ? (
-                        <>
-                          <LoadingSpinner />
-                          Analyzing Skills...
-                        </>
-                      ) : (
-                        'Generate Skills Analysis'
-                      )}
-                    </button>
-                    <div className="section-divider"></div>
-                  </div>
-                ) : (
-                  <>
-                    {/* Skill Gap Analysis */}
-                    <div className="skill-gap-analysis">
-                      <div className="section-header">
-                        <TargetIcon />
-                        <h3>Skill Gap Analysis</h3>
-                      </div>
-                      
-                      <div className="skill-analysis-grid">
-                        <div className="skill-summary-card">
-                          <div className="summary-stat">
-                            <span className="stat-number">{learningPlan.skill_analysis?.total_gaps || 0}</span>
-                            <span className="stat-label">Skills to Develop</span>
-                          </div>
-                        </div>
-                        
-                        <div className="skill-summary-card">
-                          <div className="summary-stat">
-                            <span className="stat-number">{learningPlan.skill_analysis?.strengths_count || 0}</span>
-                            <span className="stat-label">Current Strengths</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Priority Skills */}
-                      {learningPlan.skill_analysis?.priority_skills && learningPlan.skill_analysis.priority_skills.length > 0 && (
-                        <div className="priority-skills">
-                          <h4>High Priority Skills to Develop</h4>
-                          <div className="gamified-skills-grid">
-                            {learningPlan.skill_analysis.priority_skills.map((skill, index) => (
-                              <div key={index} className="gamified-skill-card">
-                                <div className="skill-content">
-                                  <div className="skill-info">
-                                    <span className="skill-name">
-                                      {skill.skill || skill.technology}
-                                    </span>
-                                    <div className="skill-badges">
-                                      <span className={`priority-badge priority-${skill.priority}`}>
-                                        {skill.priority}
-                                      </span>
-                                    </div>
-                                  </div>
-                                  {skill.reason && (
-                                    <p className="skill-reason">{skill.reason}</p>
-                                  )}
-                                  <button 
-                                    className={`add-skill-button ${learnedSkills.has(skill.skill || skill.technology) ? 'learned' : ''}`}
-                                    onClick={() => addLearnedSkill(skill.skill || skill.technology)}
-                                    disabled={learnedSkills.has(skill.skill || skill.technology)}
-                                  >
-                                    {learnedSkills.has(skill.skill || skill.technology) ? (
-                                      <>
-                                        <CheckIcon />
-                                        Learned
-                                      </>
-                                    ) : (
-                                      '+ Add to Profile'
-                                    )}
-                                  </button>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Strengths */}
-                      {learningPlan.skill_gaps?.strengths && learningPlan.skill_gaps.strengths.length > 0 && (
-                        <div className="current-strengths">
-                          <h4>Your Current Strengths</h4>
-                          <div className="strengths-grid">
-                            {learningPlan.skill_gaps.strengths.slice(0, 6).map((strength, index) => (
-                              <div key={index} className="strength-card">
-                                <CheckIcon />
-                                <span>{strength.technology || strength.skill || strength}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </>
-                )}
-
-                {/* Learning Roadmap Container - Big container for all phases */}
-                <div className="learning-roadmap-container">
-                  {/* Thin Progress Bar at the very top of container */}
-                  <ThinProgressBar 
-                    progress={roadmapProgress.overall_progress_percentage} 
-                    className="learning-roadmap-progress-bar" 
-                  />
-                  
-                  <div className="learning-roadmap-header">
-                    <div className="section-header">
-                      <ClockIcon />
-                      <h3>Learning Roadmap</h3>
-                    </div>
-                  </div>
-
-                  {/* Roadmap Phases */}
-                  <div className="roadmap-phases-container">
-                    {roadmapProgress.phases.map((phase, index) => (
-                      <div key={phase.phase_number} className="enhanced-phase-card">
-                        {/* Thin Progress Bar at top of each phase */}
-                        <ThinProgressBar 
-                          progress={phase.progress_percentage} 
-                          className="phase-progress-bar" 
-                        />
-                        
-                        <div className="phase-header-container">
-                          <div className="phase-header-left" onClick={() => togglePhaseCollapse(phase.phase_number)}>
-                            <div className="phase-number">{phase.phase_number}</div>
-                            <div className="phase-info">
-                              <h4 className="phase-title">{phase.phase_title}</h4>
-                            </div>
-                            <div className="phase-toggle">
-                              {collapsedPhases[phase.phase_number] ? <ChevronDownIcon /> : <ChevronUpIcon />}
-                            </div>
-                          </div>
-                          
-                          <div className="phase-deadline-container">
-                            <PhaseDeadlineTracker
-                              phaseNumber={phase.phase_number}
-                              deadline={phase.target_deadline}
-                              onUpdateDeadline={updatePhaseDeadline}
-                              isCompleted={phase.status === 'completed'}
-                            />
-                          </div>
-                        </div>
-                        
-                        {!collapsedPhases[phase.phase_number] && (
-                          <div className="phase-content-container">
-                            {/* Phase Description (Flavor Text) */}
-                            <div className="phase-description-section">
-                              <p className="phase-flavor-text">
-                                {phase.phase_description || phase.description || 
-                                 (phase.phase_number === 1 ? "Build a strong foundation in core web development concepts and essential tools." :
-                                  phase.phase_number === 2 ? "Develop technical competencies and practical skills through hands-on projects." :
-                                  "Master in-demand technologies and advanced concepts to become job-ready.")}
-                              </p>
-                            </div>
-
-                            {/* Skills Focus Section - First, without checkboxes */}
-                            {phase.tasks.filter(task => task.task_type === 'skill').length > 0 && (
-                              <div className="phase-skills-subsection">
-                                <h5 className="skills-section-title">
-                                  <SkillsIcon />
-                                  Skills Focus
-                                </h5>
-                                <div className="skills-container-grid">
-                                  {phase.tasks.filter(task => task.task_type === 'skill').map((task) => (
-                                    <div key={task.task_id} className="skill-container-box">
-                                      <span className="skill-name-text">{task.task_name}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Tasks Section - Second */}
-                            {phase.tasks.filter(task => task.task_type === 'task').length > 0 && (
-                              <div className="phase-tasks-subsection">
-                                <h5 className="tasks-section-title">
-                                  <TasksIcon />
-                                  Tasks
-                                </h5>
-                                <div className="enhanced-task-list">
-                                  {phase.tasks.filter(task => task.task_type === 'task').map((task) => (
-                                    <div key={task.task_id} className="enhanced-task-container">
-                                      <TaskCheckbox
-                                        taskId={task.task_id}
-                                        taskName={task.task_name}
-                                        taskType={task.task_type}
-                                        isCompleted={taskCompletionState[task.task_id] || false}
-                                        isLoading={updatingTask === task.task_id}
-                                        onToggle={updateTaskCompletion}
-                                        className="enhanced-task-item"
-                                      />
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Key Milestones Section - Third */}
-                            {phase.tasks.filter(task => task.task_type === 'milestone').length > 0 && (
-                              <div className="phase-milestones-subsection">
-                                <h5 className="milestones-section-title">
-                                  <MilestonesIcon />
-                                  Key Milestones
-                                </h5>
-                                <div className="enhanced-milestone-list">
-                                  {phase.tasks.filter(task => task.task_type === 'milestone').map((task) => (
-                                    <div key={task.task_id} className="enhanced-milestone-container">
-                                      <TaskCheckbox
-                                        taskId={task.task_id}
-                                        taskName={task.task_name}
-                                        taskType={task.task_type}
-                                        isCompleted={taskCompletionState[task.task_id] || false}
-                                        isLoading={updatingTask === task.task_id}
-                                        onToggle={updateTaskCompletion}
-                                        className="enhanced-milestone-item"
-                                      />
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Recommended Resources Section - Last, with clickable links */}
-                            {phase.tasks.filter(task => task.task_type === 'resource').length > 0 && (
-                              <div className="phase-resources-subsection">
-                                <h5 className="resources-section-title">
-                                  <ResourcesIcon />
-                                  Recommended Resources
-                                </h5>
-                                <div className="resources-list">
-                                  {phase.tasks.filter(task => task.task_type === 'resource').map((task) => (
-                                    <div key={task.task_id} className="resource-item">
-                                      <ResourcesIcon />
-                                      <div className="resource-info">
-                                        <span className="resource-title">{task.task_name}</span>
-                                      </div>
-                                      <a
-                                        href={getResourceUrl(task.task_name)}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="resource-link-button"
-                                        title="Open resource"
-                                      >
-                                        <ExternalLinkIcon />
-                                        <span>Open</span>
-                                      </a>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* ML Skill Recommendations - Integrated into Skill Gap Analysis above */}
-              </>
             ) : learningPlan ? (
               <>
-                {/* Legacy Learning Plan Display (fallback) */}
+                {/* Learning Plan Display */}
                 <div className="skill-gap-analysis">
                   <div className="section-header">
                     <TargetIcon />
@@ -1113,7 +646,7 @@ const CareerPathRecommendation = () => {
                                     Learned
                                   </>
                                 ) : (
-                                  '+ Add to Profile'
+                                  '+ Mark as Learned'
                                 )}
                               </button>
                             </div>
