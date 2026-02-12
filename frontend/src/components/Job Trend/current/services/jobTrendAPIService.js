@@ -304,8 +304,8 @@ class JobTrendAPIService {
   // Generate AI insights from job data
   async generateAIInsights(jobData, filters) {
     try {
-      console.log('🌐 Making AI insights API call...');
-      console.log('📤 Request data:', { data: jobData, filters });
+      console.log('[>] Making AI insights API call...');
+      console.log('[>] Request data:', { data: jobData, filters });
       
       const response = await fetch(`${API_BASE_URL}/ai-insights`, {
         method: 'POST',
@@ -318,14 +318,14 @@ class JobTrendAPIService {
         })
       });
       
-      console.log('📡 Response status:', response.status, response.statusText);
+      console.log('[+] Response status:', response.status, response.statusText);
       
       if (!response.ok) {
         throw new Error(`AI insights request failed: ${response.status}`);
       }
       
       const result = await response.json();
-      console.log('📥 Response data:', result);
+      console.log('[<] Response data:', result);
       return result;
     } catch (error) {
       console.error('💥 Error generating AI insights:', error);

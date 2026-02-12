@@ -43,7 +43,7 @@ export default function Dashboard({ token }) {
                 ))}
                 {issues.length === 0 && (
                     <p className="text-green-500 mt-6">
-                        All tracked issues resolved. You're ready to apply again 🚀
+                        All tracked issues resolved. You're ready to apply again ▶
                     </p>
                 )}
 

@@ -6,7 +6,7 @@ import Issue from "../models/issue.js";
 
 async function sendWeeklyReminders() {
   try {
-    console.log("🔔 Running weekly reminder check...");
+    console.log("[*] Running weekly reminder check...");
     
     // Get all unresolved issues
     const issues = await Issue.find({ resolved: false });

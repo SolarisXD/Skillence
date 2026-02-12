@@ -10,6 +10,22 @@ import asyncio
 
 logger = logging.getLogger(__name__)
 
+# Lazy import for ML model to avoid loading at startup
+_salary_predictor = None
+
+def _get_salary_predictor():
+    """Lazy load salary predictor."""
+    global _salary_predictor
+    if _salary_predictor is None:
+        try:
+            from app.ml.inference.salary_inference import get_salary_predictor
+            _salary_predictor = get_salary_predictor()
+            if not _salary_predictor.is_loaded:
+                logger.warning("Salary predictor model not loaded")
+        except Exception as e:
+            logger.error(f"Failed to load salary predictor: {e}")
+    return _salary_predictor
+
 class JobTrendService:
     def __init__(self):
         self.data_path = os.path.join(os.path.dirname(__file__), '..', 'career_data', 'job_trend_data')
@@ -103,9 +119,12 @@ class JobTrendService:
         # Extract skills list
         df['skills_list'] = df['required_skills'].apply(self._parse_skills)
         
-        # Calculate days since posting
-        current_date = datetime.now()
-        df['days_since_posting'] = (current_date - df['posting_date']).dt.days
+        # Calculate days since posting (relative to most recent posting in dataset)
+        max_date = df['posting_date'].max()
+        if pd.notna(max_date):
+            df['days_since_posting'] = (max_date - df['posting_date']).dt.days
+        else:
+            df['days_since_posting'] = 0
         
         return df
     
@@ -356,19 +375,34 @@ class JobTrendService:
         return mapping.get(level_code, level_code)
     
     def _apply_time_filter(self, df: pd.DataFrame, time_range: str) -> pd.DataFrame:
-        """Apply time range filter to dataframe"""
-        current_date = datetime.now()
+        """Apply time range filter to dataframe relative to the most recent posting in the dataset"""
+        if time_range == "all" or df.empty:
+            return df
+        
+        # Use the most recent posting date in the dataset as reference
+        # This allows the filter to work with historical data
+        max_date = df['posting_date'].max()
+        
+        # If max_date is NaT or invalid, return all data
+        if pd.isna(max_date):
+            logger.warning("No valid posting dates found in dataset, returning all data")
+            return df
         
         if time_range == "3m":
-            cutoff_date = current_date - timedelta(days=90)
+            cutoff_date = max_date - timedelta(days=90)
         elif time_range == "6m":
-            cutoff_date = current_date - timedelta(days=180)
+            cutoff_date = max_date - timedelta(days=180)
         elif time_range == "1y":
-            cutoff_date = current_date - timedelta(days=365)
+            cutoff_date = max_date - timedelta(days=365)
         else:  # "all"
             return df
         
-        return df[df['posting_date'] >= cutoff_date]
+        # Filter data
+        filtered_df = df[df['posting_date'] >= cutoff_date]
+        
+        logger.info(f"Time filter applied: {time_range}, cutoff={cutoff_date.date()}, records before={len(df)}, after={len(filtered_df)}")
+        
+        return filtered_df
     
     def _calculate_trendiness_score(self, job_data: pd.DataFrame) -> float:
         """Calculate trendiness score based on multiple factors"""
@@ -567,3 +601,212 @@ class JobTrendService:
         export_df = export_df.fillna('')
         
         return export_df
+    
+    # ========================================================================
+    # ML-POWERED METHODS
+    # ========================================================================
+    
+    async def predict_salary_ml(
+        self,
+        skills: List[str],
+        experience_years: float,
+        location: str,
+        industry: str,
+        job_title: str = None,
+        company_size: str = "Unknown",
+        education: str = "Bachelor's Degree",
+        employment_type: str = "Full-time",
+        experience_level: str = "Mid-Level"
+    ) -> Dict[str, Any]:
+        """
+        Predict salary using ML model for a given profile.
+        
+        Returns personalized salary prediction with confidence score.
+        """
+        predictor = _get_salary_predictor()
+        
+        if predictor is None or not predictor.is_loaded:
+            # Fallback to statistical average
+            logger.warning("ML predictor not available, falling back to stats")
+            return await self._fallback_salary_prediction(job_title, location)
+        
+        try:
+            # Get ML prediction
+            prediction = predictor.predict_salary(
+                skills=skills,
+                experience_years=experience_years,
+                location=location,
+                industry=industry,
+                company_size=company_size,
+                education=education,
+                employment_type=employment_type,
+                experience_level=experience_level
+            )
+            
+            # Get market data for comparison
+            df = await self._load_data()
+            
+            # Filter similar jobs for comparison
+            if job_title:
+                similar_jobs = df[df['job_title_normalized'].str.contains(job_title, case=False, na=False)]
+            else:
+                similar_jobs = df
+            
+            if not similar_jobs.empty:
+                market_avg = float(similar_jobs['salary_usd'].mean())
+                market_min = float(similar_jobs['salary_usd'].min())
+                market_max = float(similar_jobs['salary_usd'].max())
+                market_median = float(similar_jobs['salary_usd'].median())
+            else:
+                market_avg = market_min = market_max = market_median = 0.0
+            
+            return {
+                "ml_prediction": {
+                    "predicted_salary": round(prediction['predicted_salary'], 2),
+                    "confidence": round(prediction['confidence'], 2),
+                    "matched_skills": prediction['matched_skills'],
+                    "total_skills": prediction['total_skills_provided']
+                },
+                "market_comparison": {
+                    "average": round(market_avg, 2),
+                    "median": round(market_median, 2),
+                    "min": round(market_min, 2),
+                    "max": round(market_max, 2),
+                    "percentile": self._calculate_percentile(
+                        prediction['predicted_salary'], similar_jobs['salary_usd']
+                    ) if not similar_jobs.empty else None
+                },
+                "insights": {
+                    "above_market": prediction['predicted_salary'] > market_avg,
+                    "difference_percent": round(
+                        ((prediction['predicted_salary'] - market_avg) / market_avg * 100), 1
+                    ) if market_avg > 0 else 0
+                }
+            }
+            
+        except Exception as e:
+            logger.error(f"ML salary prediction failed: {e}")
+            return await self._fallback_salary_prediction(job_title, location)
+    
+    async def _fallback_salary_prediction(
+        self, 
+        job_title: str = None, 
+        location: str = None
+    ) -> Dict[str, Any]:
+        """Fallback to statistical prediction when ML model not available."""
+        df = await self._load_data()
+        
+        # Filter by job title and location if provided
+        filtered_df = df
+        if job_title:
+            filtered_df = filtered_df[
+                filtered_df['job_title_normalized'].str.contains(job_title, case=False, na=False)
+            ]
+        if location:
+            filtered_df = filtered_df[
+                filtered_df['company_location'].str.contains(location, case=False, na=False)
+            ]
+        
+        if filtered_df.empty:
+            filtered_df = df
+        
+        avg_salary = float(filtered_df['salary_usd'].mean())
+        
+        return {
+            "ml_prediction": {
+                "predicted_salary": round(avg_salary, 2),
+                "confidence": 0.5,
+                "matched_skills": [],
+                "total_skills": 0,
+                "note": "ML model not available, showing statistical average"
+            },
+            "market_comparison": {
+                "average": round(avg_salary, 2),
+                "median": round(float(filtered_df['salary_usd'].median()), 2),
+                "min": round(float(filtered_df['salary_usd'].min()), 2),
+                "max": round(float(filtered_df['salary_usd'].max()), 2),
+            },
+            "insights": {
+                "above_market": False,
+                "difference_percent": 0.0
+            }
+        }
+    
+    def _calculate_percentile(self, value: float, series: pd.Series) -> int:
+        """Calculate what percentile a value falls into."""
+        if series.empty or pd.isna(value):
+            return 50
+        
+        percentile = (series < value).sum() / len(series) * 100
+        return int(round(percentile))
+    
+    async def get_salary_trends_ml(
+        self, 
+        job_title: str,
+        months: int = 12
+    ) -> Dict[str, Any]:
+        """
+        Get salary trends over time with ML-based forecasting.
+        
+        Returns historical trends + future predictions.
+        """
+        df = await self._load_data()
+        
+        # Filter by job title
+        job_data = df[df['job_title_normalized'].str.contains(job_title, case=False, na=False)]
+        
+        if job_data.empty:
+            return None
+        
+        # Group by month
+        job_data = job_data.copy()
+        job_data['month_year'] = job_data['posting_date'].dt.to_period('M')
+        
+        monthly_stats = job_data.groupby('month_year').agg({
+            'salary_usd': ['mean', 'median', 'count']
+        }).reset_index()
+        
+        monthly_stats.columns = ['month', 'avg_salary', 'median_salary', 'job_count']
+        
+        # Convert to list
+        trends = []
+        for _, row in monthly_stats.iterrows():
+            trends.append({
+                "month": str(row['month']),
+                "average_salary": round(float(row['avg_salary']), 2),
+                "median_salary": round(float(row['median_salary']), 2),
+                "job_postings": int(row['job_count'])
+            })
+        
+        # Calculate growth rate
+        if len(trends) >= 2:
+            first_avg = trends[0]['average_salary']
+            last_avg = trends[-1]['average_salary']
+            growth_rate = ((last_avg - first_avg) / first_avg * 100) if first_avg > 0 else 0
+        else:
+            growth_rate = 0.0
+        
+        return {
+            "job_title": job_title,
+            "historical_trends": trends,
+            "summary": {
+                "total_months": len(trends),
+                "growth_rate_percent": round(growth_rate, 1),
+                "current_avg": trends[-1]['average_salary'] if trends else 0,
+                "highest_avg": max([t['average_salary'] for t in trends]) if trends else 0,
+                "lowest_avg": min([t['average_salary'] for t in trends]) if trends else 0
+            }
+        }
+    
+    async def get_ml_model_status(self) -> Dict[str, Any]:
+        """Get status of ML models."""
+        predictor = _get_salary_predictor()
+        
+        return {
+            "salary_predictor": {
+                "loaded": predictor is not None and predictor.is_loaded,
+                "model_type": "lite" if predictor and predictor.is_lite else "full",
+                "input_features": predictor.input_dim if predictor else 0,
+                "skill_vocab_size": len(predictor.skill_vocab) if predictor else 0
+            }
+        }

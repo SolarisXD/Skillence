@@ -358,9 +358,11 @@ export default function ReflectionEngineHome() {
                 justifyContent: 'center',
                 fontSize: '14px',
                 color: 'rgba(255, 255, 255, 0.8)',
-                fontWeight: '600'
+                fontWeight: '600',
+                gap: '6px'
               }}>
-                💬 Reflection Engine AI Coach
+                <svg width='16' height='16' viewBox='0 0 24 24' fill='currentColor'><path d='M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z'/></svg>
+                Reflection Engine AI Coach
               </div>
               
               <div style={{

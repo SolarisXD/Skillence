@@ -773,12 +773,12 @@
 }
 
 .priority-skills h4::before {
-  content: '🎯';
+  content: '◆';
   font-size: 1.1rem;
 }
 
 .current-strengths h4::before {
-  content: '💪';
+  content: '▪';
   font-size: 1.1rem;
 }
 
@@ -2715,7 +2715,7 @@
 }
 
 .career-changed-content h3::before {
-  content: '🔄';
+  content: '⟳';
   font-size: 1.1rem;
 }
 

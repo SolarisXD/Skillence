@@ -262,6 +262,117 @@ export default function ReflectionEngineInterviewDiagnostic() {
     }
   };
 
+<<<<<<< HEAD
+=======
+  const handleAnalysis = () => {
+    const analysisMessage = {
+      id: Date.now(),
+      type: "ai",
+      content: "*Analyzing your interview experience...*\n\n<svg width='16' height='16' viewBox='0 0 24 24' fill='currentColor' style='display:inline-block;vertical-align:middle'><circle cx='11' cy='11' r='8' fill='none' stroke='currentColor' stroke-width='2'/><path d='M21 21l-4.35-4.35'/></svg> **Processing your reflection**\n<svg width='16' height='16' viewBox='0 0 24 24' fill='currentColor' style='display:inline-block;vertical-align:middle'><path d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/></svg> **Identifying key patterns**\n<svg width='16' height='16' viewBox='0 0 24 24' fill='currentColor' style='display:inline-block;vertical-align:middle'><circle cx='12' cy='12' r='10' fill='none' stroke='currentColor' stroke-width='2'/><circle cx='12' cy='12' r='3'/></svg> **Generating personalized feedback**\n<svg width='16' height='16' viewBox='0 0 24 24' fill='currentColor' style='display:inline-block;vertical-align:middle'><path d='M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z'/></svg> **Creating action plan**",
+      timestamp: new Date(),
+      isAnalyzing: true
+    };
+    setMessages(prev => [...prev, analysisMessage]);
+
+    setTimeout(() => {
+      setMessages(prev => prev.filter(m => !m.isAnalyzing));
+      
+      const detailedAnalysis = generateDetailedAnalysis();
+      const analysisResult = {
+        id: Date.now() + 1,
+        type: "ai",
+        content: detailedAnalysis,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, analysisResult]);
+      setConversationState("completed");
+      setLoading(false);
+    }, 3000);
+  };
+
+  const generateDetailedAnalysis = () => {
+    const { status, skills, sentiment, interviewReflection, pastMistakes } = userContext;
+    
+    return `## **Your Reflection Engine Analysis Complete**
+
+**Profile Summary:**
+• **Status**: ${status}
+• **Target Skills**: ${skills}
+• **Current Mindset**: ${sentiment}
+
+---
+
+### **Key Patterns Identified**
+
+Based on your reflection, I've identified several important patterns:
+
+**Strengths to Leverage:**
+• Your self-awareness about areas for improvement
+• Technical knowledge in ${skills}
+• Willingness to reflect honestly on your experience
+
+**Growth Opportunities:**
+• Communication during technical discussions
+• Managing interview anxiety/nerves
+• Structuring responses more effectively
+
+---
+
+### **Personalized Action Plan**
+
+**Immediate Next Steps (Next 1-2 weeks):**
+1. **Practice Technical Communication**: Explain your code/solutions out loud daily
+2. **Mock Interview Sessions**: Practice with friends or use online platforms
+3. **STAR Method**: Structure behavioral answers (Situation, Task, Action, Result)
+
+**Medium-term Goals (Next month):**
+1. **Build Confidence**: Work on 2-3 strong project examples you can discuss
+2. **Technical Deep Dive**: Strengthen areas where you felt uncertain
+3. **Interview Simulation**: Record yourself answering common questions
+
+**Long-term Development (Ongoing):**
+1. **Continuous Learning**: Stay updated with latest trends in ${skills}
+2. **Networking**: Connect with professionals in your target field
+3. **Portfolio Enhancement**: Showcase your best work prominently
+
+---
+
+### **Specific Recommendations**
+
+**For Technical Questions:**
+• Use the "rubber duck" debugging method - explain your thinking process step by step
+• Break down complex problems into smaller, manageable parts
+• Don't be afraid to ask clarifying questions
+
+**For Behavioral Questions:**
+• Prepare 5-7 strong examples using the STAR method
+• Focus on specific achievements and learnings
+• Show growth mindset and adaptability
+
+**For Managing Nerves:**
+• Practice deep breathing techniques before the interview
+• Arrive early but not too early (10-15 minutes)
+• Remember: they already like your resume, now they want to meet you!
+
+---
+
+### **Your Reflection Engine Loop**
+
+Moving forward, use this cycle for continuous improvement:
+1. **Experience** → New interview or practice session
+2. **Reflect** → What went well? What could improve?
+3. **Analyze** → Identify patterns and root causes
+4. **Act** → Implement specific improvements
+5. **Review** → Measure progress and adjust approach
+
+---
+
+**Remember**: Every interview is a learning experience. The goal isn't perfection - it's progress. You're already ahead of most candidates simply by taking the time to reflect deeply on your experiences.
+
+What aspect of this analysis would you like to dive deeper into? I'm here to help you prepare for your next interview success!`;
+  };
+
+>>>>>>> 3e1bb1b9fc9dcfdec2313424a3cb796a26244dce
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -322,8 +433,16 @@ export default function ReflectionEngineInterviewDiagnostic() {
               background: 'var(--accent-gradient)',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
+              WebkitTextFillColor: 'transparent',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              justifyContent: 'center'
             }}>
+<<<<<<< HEAD
+=======
+              <svg width='24' height='24' viewBox='0 0 24 24' fill='currentColor' style={{flexShrink: 0}}><path d='M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z'/></svg>
+>>>>>>> 3e1bb1b9fc9dcfdec2313424a3cb796a26244dce
               Reflection Engine AI Coach
             </h1>
             <p style={{

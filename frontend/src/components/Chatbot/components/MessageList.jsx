@@ -130,8 +130,8 @@ const MessageList = ({ messages, onSpeak, isPlaying }) => {
             {renderTextWithLinks(bulletContent)}
           </div>,
         );
-      } else if (line.startsWith("✨") || line.startsWith("👋")) {
-        // Handle emoji lines with spacing
+      } else if (line.startsWith("◇") || line.startsWith("▶")) {
+        // Handle special symbol lines with spacing
         elements.push(
           <div
             key={`emoji-${i}`}
