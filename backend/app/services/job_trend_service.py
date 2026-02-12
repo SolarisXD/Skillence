@@ -623,6 +623,17 @@ class JobTrendService:
         
         Returns personalized salary prediction with confidence score.
         """
+        # Normalize location (USA -> United States, UK -> United Kingdom)
+        location_mapping = {
+            "USA": "United States",
+            "US": "United States",
+            "U.S.": "United States",
+            "U.S.A.": "United States",
+            "UK": "United Kingdom",
+            "U.K.": "United Kingdom"
+        }
+        location = location_mapping.get(location, location)
+        
         predictor = _get_salary_predictor()
         
         if predictor is None or not predictor.is_loaded:

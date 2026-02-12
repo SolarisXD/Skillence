@@ -317,9 +317,22 @@ class SalaryPredictorInference:
                 - unmatched_skills: List[str] (not in model vocabulary)
                 - total_skills_provided: int
                 - confidence_breakdown: dict (individual confidence factors)
+                - warnings: List[str] (validation warnings)
         """
         if not self.is_loaded:
             raise RuntimeError("Model not loaded. Call load() first.")
+        
+        # Collect warnings for user feedback
+        warnings = []
+        
+        # Validate and warn about unrecognized inputs
+        if location not in self.feature_info['location_classes']:
+            warnings.append(f"Location '{location}' not recognized. Available: {', '.join(self.feature_info['location_classes'][:5])}...")
+            logger.warning(f"Unrecognized location: {location}")
+        
+        if industry not in self.feature_info['industry_classes']:
+            warnings.append(f"Industry '{industry}' not recognized. Using fallback.")
+            logger.warning(f"Unrecognized industry: {industry}")
         
         # Encode features
         features = self._encode_features(
@@ -375,6 +388,7 @@ class SalaryPredictorInference:
             "matched_skills": matched_skills,
             "unmatched_skills": unmatched_skills,
             "total_skills_provided": len(skills),
+            "warnings": warnings,
             "confidence_breakdown": {
                 "skills": skill_confidence,
                 "experience": exp_confidence,
