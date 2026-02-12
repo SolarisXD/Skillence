@@ -368,14 +368,14 @@ export default function InterviewDiagnostic({ user, onLogout }) {
     }
 
     if (analysis.suggestions && analysis.suggestions.length > 0) {
-      response += "💡 **Key Insights & Strategies:**\n\n";
+      response += "◇ **Key Insights & Strategies:**\n\n";
       analysis.suggestions.forEach((suggestion, index) => {
         response += `${index + 1}. ${suggestion}\n\n`;
       });
     }
 
     if (analysis.actionItems && analysis.actionItems.length > 0) {
-      response += "🎯 **Your Action Plan:**\n\n";
+      response += "◆ **Your Action Plan:**\n\n";
       analysis.actionItems.forEach((item, index) => {
         response += `**Step ${index + 1}:** ${item}\n\n`;
       });

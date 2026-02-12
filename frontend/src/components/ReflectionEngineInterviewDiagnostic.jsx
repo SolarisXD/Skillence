@@ -242,7 +242,7 @@ export default function ReflectionEngineInterviewDiagnostic() {
     const analysisMessage = {
       id: Date.now(),
       type: "ai",
-      content: "*Analyzing your interview experience...*\n\n🔍 **Processing your reflection**\n✅ **Identifying key patterns**\n🎯 **Generating personalized feedback**\n📋 **Creating action plan**",
+      content: "*Analyzing your interview experience...*\n\n<svg width='16' height='16' viewBox='0 0 24 24' fill='currentColor' style='display:inline-block;vertical-align:middle'><circle cx='11' cy='11' r='8' fill='none' stroke='currentColor' stroke-width='2'/><path d='M21 21l-4.35-4.35'/></svg> **Processing your reflection**\n<svg width='16' height='16' viewBox='0 0 24 24' fill='currentColor' style='display:inline-block;vertical-align:middle'><path d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/></svg> **Identifying key patterns**\n<svg width='16' height='16' viewBox='0 0 24 24' fill='currentColor' style='display:inline-block;vertical-align:middle'><circle cx='12' cy='12' r='10' fill='none' stroke='currentColor' stroke-width='2'/><circle cx='12' cy='12' r='3'/></svg> **Generating personalized feedback**\n<svg width='16' height='16' viewBox='0 0 24 24' fill='currentColor' style='display:inline-block;vertical-align:middle'><path d='M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z'/></svg> **Creating action plan**",
       timestamp: new Date(),
       isAnalyzing: true
     };
@@ -267,7 +267,7 @@ export default function ReflectionEngineInterviewDiagnostic() {
   const generateDetailedAnalysis = () => {
     const { status, skills, sentiment, interviewReflection, pastMistakes } = userContext;
     
-    return `## 🎯 **Your Reflection Engine Analysis Complete**
+    return `## **Your Reflection Engine Analysis Complete**
 
 **Profile Summary:**
 • **Status**: ${status}
@@ -276,7 +276,7 @@ export default function ReflectionEngineInterviewDiagnostic() {
 
 ---
 
-### 📊 **Key Patterns Identified**
+### **Key Patterns Identified**
 
 Based on your reflection, I've identified several important patterns:
 
@@ -292,7 +292,7 @@ Based on your reflection, I've identified several important patterns:
 
 ---
 
-### 🚀 **Personalized Action Plan**
+### **Personalized Action Plan**
 
 **Immediate Next Steps (Next 1-2 weeks):**
 1. **Practice Technical Communication**: Explain your code/solutions out loud daily
@@ -311,7 +311,7 @@ Based on your reflection, I've identified several important patterns:
 
 ---
 
-### 💡 **Specific Recommendations**
+### **Specific Recommendations**
 
 **For Technical Questions:**
 • Use the "rubber duck" debugging method - explain your thinking process step by step
@@ -330,7 +330,7 @@ Based on your reflection, I've identified several important patterns:
 
 ---
 
-### 🔄 **Your Reflection Engine Loop**
+### **Your Reflection Engine Loop**
 
 Moving forward, use this cycle for continuous improvement:
 1. **Experience** → New interview or practice session
@@ -343,7 +343,7 @@ Moving forward, use this cycle for continuous improvement:
 
 **Remember**: Every interview is a learning experience. The goal isn't perfection - it's progress. You're already ahead of most candidates simply by taking the time to reflect deeply on your experiences.
 
-What aspect of this analysis would you like to dive deeper into? I'm here to help you prepare for your next interview success! 🌟`;
+What aspect of this analysis would you like to dive deeper into? I'm here to help you prepare for your next interview success!`;
   };
 
   const handleKeyPress = (e) => {
@@ -406,9 +406,14 @@ What aspect of this analysis would you like to dive deeper into? I'm here to hel
               background: 'var(--accent-gradient)',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
+              WebkitTextFillColor: 'transparent',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              justifyContent: 'center'
             }}>
-              💬 Reflection Engine AI Coach
+              <svg width='24' height='24' viewBox='0 0 24 24' fill='currentColor' style={{flexShrink: 0}}><path d='M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z'/></svg>
+              Reflection Engine AI Coach
             </h1>
             <p style={{
               fontSize: '18px',

@@ -44,7 +44,7 @@ const ThemeSelector = ({ isOpen, onClose, onThemeChange }) => {
           </svg>
         </div>
         <span>Light</span>
-        {currentTheme === 'light' && <div className="check-indicator">✓</div>}
+        {currentTheme === 'light' && <div className="check-indicator"><svg width='16' height='16' viewBox='0 0 24 24' fill='currentColor'><path d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/></svg></div>}
       </div>
       
       <div 
@@ -57,7 +57,7 @@ const ThemeSelector = ({ isOpen, onClose, onThemeChange }) => {
           </svg>
         </div>
         <span>Dark</span>
-        {currentTheme === 'dark' && <div className="check-indicator">✓</div>}
+        {currentTheme === 'dark' && <div className="check-indicator"><svg width='16' height='16' viewBox='0 0 24 24' fill='currentColor'><path d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/></svg></div>}
       </div>
       
       <div 
@@ -70,7 +70,7 @@ const ThemeSelector = ({ isOpen, onClose, onThemeChange }) => {
           </svg>
         </div>
         <span>Auto</span>
-        {currentTheme === 'auto' && <div className="check-indicator">✓</div>}
+        {currentTheme === 'auto' && <div className="check-indicator"><svg width='16' height='16' viewBox='0 0 24 24' fill='currentColor'><path d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/></svg></div>}
       </div>
     </div>
   );

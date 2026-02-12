@@ -11,4 +11,4 @@ Things to implement / improve:
 - Change all ResumeDashboard names to ResumeUpload to make space for actual dashboard page.
 - Once sidebar is added, add chatbot there as a small popup in bottom right.
 - Reduce the time for azure + gemini response, it is taking too long.
-- Convert csv files to json files for faster reading.ssfssssssssss
+- Convert csv files to json files for faster reading.

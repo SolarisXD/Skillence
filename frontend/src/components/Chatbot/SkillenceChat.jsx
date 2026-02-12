@@ -23,9 +23,9 @@ const getWelcomeMessage = (userName = null) => ({
   id: 1,
   type: "bot",
   content: userName
-    ? `👋 Hello ${userName}! I'm Skillence, your AI-powered career guidance assistant. I'm here to help you navigate your professional journey, explore career paths, and achieve your goals.
+    ? `▶ Hello ${userName}! I'm Skillence, your AI-powered career guidance assistant. I'm here to help you navigate your professional journey, explore career paths, and achieve your goals.
 
-✨ I can help you with:
+◇ I can help you with:
 • Career planning and guidance
 • Skill development recommendations  
 • Industry insights and trends
@@ -33,9 +33,9 @@ const getWelcomeMessage = (userName = null) => ({
 • Resume and portfolio advice
 
 How can I assist you today?`
-    : `👋 Hello! I'm Skillence, your AI-powered career guidance assistant. I'm here to help you navigate your professional journey, explore career paths, and achieve your goals.
+    : `▶ Hello! I'm Skillence, your AI-powered career guidance assistant. I'm here to help you navigate your professional journey, explore career paths, and achieve your goals.
 
-✨ I can help you with:
+◇ I can help you with:
 • Career planning and guidance
 • Skill development recommendations  
 • Industry insights and trends
@@ -280,7 +280,7 @@ function SkillenceChat() {
         id: Date.now() + 1,
         type: "bot",
         content:
-          "⚠️ I'm experiencing some technical difficulties right now. Please try again in a moment, or check your internet connection.",
+          "[!] I'm experiencing some technical difficulties right now. Please try again in a moment, or check your internet connection.",
         timestamp: new Date().toISOString(),
       };
       setMessages((prev) => [...prev, errorMessage]);

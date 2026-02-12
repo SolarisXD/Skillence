@@ -30,10 +30,59 @@ import {
 } from './services/jobTrendAPIService';
 import JobComparison from './components/JobComparison';
 import JobTrendAI from './components/JobTrendAI';
+import SalaryPredictor from './components/SalaryPredictor';
 import { isFeatureEnabled } from './utils/featureFlags';
 import './JobTrendDashboard.css';
 
+// SVG Icon Components
+const ChartIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="20" x2="18" y2="10"></line>
+    <line x1="12" y1="20" x2="12" y2="4"></line>
+    <line x1="6" y1="20" x2="6" y2="14"></line>
+  </svg>
+);
+
+const MoneyIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="12" y1="1" x2="12" y2="23"></line>
+    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+  </svg>
+);
+
+const SaveIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+    <polyline points="7 3 7 8 15 8"></polyline>
+  </svg>
+);
+
+const RefreshIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="23 4 23 10 17 10"></polyline>
+    <polyline points="1 20 1 14 7 14"></polyline>
+    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+  </svg>
+);
+
+const AlertCircleIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"></circle>
+    <line x1="12" y1="8" x2="12" y2="12"></line>
+    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+  </svg>
+);
+
+const ClockIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"></circle>
+    <polyline points="12 6 12 12 16 14"></polyline>
+  </svg>
+);
+
 const JobTrendDashboardEnhanced = () => {
+  const [activeTab, setActiveTab] = useState('dashboard'); // 'dashboard' or 'salary-predictor'
   const [selectedJob, setSelectedJob] = useState('');
   const [timeRange, setTimeRange] = useState('all');
   const [loading, setLoading] = useState(true);
@@ -252,7 +301,7 @@ const JobTrendDashboardEnhanced = () => {
     return (
       <div className="job-trend-dashboard">
         <div className="error-container">
-          <div className="error-icon">⚠️</div>
+          <div className="error-icon"><AlertCircleIcon /></div>
           <h2 className="error-title">Error Loading Data</h2>
           <p className="error-message">{error}</p>
           <button className="retry-button" onClick={refreshData}>
@@ -316,6 +365,27 @@ const JobTrendDashboardEnhanced = () => {
           </div>
         </div>
 
+        {/* Tab Navigation */}
+        <div className="tab-navigation">
+          <button 
+            className={`tab-button ${activeTab === 'dashboard' ? 'active' : ''}`}
+            onClick={() => setActiveTab('dashboard')}
+          >
+            <span className="tab-icon"><ChartIcon /></span>
+            Dashboard
+          </button>
+          <button 
+            className={`tab-button ${activeTab === 'salary-predictor' ? 'active' : ''}`}
+            onClick={() => setActiveTab('salary-predictor')}
+          >
+            <span className="tab-icon"><MoneyIcon /></span>
+            Salary Predictor
+          </button>
+        </div>
+
+        {/* Dashboard Tab Content */}
+        {activeTab === 'dashboard' && (
+          <>
         {/* Enhanced Controls Section */}
         <div className="enhanced-controls">
           <div className="primary-controls">
@@ -378,16 +448,20 @@ const JobTrendDashboardEnhanced = () => {
             <div className="cache-status">
               {cacheInfo.cached ? (
                 <>
-                  <span className="cache-indicator cached">Cached Data</span>
+                  <span className="cache-indicator cached">
+                    <SaveIcon /> Cached Data
+                  </span>
                   <span className="cache-time">
-                    Updated: {new Date(cacheInfo.last_updated).toLocaleString()}
+                    <ClockIcon /> Updated: {new Date(cacheInfo.last_updated).toLocaleString()}
                   </span>
                   <span className="cache-expires">
                     Expires in: <CacheCountdown cacheInfo={cacheInfo} />
                   </span>
                 </>
               ) : (
-                <span className="cache-indicator not-cached">Live Data</span>
+                <span className="cache-indicator not-cached">
+                  <RefreshIcon /> Live Data
+                </span>
               )}
             </div>
             <div className="cache-actions">
@@ -814,6 +888,15 @@ const JobTrendDashboardEnhanced = () => {
             />
           )}
         </div>
+          </>
+        )}
+
+        {/* Salary Predictor Tab Content */}
+        {activeTab === 'salary-predictor' && (
+          <div className="salary-predictor-container">
+            <SalaryPredictor />
+          </div>
+        )}
       </div>
     </>
   );

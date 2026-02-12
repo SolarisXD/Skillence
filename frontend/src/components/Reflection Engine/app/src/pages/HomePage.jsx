@@ -1295,7 +1295,9 @@ export default function HomePage({ onLogin }) {
                     alignItems: 'center',
                     justifyContent: 'center',
                     fontSize: '18px'
-                  }}>💬</div>
+                  }}>
+                    <svg width='20' height='20' viewBox='0 0 24 24' fill='white'><circle cx='12' cy='12' r='10' fill='none' stroke='white' strokeWidth='2'/><circle cx='12' cy='12' r='4' fill='white'/></svg>
+                  </div>
                   <h3 style={{
                     fontSize: '18px',
                     fontWeight: '700',
@@ -1375,7 +1377,7 @@ export default function HomePage({ onLogin }) {
                     alignItems: 'center',
                     justifyContent: 'center',
                     fontSize: '18px'
-                  }}>🔄</div>
+                  }}>⟳</div>
                   <h3 style={{
                     fontSize: '18px',
                     fontWeight: '700',
@@ -1426,9 +1428,11 @@ export default function HomePage({ onLogin }) {
                 justifyContent: 'center',
                 fontSize: '14px',
                 color: 'rgba(255, 255, 255, 0.8)',
-                fontWeight: '600'
+                fontWeight: '600',
+                gap: '6px'
               }}>
-                💬 MistakeLoop AI Coach
+                <svg width='16' height='16' viewBox='0 0 24 24' fill='currentColor'><circle cx='12' cy='12' r='10' fill='none' stroke='currentColor' strokeWidth='2'/><circle cx='12' cy='12' r='4' fill='currentColor'/></svg>
+                MistakeLoop AI Coach
               </div>
               
               <div style={{

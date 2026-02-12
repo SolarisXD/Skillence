@@ -732,7 +732,7 @@ const CareerPathRecommendation = () => {
                       </>
                     ) : (
                       <>
-                        🔄 Regenerate Plan
+                        ⟳ Regenerate Plan
                       </>
                     )}
                   </button>
@@ -1168,7 +1168,7 @@ const CareerPathRecommendation = () => {
                             {/* Skills to Learn */}
                             {phase.skills_to_learn && phase.skills_to_learn.length > 0 && (
                               <div className="phase-skills">
-                                <h5>🎯 Skills Focus</h5>
+                                <h5>◆ Skills Focus</h5>
                                 <div className="gamified-phase-skills">
                                   {phase.skills_to_learn.map((skill, skillIdx) => (
                                     <div key={skillIdx} className="gamified-skill-box">
@@ -1219,7 +1219,7 @@ const CareerPathRecommendation = () => {
                             {/* Milestones */}
                             {phase.milestones && phase.milestones.length > 0 && (
                               <div className="phase-milestones">
-                                <h5>🏆 Key Milestones</h5>
+                                <h5>◆ Key Milestones</h5>
                                 <ul className="milestones-list">
                                   {phase.milestones.map((milestone, milIdx) => (
                                     <li key={milIdx} className="milestone-item">
