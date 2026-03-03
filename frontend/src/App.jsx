@@ -14,6 +14,8 @@ import HelpCenter from './components/HelpCenter';
 import Contact from './components/Contact';
 import Status from './components/Status';
 import Blog from './components/Blog';
+import PlacementDashboard from './components/Placement/PlacementDashboard';
+import StudentCampusPlacement from './components/Placement/StudentCampusPlacement';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -30,6 +32,29 @@ const ProtectedRoute = ({ children }) => {
   if (isTestMode && !token) {
     localStorage.setItem('token', 'test_token_123');
     localStorage.setItem('userId', 'test_user_123');
+  }
+  
+  return children;
+};
+
+// Role-based Protected Route
+const RoleRoute = ({ children, requiredRole }) => {
+  const token = localStorage.getItem('token');
+  const role = localStorage.getItem('userRole') || 'student';
+  
+  const isTestMode = window.location.href.includes('localhost');
+  
+  if (!token && !isTestMode) {
+    return <Navigate to="/" replace />;
+  }
+  
+  if (isTestMode && !token) {
+    localStorage.setItem('token', 'test_token_123');
+    localStorage.setItem('userId', 'test_user_123');
+  }
+  
+  if (requiredRole && role !== requiredRole) {
+    return <Navigate to="/" replace />;
   }
   
   return children;
@@ -72,6 +97,22 @@ function App() {
               <ProtectedRoute>
                 <CareerPathRecommendation />
               </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/placement-dashboard" 
+            element={
+              <RoleRoute requiredRole="placement_cell">
+                <PlacementDashboard />
+              </RoleRoute>
+            } 
+          />
+          <Route 
+            path="/campus-placement" 
+            element={
+              <RoleRoute requiredRole="student">
+                <StudentCampusPlacement />
+              </RoleRoute>
             } 
           />
           <Route path="*" element={<Navigate to="/" replace />} />

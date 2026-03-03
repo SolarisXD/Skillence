@@ -18,6 +18,7 @@ import './ProfilePage.css';
 
 const ProfilePage = () => {
   const [profileData, setProfileData] = useState(null);
+  const [academicsData, setAcademicsData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [editMode, setEditMode] = useState(false);
@@ -104,6 +105,25 @@ const ProfilePage = () => {
       // If there's a network error or other issue, don't auto-redirect
     } finally {
       setLoading(false);
+    }
+
+    // Also fetch student academics data (10th/12th percentages, CGPA)
+    try {
+      const token = localStorage.getItem('token');
+      const acadRes = await fetch('http://localhost:8000/api/student/placement/academics', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (acadRes.ok) {
+        const acadData = await acadRes.json();
+        if (acadData.has_profile) {
+          setAcademicsData(acadData);
+        }
+      }
+    } catch {
+      // Silently ignore — academics data is optional
     }
   };
 
@@ -582,6 +602,33 @@ const ProfilePage = () => {
                 )}
               </div>
             ))}
+
+            {/* Academic Percentages from Placement Profile */}
+            {academicsData && (academicsData.tenth_percentage || academicsData.twelfth_percentage || academicsData.cgpa) && (
+              <div className="academic-percentages">
+                <h4 className="academic-percentages-title">Academic Percentages</h4>
+                <div className="academic-percentages-grid">
+                  {academicsData.tenth_percentage && (
+                    <div className="academic-stat">
+                      <span className="academic-stat-label">10th Percentage</span>
+                      <span className="academic-stat-value">{academicsData.tenth_percentage}%</span>
+                    </div>
+                  )}
+                  {academicsData.twelfth_percentage && (
+                    <div className="academic-stat">
+                      <span className="academic-stat-label">12th Percentage</span>
+                      <span className="academic-stat-value">{academicsData.twelfth_percentage}%</span>
+                    </div>
+                  )}
+                  {academicsData.cgpa && (
+                    <div className="academic-stat">
+                      <span className="academic-stat-label">CGPA</span>
+                      <span className="academic-stat-value">{academicsData.cgpa}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

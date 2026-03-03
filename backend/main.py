@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from app.routers import auth, profile, resume, job_trends, career_path, chatbot, ml_predictions
+from app.routers import auth, profile, resume, job_trends, career_path, chatbot, ml_predictions, placement_cell, student_placement
 from app.database import connect_to_mongo, close_mongo_connection
 import os
 from dotenv import load_dotenv
@@ -39,6 +39,8 @@ app.include_router(career_path.router, prefix="/api/career-path", tags=["career-
 app.include_router(job_trends.router, prefix="/api/job-trends", tags=["job-trends"])
 app.include_router(chatbot.router, prefix="/api/chatbot", tags=["chatbot"])
 app.include_router(ml_predictions.router, prefix="/api/ml", tags=["ml-predictions"])
+app.include_router(placement_cell.router, prefix="/api", tags=["placement-cell"])
+app.include_router(student_placement.router, prefix="/api", tags=["student-placement"])
 
 @app.get("/")
 async def root():
