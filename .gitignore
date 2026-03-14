@@ -149,6 +149,9 @@ celerybeat-schedule
 *.sage.py
 
 # Environments
+.venv312/
+.venv312
+**/.venv312/
 .env
 .venv
 env/
@@ -189,3 +192,4 @@ backend/app/ml/data/processed/backup_v1/
 backend/app/ml/models/checkpoints/backup_v1/
 
 C:/GitHubRepo/Skillence/NET_README.md
+

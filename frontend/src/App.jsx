@@ -16,6 +16,8 @@ import Status from './components/Status';
 import Blog from './components/Blog';
 import PlacementDashboard from './components/Placement/PlacementDashboard';
 import StudentCampusPlacement from './components/Placement/StudentCampusPlacement';
+import SkillLibrariesPage from './components/SkillLibraries/SkillLibrariesPage';
+import SkillDetailPage from './components/SkillLibraries/SkillDetailPage';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -115,6 +117,8 @@ function App() {
               </RoleRoute>
             } 
           />
+          <Route path="/skill-libraries" element={<SkillLibrariesPage />} />
+          <Route path="/skill-libraries/:skill_id" element={<SkillDetailPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

@@ -201,6 +201,16 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
                         className="dropdown-item"
                         onClick={(e) => {
                           e.stopPropagation();
+                          navigate('/skill-libraries');
+                          setShowServices(false);
+                        }}
+                      >
+                        Skill Libraries
+                      </button>
+                      <button
+                        className="dropdown-item"
+                        onClick={(e) => {
+                          e.stopPropagation();
                           navigate('/job-offer-evaluator');
                           setShowServices(false);
                         }}
