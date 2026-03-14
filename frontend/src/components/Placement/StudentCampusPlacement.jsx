@@ -56,6 +56,65 @@ const ScoreRing = ({ score, size = 56 }) => {
   );
 };
 
+/* ─── Grade History Modal ──────────────────── */
+const GRADE_COLORS = {
+  S: '#059669', A: '#059669', B: '#0d9488', C: '#d97706', D: '#ea580c', E: '#dc2626', F: '#dc2626', N: '#6b7280', P: '#6b7280', W: '#9ca3af',
+};
+
+const GradeHistoryModal = ({ isOpen, onClose, courses }) => {
+  if (!isOpen || !courses) return null;
+
+  const totalCredits = courses.reduce((s, c) => s + (c.credits || 0), 0);
+
+  return (
+    <div className="gh-overlay" onClick={onClose}>
+      <div className="gh-modal" onClick={e => e.stopPropagation()}>
+        <div className="gh-header">
+          <div>
+            <h2>Grade History</h2>
+            <span className="gh-subtitle">{courses.length} courses &middot; {totalCredits} credits</span>
+          </div>
+          <button className="gh-close" onClick={onClose}>&times;</button>
+        </div>
+        <div className="gh-body">
+          <table className="gh-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Code</th>
+                <th>Course Name</th>
+                <th>Type</th>
+                <th>Credits</th>
+                <th>Grade</th>
+                <th>Exam</th>
+                <th>Category</th>
+              </tr>
+            </thead>
+            <tbody>
+              {courses.map((c, i) => (
+                <tr key={`${c.course_code}-${i}`}>
+                  <td className="gh-num">{i + 1}</td>
+                  <td className="gh-code">{c.course_code || '—'}</td>
+                  <td>{c.course_name || '—'}</td>
+                  <td>{c.course_type || '—'}</td>
+                  <td className="gh-center">{c.credits ?? '—'}</td>
+                  <td>
+                    <span className="gh-grade" style={{ background: `${GRADE_COLORS[c.grade] || '#6b7280'}18`, color: GRADE_COLORS[c.grade] || '#6b7280' }}>
+                      {c.grade || '—'}
+                    </span>
+                  </td>
+                  <td className="gh-muted">{c.exam_month || '—'}</td>
+                  <td className="gh-muted">{c.distribution || c.category || '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 /* ═══════════════════════════════════════════════ */
 /*   My Profile Tab                                */
 /* ═══════════════════════════════════════════════ */
@@ -68,6 +127,7 @@ const ProfileTab = () => {
   const [basicForm, setBasicForm] = useState({ tenth_percent: '', twelfth_percent: '' });
   const [uploadResult, setUploadResult] = useState(null);
   const [skills, setSkills] = useState(null);
+  const [showGradeHistory, setShowGradeHistory] = useState(false);
 
   const fetchAcademics = useCallback(async () => {
     try {
@@ -167,10 +227,18 @@ const ProfileTab = () => {
       <div className="scp-card upload-card">
         <div className="scp-card-header">
           <h3>Grade History</h3>
-          <label className={`scp-btn-primary ${uploading ? 'disabled' : ''}`}>
-            {uploading ? 'Processing...' : 'Upload Grade History PDF'}
-            <input ref={fileInputRef} type="file" accept=".pdf" onChange={handleUploadGradeHistory} hidden disabled={uploading} />
-          </label>
+          <div className="btn-group">
+            {academics?.all_courses?.length > 0 && (
+              <button className="scp-btn-secondary" onClick={() => setShowGradeHistory(true)}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                View Grades
+              </button>
+            )}
+            <label className={`scp-btn-primary ${uploading ? 'disabled' : ''}`}>
+              {uploading ? 'Processing...' : 'Upload Grade History PDF'}
+              <input ref={fileInputRef} type="file" accept=".pdf" onChange={handleUploadGradeHistory} hidden disabled={uploading} />
+            </label>
+          </div>
         </div>
         {uploadResult && (
           <div className={`scp-alert ${uploadResult.success ? 'success' : 'error'}`}>
@@ -268,6 +336,12 @@ const ProfileTab = () => {
           </div>
         </div>
       )}
+
+      <GradeHistoryModal
+        isOpen={showGradeHistory}
+        onClose={() => setShowGradeHistory(false)}
+        courses={academics?.all_courses || []}
+      />
     </div>
   );
 };

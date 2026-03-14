@@ -193,3 +193,5 @@ backend/app/ml/models/checkpoints/backup_v1/
 
 C:/GitHubRepo/Skillence/NET_README.md
 
+# Ignore Courses folder containing course PDFs
+Courses/

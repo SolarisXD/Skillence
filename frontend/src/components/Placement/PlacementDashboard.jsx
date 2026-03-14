@@ -233,8 +233,171 @@ const DriveFormModal = ({ isOpen, onClose, onSave, drive = null }) => {
 /* ─── Shortlist Modal ──────────────────── */
 const ShortlistModal = ({ isOpen, onClose, driveId }) => {
   const [loading, setLoading] = useState(false);
+  const [loadingSaved, setLoadingSaved] = useState(false);
   const [results, setResults] = useState(null);
   const [topN, setTopN] = useState(20);
+  const [showNonShortlisted, setShowNonShortlisted] = useState(false);
+  const [applicationsByUserId, setApplicationsByUserId] = useState({});
+  const [statusUpdatingAppId, setStatusUpdatingAppId] = useState(null);
+  const [skillsViewer, setSkillsViewer] = useState(null);
+  const [profileViewer, setProfileViewer] = useState(null);
+  const [loadingProfileUserId, setLoadingProfileUserId] = useState(null);
+
+  const flattenSkills = (skillsValue) => {
+    if (!skillsValue) return [];
+
+    if (typeof skillsValue === 'string') {
+      return skillsValue
+        .split(/[;,|\n]+/)
+        .map((item) => item.trim())
+        .filter(Boolean);
+    }
+
+    if (Array.isArray(skillsValue)) {
+      return skillsValue
+        .flatMap((item) => {
+          if (typeof item === 'string') return flattenSkills(item);
+          if (item && typeof item === 'object') {
+            return flattenSkills(item.skill_name || item.name || item.skill || '');
+          }
+          return [];
+        })
+        .filter(Boolean);
+    }
+
+    if (typeof skillsValue === 'object') {
+      return Object.values(skillsValue)
+        .flatMap((value) => flattenSkills(value))
+        .filter(Boolean);
+    }
+
+    return [];
+  };
+
+  const toList = (value) => (Array.isArray(value) ? value : []);
+
+  const normalizeSkillGroups = (skillsValue) => {
+    if (!skillsValue || typeof skillsValue !== 'object' || Array.isArray(skillsValue)) {
+      const fallback = flattenSkills(skillsValue);
+      return fallback.length ? [{ label: 'Skills', values: fallback }] : [];
+    }
+
+    const groups = [
+      { label: 'Technical Skills', values: flattenSkills(skillsValue.technical) },
+      { label: 'Soft Skills', values: flattenSkills(skillsValue.soft) },
+      { label: 'Tools', values: flattenSkills(skillsValue.tools) },
+      { label: 'Languages', values: flattenSkills(skillsValue.languages) },
+    ].filter((group) => group.values.length > 0);
+
+    const knownKeys = new Set(['technical', 'soft', 'tools', 'languages']);
+    const extraSkills = Object.entries(skillsValue)
+      .filter(([key]) => !knownKeys.has(key))
+      .flatMap(([, value]) => flattenSkills(value));
+
+    if (extraSkills.length) {
+      groups.push({ label: 'Other Skills', values: extraSkills });
+    }
+
+    return groups;
+  };
+
+  useEffect(() => {
+    if (!isOpen || !driveId) {
+      setResults(null);
+      setShowNonShortlisted(false);
+      setApplicationsByUserId({});
+      setStatusUpdatingAppId(null);
+      setSkillsViewer(null);
+      setProfileViewer(null);
+      setLoadingProfileUserId(null);
+      return;
+    }
+
+    const fetchSavedShortlist = async () => {
+      setLoadingSaved(true);
+      try {
+        const res = await fetch(`${API_BASE}/placement/drives/${driveId}/shortlist`, {
+          headers: getHeaders(),
+        });
+
+        if (!res.ok) {
+          return;
+        }
+
+        const data = await res.json();
+        if (data?.exists && Array.isArray(data.students)) {
+          setResults(data);
+          setShowNonShortlisted(false);
+          if (typeof data.top_n === 'number' && data.top_n > 0) {
+            setTopN(data.top_n);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load saved shortlist:', err);
+      } finally {
+        setLoadingSaved(false);
+      }
+    };
+
+    const fetchApplications = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/placement/drives/${driveId}/applications`, {
+          headers: getHeaders(),
+        });
+
+        if (!res.ok) {
+          setApplicationsByUserId({});
+          return;
+        }
+
+        const data = await res.json();
+        const byUser = {};
+        (data || []).forEach((app) => {
+          if (app.user_id) {
+            byUser[app.user_id] = app;
+          }
+        });
+        setApplicationsByUserId(byUser);
+      } catch (err) {
+        console.error('Failed to load applications for shortlist:', err);
+        setApplicationsByUserId({});
+      }
+    };
+
+    fetchSavedShortlist();
+    fetchApplications();
+  }, [isOpen, driveId]);
+
+  const updateStatus = async (appId, newStatus) => {
+    setStatusUpdatingAppId(appId);
+    try {
+      const res = await fetch(`${API_BASE}/placement/applications/${appId}/status`, {
+        method: 'PUT',
+        headers: getHeaders(),
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        alert(err.detail || 'Failed to update status');
+        return;
+      }
+
+      setApplicationsByUserId((prev) => {
+        const next = { ...prev };
+        const match = Object.values(next).find((app) => app.id === appId);
+        if (match?.user_id) {
+          next[match.user_id] = { ...match, status: newStatus };
+        }
+        return next;
+      });
+    } catch (err) {
+      console.error('Failed to update status:', err);
+      alert('Network error while updating status');
+    } finally {
+      setStatusUpdatingAppId(null);
+    }
+  };
 
   const runShortlist = async () => {
     setLoading(true);
@@ -247,6 +410,7 @@ const ShortlistModal = ({ isOpen, onClose, driveId }) => {
       if (res.ok) {
         const data = await res.json();
         setResults(data);
+        setShowNonShortlisted(false);
       } else {
         const err = await res.json();
         alert(err.detail || 'Shortlisting failed');
@@ -258,7 +422,163 @@ const ShortlistModal = ({ isOpen, onClose, driveId }) => {
     }
   };
 
+  const openProfileViewer = async (student) => {
+    if (!student?.user_id) return;
+
+    setLoadingProfileUserId(student.user_id);
+    try {
+      const res = await fetch(`${API_BASE}/placement/applicants/${student.user_id}/profile`, {
+        headers: getHeaders(),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        alert(err.detail || 'Failed to load applicant profile');
+        return;
+      }
+
+      const data = await res.json();
+      setProfileViewer({
+        ...data,
+        display_name: student.student_name || data?.academics?.student_info?.name || student.user_id,
+        register_number: student.register_number || data?.academics?.student_info?.register_number,
+      });
+    } catch (err) {
+      console.error('Failed to load applicant profile:', err);
+      alert('Network error while loading applicant profile');
+    } finally {
+      setLoadingProfileUserId(null);
+    }
+  };
+
   if (!isOpen) return null;
+
+  const profileData = profileViewer?.profile_data || {};
+  const contactInfo = profileData.personalInfo || profileData.contact_info || profileViewer?.contact_info || {};
+  const experienceItems = toList(profileData.workExperience || profileData.experience);
+  const educationItems = toList(profileData.education);
+  const projectItems = toList(profileData.projects);
+  const certificationItems = toList(profileData.certifications);
+  const achievementItems = toList(profileData.achievements);
+  const customSections = toList(profileData.customSections);
+  const skillsGrouped = normalizeSkillGroups(profileData.skills);
+
+  const academics = profileViewer?.academics || {};
+  const studentInfo = academics.student_info || {};
+  const academicScores = academics.academic_scores || {};
+  const tenthPercentage = academics.tenth_percentage ?? academicScores.tenth_percentage;
+  const twelfthPercentage = academics.twelfth_percentage ?? academicScores.twelfth_percentage;
+  const cgpa = academics.cgpa ?? academicScores.cgpa;
+  const activeBacklogs = academics.active_backlogs ?? academicScores.active_backlogs;
+  const topAcademicSkills = Object.entries(academics.skill_profile || {})
+    .sort((a, b) => Number(b[1] || 0) - Number(a[1] || 0))
+    .slice(0, 20);
+
+  const students = Array.isArray(results?.students) ? results.students : [];
+  const shortlistedTarget = Number.isFinite(Number(results?.top_n))
+    ? Number(results.top_n)
+    : Number.isFinite(Number(topN))
+      ? Number(topN)
+      : 0;
+
+  const isStudentShortlisted = (student, index) => {
+    if (typeof student?.is_shortlisted === 'boolean') return student.is_shortlisted;
+    if (typeof student?.shortlisted === 'boolean') return student.shortlisted;
+    return index < shortlistedTarget;
+  };
+
+  const rankedRows = students.map((student, index) => ({
+    student,
+    rank: index + 1,
+    shortlisted: isStudentShortlisted(student, index),
+  }));
+
+  const shortlistedRows = rankedRows.filter((row) => row.shortlisted);
+  const nonShortlistedRows = rankedRows.filter((row) => !row.shortlisted);
+  const shortlistedCount = Number.isFinite(Number(results?.shortlisted_count))
+    ? Number(results.shortlisted_count)
+    : shortlistedRows.length;
+  const totalApplicants = Number.isFinite(Number(results?.total_ranked))
+    ? Number(results.total_ranked)
+    : rankedRows.length;
+
+  const renderRow = ({ student, rank, shortlisted }) => {
+    const application = applicationsByUserId[student.user_id];
+    const matchedSkills = student.matched_skills || [];
+    const scorePercentage = ((student.total_score || 0) * 100).toFixed(1);
+
+    return (
+      <tr key={student.user_id} className={shortlisted ? '' : 'shortlist-row-muted'}>
+        <td className="rank-cell">#{rank}</td>
+        <td>{student.register_number || '—'}</td>
+        <td className="student-cell" title={student.student_name || student.user_id}>{student.student_name || student.user_id}</td>
+        <td>{student.cgpa?.toFixed(2) || 'N/A'}</td>
+        <td>
+          <div className="score-metric">
+            <span className="score-value">{scorePercentage}%</span>
+            <span className="score-caption">Match</span>
+          </div>
+        </td>
+        <td className="skills-cell">
+          <div className="skills-cell-content">
+            <div className="skills-pills shortlist-skill-preview">
+              {matchedSkills.slice(0, 4).map((skill) => (
+                <span key={skill} className="skill-pill">{skill}</span>
+              ))}
+              {matchedSkills.length > 4 && (
+                <span className="skill-pill more">+{matchedSkills.length - 4}</span>
+              )}
+            </div>
+            {matchedSkills.length > 0 ? (
+              <div className="skills-cell-footer">
+                <span className="skills-count">{matchedSkills.length} matched</span>
+                <button
+                  type="button"
+                  className="shortlist-link-btn"
+                  onClick={() => setSkillsViewer({
+                    studentName: student.student_name || student.user_id,
+                    skills: matchedSkills,
+                  })}
+                >
+                  View all
+                </button>
+              </div>
+            ) : (
+              <span className="skills-empty">No skills matched</span>
+            )}
+          </div>
+        </td>
+        <td>
+          <button
+            type="button"
+            className="shortlist-profile-btn"
+            onClick={() => openProfileViewer(student)}
+            disabled={loadingProfileUserId === student.user_id}
+          >
+            {loadingProfileUserId === student.user_id ? 'Loading...' : 'View Profile'}
+          </button>
+        </td>
+        <td className="action-cell">
+          {application ? (
+            <select
+              value={application.status || 'applied'}
+              onChange={e => updateStatus(application.id, e.target.value)}
+              className="status-select"
+              disabled={statusUpdatingAppId === application.id}
+            >
+              <option value="applied">Applied</option>
+              <option value="shortlisted">Shortlisted</option>
+              <option value="interview">Interview</option>
+              <option value="selected">Selected</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          ) : (
+            <span style={{ opacity: 0.75 }}>Not applied</span>
+          )}
+        </td>
+      </tr>
+    );
+  };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -268,7 +588,9 @@ const ShortlistModal = ({ isOpen, onClose, driveId }) => {
           <button className="modal-close" onClick={onClose}>&times;</button>
         </div>
         <div className="shortlist-content">
-          {!results ? (
+          {loadingSaved ? (
+            <div className="loading-spinner-container"><div className="loading-spinner"></div></div>
+          ) : !results ? (
             <div className="shortlist-config">
               <p>Rank students based on their skills, academic profile, and resume to find the best candidates for this drive.</p>
               <div className="form-group">
@@ -283,11 +605,11 @@ const ShortlistModal = ({ isOpen, onClose, driveId }) => {
             <div className="shortlist-results">
               <div className="shortlist-stats">
                 <div className="stat-card">
-                  <span className="stat-value">{results.total_ranked}</span>
-                  <span className="stat-label">Total Ranked</span>
+                  <span className="stat-value">{totalApplicants}</span>
+                  <span className="stat-label">Total Applicants</span>
                 </div>
                 <div className="stat-card">
-                  <span className="stat-value">{results.students?.length || 0}</span>
+                  <span className="stat-value">{shortlistedCount}</span>
                   <span className="stat-label">Shortlisted</span>
                 </div>
               </div>
@@ -301,33 +623,30 @@ const ShortlistModal = ({ isOpen, onClose, driveId }) => {
                       <th>CGPA</th>
                       <th>Match Score</th>
                       <th>Skills Matched</th>
+                      <th>Profile</th>
+                      <th>Status</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {(results.students || []).map((s, i) => (
-                      <tr key={s.user_id}>
-                        <td className="rank-cell">#{i + 1}</td>
-                        <td>{s.register_number || '—'}</td>
-                        <td>{s.student_name || s.user_id}</td>
-                        <td>{s.cgpa?.toFixed(2) || 'N/A'}</td>
-                        <td>
-                          <div className="score-bar">
-                            <div className="score-fill" style={{ width: `${(s.total_score || 0) * 100}%` }}></div>
-                            <span className="score-text">{((s.total_score || 0) * 100).toFixed(1)}%</span>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="skills-pills">
-                            {(s.matched_skills || []).slice(0, 5).map(sk => (
-                              <span key={sk} className="skill-pill">{sk}</span>
-                            ))}
-                            {(s.matched_skills || []).length > 5 && (
-                              <span className="skill-pill more">+{s.matched_skills.length - 5}</span>
-                            )}
-                          </div>
-                        </td>
+                    {shortlistedRows.map((row) => renderRow(row))}
+                    <tr>
+                      <td colSpan={8} className="shortlist-divider-cell">
+                        <button
+                          type="button"
+                          className="shortlist-divider-toggle"
+                          onClick={() => setShowNonShortlisted((prev) => !prev)}
+                        >
+                          <span>Not Shortlisted ({nonShortlistedRows.length})</span>
+                          <span>{showNonShortlisted ? 'Hide' : 'Show'}</span>
+                        </button>
+                      </td>
+                    </tr>
+                    {showNonShortlisted && nonShortlistedRows.map((row) => renderRow(row))}
+                    {showNonShortlisted && nonShortlistedRows.length === 0 && (
+                      <tr className="shortlist-row-muted">
+                        <td colSpan={8} className="shortlist-empty-note">No students below shortlist cutoff.</td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -338,6 +657,183 @@ const ShortlistModal = ({ isOpen, onClose, driveId }) => {
           )}
         </div>
       </div>
+
+      {skillsViewer && (
+        <div className="modal-overlay nested-modal" onClick={() => setSkillsViewer(null)}>
+          <div className="modal-content shortlist-popup-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Matched Skills — {skillsViewer.studentName}</h2>
+              <button className="modal-close" onClick={() => setSkillsViewer(null)}>&times;</button>
+            </div>
+            <div className="shortlist-popup-body">
+              <div className="skills-pills">
+                {skillsViewer.skills.map((skill) => (
+                  <span key={skill} className="skill-pill">{skill}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {profileViewer && (
+        <div className="modal-overlay nested-modal" onClick={() => setProfileViewer(null)}>
+          <div className="modal-content shortlist-popup-modal profile-popup-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Applicant Profile — {profileViewer.display_name}</h2>
+              <button className="modal-close" onClick={() => setProfileViewer(null)}>&times;</button>
+            </div>
+            <div className="shortlist-popup-body">
+              <div className="shortlist-profile-layout">
+                <section className="shortlist-profile-section">
+                  <h4 className="popup-section-title">Basic Information</h4>
+                  <div className="profile-grid">
+                    <div><strong>Name:</strong> {profileViewer.display_name || studentInfo.name || contactInfo.fullName || contactInfo.name || '—'}</div>
+                    <div><strong>Reg. No.:</strong> {profileViewer.register_number || studentInfo.register_number || '—'}</div>
+                    <div><strong>Email:</strong> {contactInfo.email || '—'}</div>
+                    <div><strong>Phone:</strong> {contactInfo.phone || '—'}</div>
+                    <div><strong>Location:</strong> {contactInfo.location || studentInfo.campus || '—'}</div>
+                    <div><strong>Program:</strong> {studentInfo.program || '—'}</div>
+                  </div>
+                </section>
+
+                <section className="shortlist-profile-section">
+                  <h4 className="popup-section-title">Academic Summary</h4>
+                  <div className="profile-grid">
+                    <div><strong>CGPA:</strong> {cgpa ?? '—'}</div>
+                    <div><strong>10th %:</strong> {tenthPercentage ?? '—'}</div>
+                    <div><strong>12th %:</strong> {twelfthPercentage ?? '—'}</div>
+                    <div><strong>Backlogs:</strong> {activeBacklogs ?? '—'}</div>
+                  </div>
+                </section>
+
+                {!!educationItems.length && (
+                  <section className="shortlist-profile-section">
+                    <h4 className="popup-section-title">Education</h4>
+                    <div className="profile-item-list">
+                      {educationItems.map((edu, index) => (
+                        <div key={`edu-${index}`} className="profile-item-card">
+                          <div className="profile-item-title">{edu.degree || 'Degree'}{edu.specialization ? ` — ${edu.specialization}` : ''}</div>
+                          <div className="profile-item-meta">{edu.institution || 'Institution'}{edu.location ? ` • ${edu.location}` : ''}</div>
+                          <div className="profile-item-meta">{edu.year || edu.duration || '—'}{edu.gpa ? ` • GPA/CGPA: ${edu.gpa}` : ''}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {!!experienceItems.length && (
+                  <section className="shortlist-profile-section">
+                    <h4 className="popup-section-title">Work Experience</h4>
+                    <div className="profile-item-list">
+                      {experienceItems.map((exp, index) => (
+                        <div key={`exp-${index}`} className="profile-item-card">
+                          <div className="profile-item-title">{exp.position || exp.title || 'Role'}</div>
+                          <div className="profile-item-meta">{exp.company || 'Company'}{exp.location ? ` • ${exp.location}` : ''}</div>
+                          <div className="profile-item-meta">{exp.duration || '—'}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {!!projectItems.length && (
+                  <section className="shortlist-profile-section">
+                    <h4 className="popup-section-title">Projects</h4>
+                    <div className="profile-item-list">
+                      {projectItems.map((project, index) => (
+                        <div key={`proj-${index}`} className="profile-item-card">
+                          <div className="profile-item-title">{project.name || project.title || 'Project'}</div>
+                          {project.description && <div className="profile-item-meta">{project.description}</div>}
+                          {!!flattenSkills(project.technologies).length && (
+                            <div className="skills-pills profile-section-pills">
+                              {flattenSkills(project.technologies).map((technology, techIndex) => (
+                                <span key={`project-tech-${index}-${techIndex}`} className="skill-pill small">{technology}</span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {!!skillsGrouped.length && (
+                  <section className="shortlist-profile-section">
+                    <h4 className="popup-section-title">Skills</h4>
+                    {skillsGrouped.map((group) => (
+                      <div key={group.label} className="shortlist-skill-group">
+                        <div className="profile-subtitle">{group.label}</div>
+                        <div className="skills-pills profile-section-pills">
+                          {group.values.map((skill, index) => (
+                            <span key={`${group.label}-${skill}-${index}`} className="skill-pill">{skill}</span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </section>
+                )}
+
+                {!!topAcademicSkills.length && (
+                  <section className="shortlist-profile-section">
+                    <h4 className="popup-section-title">Academic Skill Profile</h4>
+                    <div className="skills-pills profile-section-pills">
+                      {topAcademicSkills.map(([skill, score]) => (
+                        <span key={`acad-${skill}`} className="skill-pill">{skill} ({Number.isFinite(Number(score)) ? Number(score).toFixed(1) : score})</span>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {!!certificationItems.length && (
+                  <section className="shortlist-profile-section">
+                    <h4 className="popup-section-title">Certifications</h4>
+                    <div className="profile-item-list">
+                      {certificationItems.map((cert, index) => (
+                        <div key={`cert-${index}`} className="profile-item-card">
+                          <div className="profile-item-title">{cert.name || 'Certification'}</div>
+                          <div className="profile-item-meta">{cert.issuer || 'Issuer'}{cert.date ? ` • ${cert.date}` : ''}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {!!achievementItems.length && (
+                  <section className="shortlist-profile-section">
+                    <h4 className="popup-section-title">Achievements</h4>
+                    <div className="profile-item-list">
+                      {achievementItems.map((achievement, index) => (
+                        <div key={`achievement-${index}`} className="profile-item-card">
+                          <div className="profile-item-title">{achievement.title || 'Achievement'}</div>
+                          <div className="profile-item-meta">{achievement.description || ''}</div>
+                          {(achievement.issuer || achievement.level) && (
+                            <div className="profile-item-meta">{achievement.issuer || '—'}{achievement.level ? ` • ${achievement.level}` : ''}</div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {!!customSections.length && (
+                  <section className="shortlist-profile-section">
+                    <h4 className="popup-section-title">Additional Sections</h4>
+                    <div className="profile-item-list">
+                      {customSections.map((section, index) => (
+                        <div key={`custom-${index}`} className="profile-item-card">
+                          <div className="profile-item-title">{section.title || `Section ${index + 1}`}</div>
+                          <div className="profile-item-meta">{section.content || section.description || '—'}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -497,21 +993,6 @@ const ApplicantsPanel = ({ isOpen, onClose, drive }) => {
     }
   };
 
-  const updateStatus = async (appId, newStatus) => {
-    try {
-      const res = await fetch(`${API_BASE}/placement/applications/${appId}/status`, {
-        method: 'PUT',
-        headers: getHeaders(),
-        body: JSON.stringify({ status: newStatus }),
-      });
-      if (res.ok) {
-        fetchApplications();
-      }
-    } catch (err) {
-      console.error('Failed to update status:', err);
-    }
-  };
-
   if (!isOpen) return null;
 
   return (
@@ -536,7 +1017,6 @@ const ApplicantsPanel = ({ isOpen, onClose, drive }) => {
                   <th>Student</th>
                   <th>Applied On</th>
                   <th>Status</th>
-                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -546,15 +1026,6 @@ const ApplicantsPanel = ({ isOpen, onClose, drive }) => {
                     <td>{app.student_name || app.user_id}</td>
                     <td>{new Date(app.applied_at).toLocaleDateString('en-IN')}</td>
                     <td><StatusBadge status={app.status} /></td>
-                    <td className="action-cell">
-                      <select value={app.status} onChange={e => updateStatus(app.id, e.target.value)} className="status-select">
-                        <option value="applied">Applied</option>
-                        <option value="shortlisted">Shortlisted</option>
-                        <option value="interview">Interview</option>
-                        <option value="selected">Selected</option>
-                        <option value="rejected">Rejected</option>
-                      </select>
-                    </td>
                   </tr>
                 ))}
               </tbody>

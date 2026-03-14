@@ -50,6 +50,28 @@ async def get_my_academics(
             "message": "No academic profile found. Upload your grade history to get started.",
             "has_profile": False,
         }
+
+    # Lazy-sync: if resume_skills is empty, pull from profiles collection
+    if not doc.get("resume_skills"):
+        try:
+            db = get_database()
+            profile = await db.profiles.find_one({"user_id": user["user_id"]})
+            if profile:
+                skills_data = profile.get("profile_data", {}).get("skills", {})
+                all_skills = []
+                if isinstance(skills_data, dict):
+                    for cat in skills_data.values():
+                        if isinstance(cat, list):
+                            all_skills.extend(s for s in cat if isinstance(s, str))
+                elif isinstance(skills_data, list):
+                    all_skills = [s for s in skills_data if isinstance(s, str)]
+                if all_skills:
+                    await update_resume_skills(user["user_id"], all_skills)
+                    doc["resume_skills"] = all_skills
+                    logger.info(f"Lazy-synced {len(all_skills)} resume skills for user {user['user_id']}")
+        except Exception as e:
+            logger.warning(f"Resume skill lazy-sync failed: {e}")
+
     doc["has_profile"] = True
     return doc
 

@@ -262,7 +262,8 @@ class MatchResult(BaseModel):
 
 class ShortlistRequest(BaseModel):
     """Request to trigger shortlisting for a drive."""
-    max_count: Optional[int] = None  # Override drive's max_shortlist_count
+    top_n: Optional[int] = None  # Return only top N students
+    eligible_only: bool = True   # Exclude ineligible students
 
 
 class ShortlistResponse(BaseModel):

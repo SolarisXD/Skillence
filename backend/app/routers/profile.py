@@ -4,8 +4,26 @@ from typing import Dict, Any
 from app.utils.security import verify_token
 from app.database import get_database
 from app.services.profile_transformer import ProfileTransformer
+from app.services.student_academics_service import update_resume_skills
 import logging
 from datetime import datetime
+
+
+async def _sync_resume_skills(user_id: str, profile_data: dict):
+    """Extract skills from profile data and sync to student_academics."""
+    try:
+        skills_data = profile_data.get("skills", {})
+        all_skills = []
+        if isinstance(skills_data, dict):
+            for cat in skills_data.values():
+                if isinstance(cat, list):
+                    all_skills.extend(s for s in cat if isinstance(s, str))
+        elif isinstance(skills_data, list):
+            all_skills = [s for s in skills_data if isinstance(s, str)]
+        if all_skills:
+            await update_resume_skills(user_id, all_skills)
+    except Exception as e:
+        logging.getLogger(__name__).warning(f"Resume skills sync failed: {e}")
 
 router = APIRouter()
 security = HTTPBearer()
@@ -159,6 +177,8 @@ async def save_profile(
         )
         
         if result.acknowledged:
+            # Sync resume skills to student_academics for placement matching
+            await _sync_resume_skills(user_id, transformed_profile_data)
             return {
                 "success": True,
                 "message": "Profile saved successfully",
@@ -263,6 +283,8 @@ async def update_profile(
         )
         
         if result.matched_count > 0:
+            # Sync resume skills to student_academics for placement matching
+            await _sync_resume_skills(user_id, profile_data)
             return {
                 "success": True,
                 "message": "Profile updated successfully"

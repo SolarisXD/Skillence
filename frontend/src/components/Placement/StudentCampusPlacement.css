@@ -568,6 +568,163 @@
   color: var(--text-secondary, #6B7280);
 }
 
+/* ─── Grade History Modal ──────────────────── */
+.gh-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fadeIn 0.15s ease;
+}
+
+.gh-modal {
+  background: var(--card-background, #ffffff);
+  border-radius: 14px;
+  width: 95%;
+  max-width: 900px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+.gh-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+.gh-header h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary, #111827);
+  margin: 0;
+}
+
+.gh-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-secondary, #6B7280);
+}
+
+.gh-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: var(--bg-tertiary, #f3f4f6);
+  border-radius: 8px;
+  font-size: 1.25rem;
+  color: var(--text-secondary, #6B7280);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.gh-close:hover {
+  background: var(--bg-secondary, #e5e7eb);
+}
+
+.gh-body {
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+
+.gh-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.gh-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.gh-table th {
+  background: var(--bg-tertiary, #f9fafb);
+  color: var(--text-secondary, #6B7280);
+  font-weight: 600;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+  white-space: nowrap;
+}
+
+.gh-table td {
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--border-light, #f3f4f6);
+  color: var(--text-primary, #111827);
+}
+
+.gh-table tbody tr:hover {
+  background: var(--bg-tertiary, #f9fafb);
+}
+
+.gh-num {
+  color: var(--text-muted, #9CA3AF);
+  font-size: 0.72rem;
+  width: 2rem;
+}
+
+.gh-code {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.gh-center {
+  text-align: center;
+}
+
+.gh-muted {
+  color: var(--text-secondary, #6B7280);
+  font-size: 0.75rem;
+}
+
+.gh-grade {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  padding: 2px 8px;
+  border-radius: 5px;
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .gh-modal {
+    width: 100%;
+    max-height: 90vh;
+    border-radius: 10px;
+  }
+
+  .gh-table {
+    font-size: 0.72rem;
+  }
+
+  .gh-table th,
+  .gh-table td {
+    padding: 0.4rem 0.5rem;
+  }
+}
+
 .app-date {
   font-size: 0.75rem;
   color: var(--text-secondary, #9ca3af);

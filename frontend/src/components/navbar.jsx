@@ -13,7 +13,8 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
   const [isAtTop, setIsAtTop] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [showServices, setShowServices] = useState(false);
+  const [showCareerGrowth, setShowCareerGrowth] = useState(false);
+  const [showMarketInsights, setShowMarketInsights] = useState(false);
   const [user, setUser] = useState(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState('login');
@@ -61,7 +62,8 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
         setShowThemeSelector(false);
       }
       if (!event.target.closest('.services-dropdown')) {
-        setShowServices(false);
+        setShowCareerGrowth(false);
+        setShowMarketInsights(false);
       }
     };
 
@@ -189,50 +191,42 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
               <li className="nav-item">
                 <a href="#about-us" className="nav-link" onClick={scrollToAbout}>About Us</a>
               </li>
-              {getUserRole() !== 'placement_cell' && (
-                <li className="nav-item services-dropdown" onClick={() => setShowServices(!showServices)}>
-                  <button className={`nav-link services-toggle ${showServices ? 'open' : ''}`} type="button">
-                    Services
+              {isAuthenticated && getUserRole() === 'student' && (
+                <>
+                <li
+                  className="nav-item services-dropdown"
+                  onClick={() => {
+                    setShowCareerGrowth((prev) => {
+                      const next = !prev;
+                      if (next) setShowMarketInsights(false);
+                      return next;
+                    });
+                  }}
+                >
+                  <button className={`nav-link services-toggle ${showCareerGrowth ? 'open' : ''}`} type="button">
+                    Career Growth
                     <ChevronRight className="chevron-icon" size={20} />
                   </button>
-                  {showServices && (
+                  {showCareerGrowth && (
                     <div className="services-menu dropdown-menu">
                       <button
                         className="dropdown-item"
                         onClick={(e) => {
                           e.stopPropagation();
-                          navigate('/skill-libraries');
-                          setShowServices(false);
+                          navigate('/career-path-recommendation');
+                          setShowCareerGrowth(false);
+                          setShowMarketInsights(false);
                         }}
                       >
-                        Skill Libraries
-                      </button>
-                      <button
-                        className="dropdown-item"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate('/job-offer-evaluator');
-                          setShowServices(false);
-                        }}
-                      >
-                        Job Offer Evaluator
-                      </button>
-                      <button
-                        className="dropdown-item"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate('/job-trends');
-                          setShowServices(false);
-                        }}
-                      >
-                        Job Trend Analysis
+                        Career Path Recommendation
                       </button>
                       <button
                         className="dropdown-item"
                         onClick={(e) => {
                           e.stopPropagation();
                           navigate('/reflection-engine');
-                          setShowServices(false);
+                          setShowCareerGrowth(false);
+                          setShowMarketInsights(false);
                         }}
                       >
                         Reflection Engine
@@ -241,27 +235,73 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
                         className="dropdown-item"
                         onClick={(e) => {
                           e.stopPropagation();
-                          navigate('/career-path-recommendation');
-                          setShowServices(false);
+                          navigate('/skill-libraries');
+                          setShowCareerGrowth(false);
+                          setShowMarketInsights(false);
                         }}
                       >
-                        Career Path Recommendation
+                        Skill Libraries
                       </button>
-                      {isAuthenticated && getUserRole() === 'student' && (
-                        <button
-                          className="dropdown-item"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate('/campus-placement');
-                            setShowServices(false);
-                          }}
-                        >
-                          Campus Placement
-                        </button>
-                      )}
                     </div>
                   )}
                 </li>
+
+                <li
+                  className="nav-item services-dropdown"
+                  onClick={() => {
+                    setShowMarketInsights((prev) => {
+                      const next = !prev;
+                      if (next) setShowCareerGrowth(false);
+                      return next;
+                    });
+                  }}
+                >
+                  <button className={`nav-link services-toggle ${showMarketInsights ? 'open' : ''}`} type="button">
+                    Market Insights
+                    <ChevronRight className="chevron-icon" size={20} />
+                  </button>
+                  {showMarketInsights && (
+                    <div className="services-menu dropdown-menu">
+                      <button
+                        className="dropdown-item"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate('/job-trends');
+                          setShowCareerGrowth(false);
+                          setShowMarketInsights(false);
+                        }}
+                      >
+                        Job Trend Analysis
+                      </button>
+                      <button
+                        className="dropdown-item"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate('/job-offer-evaluator');
+                          setShowCareerGrowth(false);
+                          setShowMarketInsights(false);
+                        }}
+                      >
+                        Job Offer Evaluator
+                      </button>
+                    </div>
+                  )}
+                </li>
+
+                <li className="nav-item">
+                  <button
+                    className="nav-link campus-nav-button"
+                    type="button"
+                    onClick={() => {
+                      navigate('/campus-placement');
+                      setShowCareerGrowth(false);
+                      setShowMarketInsights(false);
+                    }}
+                  >
+                    Campus Placement
+                  </button>
+                </li>
+                </>
               )}
             </ul>
           </div>
@@ -373,7 +413,7 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
                 About Us
               </a>
             </li>
-            {getUserRole() !== 'placement_cell' && (
+            {isAuthenticated && getUserRole() === 'student' && (
               <>
                 <li className="mobile-nav-item">
                   <a 
@@ -391,11 +431,66 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
                   <button
                     className="mobile-nav-link"
                     onClick={() => {
+                      navigate('/career-path-recommendation');
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    Career Path Recommendation
+                  </button>
+                </li>
+                <li className="mobile-nav-item">
+                  <button
+                    className="mobile-nav-link"
+                    onClick={() => {
+                      navigate('/reflection-engine');
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    Reflection Engine
+                  </button>
+                </li>
+                <li className="mobile-nav-item">
+                  <button
+                    className="mobile-nav-link"
+                    onClick={() => {
+                      navigate('/skill-libraries');
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    Skill Libraries
+                  </button>
+                </li>
+                <li className="mobile-nav-item">
+                  <button
+                    className="mobile-nav-link"
+                    onClick={() => {
+                      navigate('/job-trends');
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    Job Trend Analysis
+                  </button>
+                </li>
+                <li className="mobile-nav-item">
+                  <button
+                    className="mobile-nav-link"
+                    onClick={() => {
                       navigate('/job-offer-evaluator');
                       setMobileMenuOpen(false);
                     }}
                   >
                     Job Offer Evaluator
+                  </button>
+                </li>
+                <li className="mobile-nav-item">
+                  <button
+                    className="mobile-nav-link"
+                    onClick={() => {
+                      navigate('/campus-placement');
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    Campus Placement
                   </button>
                 </li>
               </>

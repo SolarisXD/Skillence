@@ -3,16 +3,16 @@ Course Catalog Service
 ======================
 Maps university courses to canonical skills from the skill taxonomy.
 
-Two-tier approach:
-  - **Tier 1 (default):** Course names only → one Gemini call for the
-    entire catalog.  Produces a coarse but useful mapping.
-  - **Tier 2 (optional):** Upload individual course PDFs for detailed
-    syllabus-level extraction (future enhancement).
+Three-tier approach:
+  - **Tier 1 (best):** Individual course PDF syllabus → Gemini per
+    course.  Uses actual unit content, experiments, and objectives for
+    accurate skill extraction.
+  - **Tier 2 (fallback):** Course names only → one Gemini call for a
+    batch.  Produces a coarse but useful mapping when no PDF is available.
+  - **Tier 3 (last resort):** Keyword-based matching from course names.
 
 The mapping is stored in MongoDB (``course_catalog`` collection) and
-reused across all students in the same institution.  A single mapping
-call costs ~1-2 Gemini API calls regardless of how many students are
-enrolled.
+reused across all students in the same institution.
 
 Collection schema (``course_catalog``):
   {
@@ -22,6 +22,8 @@ Collection schema (``course_catalog``):
     "mapped_skills": [str],         # canonical taxonomy skills
     "credits": float | None,
     "category": str | None,         # PC, PE, UC, etc.
+    "has_pdf": bool,                # True if mapped from actual syllabus
+    "syllabus_text": str | None,    # extracted syllabus (for audit)
     "created_at": datetime,
     "updated_at": datetime,
   }
@@ -94,6 +96,43 @@ Return ONLY valid JSON (no markdown fences, no explanation).  Format:
 """
 
 
+# ── Syllabus-based prompt (single course, much more accurate) ─────
+_SYLLABUS_MAP_PROMPT = """You are an expert technical curriculum analyst.
+
+Given a university course's SYLLABUS CONTENT (unit topics, experiments, objectives), identify ONLY the concrete, hard technical skills that are **actually taught** in this course.
+
+STRICT RULES:
+1. Return ONLY skills from the provided TAXONOMY list — use EXACT lowercase names.
+2. Return 1-15 skills depending on course breadth. A narrow course may have 2-3; a broad one 10-15.
+3. ONLY include a skill if the syllabus EXPLICITLY covers it (not if it's merely implied or tangential).
+4. FORBIDDEN generic/vague terms — NEVER return any of these even if they appear in the taxonomy:
+   scalability, problem-solving, communication, teamwork, leadership, critical thinking,
+   time management, project management, analytical skills, adaptability, creativity,
+   decision making, attention to detail, presentation skills, documentation,
+   system design, cloud architecture, microservices architecture, software engineering,
+   agile, scrum, kanban, waterfall, product management.
+5. For non-technical courses (English, Ethics, Management, Constitution, Behavioural Science,
+   Communication Skills, etc.) return an EMPTY list [].
+6. For project/internship courses with no specific technical content, return an EMPTY list [].
+7. Prefer SPECIFIC skills over general ones:
+   - "tensorflow" over "deep learning" if TensorFlow is explicitly mentioned
+   - "sql" over "database management systems" if SQL queries are taught
+   - "python" over "programming languages" if Python is the language used
+   - Include BOTH the specific AND general skill if the syllabus covers both depth and breadth.
+
+TAXONOMY (use EXACT names from this list):
+{taxonomy}
+
+COURSE: {course_code} — {course_name}
+
+SYLLABUS CONTENT:
+{syllabus}
+
+Return ONLY a JSON array of skill strings (no markdown, no explanation):
+["skill1", "skill2", ...]
+"""
+
+
 def _try_repair_json(raw: str) -> Optional[dict]:
     """
     Attempt to repair common Gemini JSON issues:
@@ -145,6 +184,122 @@ def _try_repair_json(raw: str) -> Optional[dict]:
     return None
 
 
+def _map_single_course_with_syllabus(
+    course_code: str,
+    course_name: str,
+    syllabus_text: str,
+) -> Optional[List[str]]:
+    """
+    Send a single course's syllabus to Gemini for accurate skill extraction.
+
+    Returns list of canonical skill names, or None on failure.
+    """
+    api_key = os.getenv("GEMINI_API")
+    endpoint = os.getenv(
+        "GEMINI_ENDPOINT",
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-preview:generateContent",
+    )
+    if not api_key:
+        logger.warning("GEMINI_API not set — cannot map course with LLM")
+        return None
+
+    taxonomy_skills = _load_taxonomy_skills()
+    # Group by category for better prompt context
+    taxonomy_str = ", ".join(taxonomy_skills)
+
+    # Cap syllabus to avoid token overflow (keep first 4000 chars)
+    truncated_syllabus = syllabus_text[:4000] if len(syllabus_text) > 4000 else syllabus_text
+
+    prompt = _SYLLABUS_MAP_PROMPT.format(
+        taxonomy=taxonomy_str,
+        course_code=course_code or "N/A",
+        course_name=course_name,
+        syllabus=truncated_syllabus,
+    )
+
+    try:
+        resp = None
+        for attempt in range(4):
+            resp = requests.post(
+                f"{endpoint}?key={api_key}",
+                json={
+                    "contents": [{"parts": [{"text": prompt}]}],
+                    "generationConfig": {
+                        "temperature": 0.1,
+                        "maxOutputTokens": 2048,
+                        "responseMimeType": "application/json",
+                    },
+                },
+                timeout=60,
+            )
+            if resp.status_code in (429, 503) and attempt < 3:
+                import time
+                wait = 15 * (attempt + 1)  # 15s, 30s, 45s
+                logger.info("Gemini %d for %s, retrying in %ds...", resp.status_code, course_code, wait)
+                time.sleep(wait)
+                continue
+            resp.raise_for_status()
+            break
+
+        raw_text = (
+            resp.json()
+            .get("candidates", [{}])[0]
+            .get("content", {})
+            .get("parts", [{}])[0]
+            .get("text", "")
+        )
+
+        # Parse the JSON array
+        parsed = None
+        try:
+            parsed = json.loads(raw_text)
+        except json.JSONDecodeError:
+            # Try stripping markdown fences
+            cleaned = re.sub(r"```(?:json)?\s*", "", raw_text).strip()
+            cleaned = re.sub(r"```\s*$", "", cleaned).strip()
+            try:
+                parsed = json.loads(cleaned)
+            except json.JSONDecodeError:
+                pass
+
+        # Repair truncated JSON arrays: extract all complete quoted strings
+        if parsed is None:
+            strings = re.findall(r'"([^"]*)"', raw_text)
+            if strings:
+                parsed = strings
+                logger.info("Repaired truncated JSON for %s (%d items)", course_code, len(strings))
+
+        if parsed is None:
+            logger.error(
+                "Could not parse Gemini syllabus response for %s. Raw: %s",
+                course_code, raw_text[:200],
+            )
+            return None
+
+        # Validate: should be a list of strings
+        if isinstance(parsed, list):
+            skills = [s.strip().lower() for s in parsed if isinstance(s, str)]
+        elif isinstance(parsed, dict) and "skills" in parsed:
+            skills = [s.strip().lower() for s in parsed["skills"] if isinstance(s, str)]
+        else:
+            logger.warning("Unexpected response format for %s: %s", course_code, type(parsed))
+            return None
+
+        # Filter to only taxonomy skills
+        taxonomy_set = {s.lower() for s in taxonomy_skills}
+        valid_skills = [s for s in skills if s in taxonomy_set]
+
+        if len(valid_skills) < len(skills):
+            dropped = [s for s in skills if s not in taxonomy_set]
+            logger.info("Dropped non-taxonomy skills for %s: %s", course_code, dropped)
+
+        return valid_skills
+
+    except Exception as e:
+        logger.error("Gemini syllabus mapping failed for %s: %s", course_code, e)
+        return None
+
+
 def _map_courses_with_gemini(course_names: List[str]) -> Optional[Dict[str, List[str]]]:
     """
     Send all course names to Gemini in batches and get
@@ -159,7 +314,7 @@ def _map_courses_with_gemini(course_names: List[str]) -> Optional[Dict[str, List
     api_key = os.getenv("GEMINI_API")
     endpoint = os.getenv(
         "GEMINI_ENDPOINT",
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-preview:generateContent",
     )
     if not api_key:
         logger.warning("GEMINI_API not set — cannot map courses with LLM")
@@ -305,6 +460,7 @@ def _map_courses_keyword(course_names: List[str]) -> Dict[str, List[str]]:
 async def save_course_catalog(
     courses: List[Dict],
     skill_mappings: Dict[str, List[str]],
+    syllabus_data: Optional[Dict[str, Dict]] = None,
 ) -> int:
     """
     Save course→skill mappings to MongoDB.
@@ -315,6 +471,8 @@ async def save_course_catalog(
         From curriculum_parser — each has course_code, course_name, credits, category.
     skill_mappings : dict
         course_name (lowercase) → list of canonical skills.
+    syllabus_data : dict | None
+        course_code → {"syllabus_text": str, "has_pdf": bool}
 
     Returns
     -------
@@ -325,9 +483,14 @@ async def save_course_catalog(
     now = datetime.utcnow()
     count = 0
 
+    syllabus_data = syllabus_data or {}
+
     for course in courses:
         name = course["course_name"]
+        code = course.get("course_code", "")
         skills = skill_mappings.get(name.lower(), [])
+
+        syl = syllabus_data.get(code, {})
 
         await collection.update_one(
             {
@@ -335,11 +498,13 @@ async def save_course_catalog(
             },
             {
                 "$set": {
-                    "course_code": course.get("course_code"),
+                    "course_code": code,
                     "course_name": name,
                     "mapped_skills": skills,
                     "credits": course.get("credits"),
                     "category": course.get("category"),
+                    "has_pdf": syl.get("has_pdf", False),
+                    "syllabus_text": syl.get("syllabus_text"),
                     "updated_at": now,
                 },
                 "$setOnInsert": {"created_at": now},
@@ -494,6 +659,8 @@ async def get_student_skill_profile_from_courses(
 async def process_curriculum(
     courses: List[Dict],
     use_llm: bool = True,
+    syllabus_data: Optional[Dict[str, Dict]] = None,
+    skill_mappings_override: Optional[Dict[str, List[str]]] = None,
 ) -> Dict:
     """
     Full pipeline: take parsed courses, map to skills, save to DB.
@@ -503,7 +670,13 @@ async def process_curriculum(
     courses : list[dict]
         From ``curriculum_parser.parse_curriculum_pdf()``.
     use_llm : bool
-        If True, uses Gemini for mapping.
+        If True, uses Gemini for mapping (for courses without syllabus).
+    syllabus_data : dict | None
+        course_code → {"syllabus_text": str, "has_pdf": bool}
+    skill_mappings_override : dict | None
+        Pre-computed course_name(lower) → skills.  When provided
+        (e.g. from seed_course_catalog_v2), the batch Gemini call is
+        skipped for courses already mapped.
 
     Returns
     -------
@@ -511,17 +684,20 @@ async def process_curriculum(
     """
     course_names = [c["course_name"] for c in courses if c.get("course_name")]
 
-    # Get skill mappings
-    mappings = None
-    if use_llm:
-        mappings = _map_courses_with_gemini(course_names)
+    if skill_mappings_override:
+        mappings = dict(skill_mappings_override)
+    else:
+        # Get skill mappings via batch Gemini
+        mappings = None
+        if use_llm:
+            mappings = _map_courses_with_gemini(course_names)
 
-    if mappings is None:
-        logger.info("Using keyword fallback for course mapping")
-        mappings = _map_courses_keyword(course_names)
+        if mappings is None:
+            logger.info("Using keyword fallback for course mapping")
+            mappings = _map_courses_keyword(course_names)
 
     # Save to database
-    saved = await save_course_catalog(courses, mappings)
+    saved = await save_course_catalog(courses, mappings, syllabus_data)
 
     # Stats
     mapped_count = sum(1 for skills in mappings.values() if skills)

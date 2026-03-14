@@ -319,17 +319,102 @@ async def shortlist_students(
             detail="Drive has no parsed JD. Upload a JD first.",
         )
 
-    shortlist = await shortlist_students_for_drive(
+    ranked_students = await shortlist_students_for_drive(
         drive_id=drive_id,
-        top_n=request.top_n,
+        top_n=None,
         eligible_only=request.eligible_only,
+    )
+
+    configured_top_n = drive.get("max_shortlist_count")
+    requested_top_n = request.top_n if isinstance(request.top_n, int) and request.top_n > 0 else None
+    effective_top_n = requested_top_n or configured_top_n or len(ranked_students)
+    effective_top_n = max(0, min(int(effective_top_n), len(ranked_students)))
+
+    students_with_flags = []
+    for index, student in enumerate(ranked_students):
+        students_with_flags.append({
+            **student,
+            "is_shortlisted": index < effective_top_n,
+        })
+
+    shortlisted_count = sum(1 for student in students_with_flags if student.get("is_shortlisted"))
+
+    now = datetime.utcnow()
+    saved_shortlist = {
+        "students": students_with_flags,
+        "total_ranked": len(students_with_flags),
+        "shortlisted_count": shortlisted_count,
+        "top_n": effective_top_n,
+        "eligible_only": request.eligible_only,
+        "saved_at": now,
+    }
+
+    await db.company_drives.update_one(
+        {"_id": ObjectId(drive_id)},
+        {
+            "$set": {
+                "saved_shortlist": saved_shortlist,
+                "updated_at": now,
+            }
+        },
     )
 
     return {
         "drive_id": drive_id,
         "company_name": drive.get("company_name"),
-        "total_ranked": len(shortlist),
-        "students": shortlist,
+        "total_ranked": len(students_with_flags),
+        "shortlisted_count": shortlisted_count,
+        "top_n": effective_top_n,
+        "students": students_with_flags,
+        "saved_at": now,
+    }
+
+
+@router.get("/drives/{drive_id}/shortlist", response_model=dict)
+async def get_saved_shortlist(
+    drive_id: str,
+    user: dict = Depends(require_placement_cell),
+):
+    """Return previously saved shortlist for a drive, if available."""
+    db = get_database()
+    drive = await db.company_drives.find_one({"_id": ObjectId(drive_id)})
+    if not drive:
+        raise HTTPException(status_code=404, detail="Drive not found")
+
+    saved = drive.get("saved_shortlist")
+    if not saved:
+        return {
+            "drive_id": drive_id,
+            "company_name": drive.get("company_name"),
+            "exists": False,
+            "total_ranked": 0,
+            "students": [],
+            "saved_at": None,
+        }
+
+    students = saved.get("students", [])
+    saved_top_n = saved.get("top_n")
+
+    shortlisted_count = saved.get("shortlisted_count")
+    if not isinstance(shortlisted_count, int):
+        has_explicit_flags = any("is_shortlisted" in row for row in students)
+        if has_explicit_flags:
+            shortlisted_count = sum(1 for row in students if row.get("is_shortlisted"))
+        elif isinstance(saved_top_n, int):
+            shortlisted_count = min(saved_top_n, len(students))
+        else:
+            shortlisted_count = len(students)
+
+    return {
+        "drive_id": drive_id,
+        "company_name": drive.get("company_name"),
+        "exists": True,
+        "total_ranked": saved.get("total_ranked", len(students)),
+        "shortlisted_count": shortlisted_count,
+        "students": students,
+        "saved_at": saved.get("saved_at"),
+        "top_n": saved_top_n,
+        "eligible_only": saved.get("eligible_only", True),
     }
 
 
@@ -382,6 +467,69 @@ async def get_applications(
         })
 
     return result
+
+
+@router.get("/applicants/{user_id}/profile", response_model=dict)
+async def get_applicant_profile(
+    user_id: str,
+    user: dict = Depends(require_placement_cell),
+):
+    """Get combined profile + academics data for a student applicant."""
+    db = get_database()
+
+    profile_doc = await db.profiles.find_one(
+        {"user_id": user_id},
+        {"_id": 0, "user_id": 1, "profile_data": 1, "updated_at": 1},
+    )
+    academics_doc = await db.student_academics.find_one(
+        {"user_id": user_id},
+        {
+            "_id": 0,
+            "user_id": 1,
+            "student_info": 1,
+            "tenth_percentage": 1,
+            "twelfth_percentage": 1,
+            "cgpa": 1,
+            "active_backlogs": 1,
+            "all_courses": 1,
+            "semesters": 1,
+            "skill_profile": 1,
+            "resume_skills": 1,
+            "updated_at": 1,
+        },
+    )
+
+    if not profile_doc and not academics_doc:
+        raise HTTPException(status_code=404, detail="Applicant profile not found")
+
+    profile_data = (profile_doc or {}).get("profile_data", {})
+    contact_info = profile_data.get("contact_info") or profile_data.get("personalInfo") or {}
+    academics_raw = academics_doc or {}
+
+    return {
+        "user_id": user_id,
+        "profile_data": profile_data,
+        "contact_info": contact_info,
+        "profile_updated_at": (profile_doc or {}).get("updated_at"),
+        "academics": {
+            "student_info": academics_raw.get("student_info", {}),
+            "tenth_percentage": academics_raw.get("tenth_percentage"),
+            "twelfth_percentage": academics_raw.get("twelfth_percentage"),
+            "cgpa": academics_raw.get("cgpa"),
+            "active_backlogs": academics_raw.get("active_backlogs"),
+            "all_courses": academics_raw.get("all_courses", []),
+            "semesters": academics_raw.get("semesters", []),
+            "skill_profile": academics_raw.get("skill_profile", {}),
+            "resume_skills": academics_raw.get("resume_skills", []),
+            "updated_at": academics_raw.get("updated_at"),
+            "academic_scores": {
+                "tenth_percentage": academics_raw.get("tenth_percentage"),
+                "twelfth_percentage": academics_raw.get("twelfth_percentage"),
+                "cgpa": academics_raw.get("cgpa"),
+                "active_backlogs": academics_raw.get("active_backlogs"),
+            },
+        },
+    }
 
 
 @router.put("/applications/{app_id}/status", response_model=dict)

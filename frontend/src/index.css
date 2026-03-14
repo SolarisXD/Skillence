@@ -8,6 +8,8 @@
   --text-muted: #666666;
   --border-color: #e0e0e0;
   --border-light: #f0f0f0;
+  --card-background: #ffffff;
+  --hover-background: #f8fafc;
   --accent-color: #1e40af;
   --accent-hover: #1d4ed8;
   --success-color: #059669;
@@ -52,6 +54,8 @@
   --text-muted: #6b7280;
   --border-color: #2d3748;
   --border-light: #3d4a5f;
+  --card-background: #151b23;
+  --hover-background: #1c2432;
   --accent-color: #3b82f6;
   --accent-hover: #2563eb;
   --success-color: #10b981;
@@ -140,6 +144,8 @@
     --text-muted: #6b7280;
     --border-color: #2d3748;
     --border-light: #3d4a5f;
+    --card-background: #151b23;
+    --hover-background: #1c2432;
     --accent-color: #3b82f6;
     --accent-hover: #2563eb;
     --success-color: #10b981;
