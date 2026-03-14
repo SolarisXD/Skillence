@@ -44,14 +44,35 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "The Web Developer Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/"
+                "url": "https://www.udemy.com/",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Frontend Mentor",
-                "url": "https://www.frontendmentor.io/"
+                "url": "https://www.frontendmentor.io/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "HTML & CSS basics",
+            "JavaScript fundamentals"
+        ],
+        "career_roles": [
+            "Frontend Developer",
+            "Backend Developer",
+            "Full Stack Engineer",
+            "UI/UX Developer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-8 months",
+        "use_cases": [
+            "E-commerce sites",
+            "SaaS platforms",
+            "Progressive web apps",
+            "Content management systems"
         ]
     },
     "backend": {
@@ -99,14 +120,35 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Backend Development and APIs",
                 "platform": "freeCodeCamp",
-                "url": "https://www.freecodecamp.org/"
+                "url": "https://www.freecodecamp.org/",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "LeetCode Backend System Design",
-                "url": "https://leetcode.com/"
+                "url": "https://leetcode.com/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "HTML & CSS basics",
+            "JavaScript fundamentals"
+        ],
+        "career_roles": [
+            "Frontend Developer",
+            "Backend Developer",
+            "Full Stack Engineer",
+            "UI/UX Developer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-8 months",
+        "use_cases": [
+            "E-commerce sites",
+            "SaaS platforms",
+            "Progressive web apps",
+            "Content management systems"
         ]
     },
     "cyber_security": {
@@ -155,14 +197,36 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "CompTIA Security+ Certification",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/"
+                "url": "https://www.udemy.com/",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Hack The Box",
-                "url": "https://www.hackthebox.com/"
+                "url": "https://www.hackthebox.com/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Networking basics",
+            "Linux command line",
+            "Basic scripting"
+        ],
+        "career_roles": [
+            "Security Analyst",
+            "Penetration Tester",
+            "Security Engineer",
+            "SOC Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Vulnerability assessment",
+            "Incident response",
+            "Compliance auditing",
+            "Threat hunting"
         ]
     },
     "python": {
@@ -210,18 +274,41 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "The Complete Python Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Python"
+                "url": "https://www.udemy.com/courses/search/?q=Python",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "LeetCode Python",
-                "url": "https://leetcode.com/problemset/all/?search=Python"
+                "url": "https://leetcode.com/problemset/all/?search=Python",
+                "difficulty": "beginner"
             },
             {
                 "name": "GeeksforGeeks Python",
-                "url": "https://www.geeksforgeeks.org/"
+                "url": "https://www.geeksforgeeks.org/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Basic computer literacy",
+            "Problem-solving mindset",
+            "Text editor familiarity"
+        ],
+        "career_roles": [
+            "Software Developer",
+            "Full Stack Engineer",
+            "Systems Programmer",
+            "DevOps Engineer"
+        ],
+        "difficulty": "beginner",
+        "estimated_time": "3-6 months",
+        "use_cases": [
+            "Web applications",
+            "Mobile apps",
+            "Automation scripts",
+            "Game development"
         ]
     },
     "java": {
@@ -269,18 +356,41 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "The Complete Java Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Java"
+                "url": "https://www.udemy.com/courses/search/?q=Java",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "LeetCode Java",
-                "url": "https://leetcode.com/problemset/all/?search=Java"
+                "url": "https://leetcode.com/problemset/all/?search=Java",
+                "difficulty": "beginner"
             },
             {
                 "name": "GeeksforGeeks Java",
-                "url": "https://www.geeksforgeeks.org/"
+                "url": "https://www.geeksforgeeks.org/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Basic computer literacy",
+            "Problem-solving mindset",
+            "Text editor familiarity"
+        ],
+        "career_roles": [
+            "Software Developer",
+            "Full Stack Engineer",
+            "Systems Programmer",
+            "DevOps Engineer"
+        ],
+        "difficulty": "beginner",
+        "estimated_time": "3-6 months",
+        "use_cases": [
+            "Web applications",
+            "Mobile apps",
+            "Automation scripts",
+            "Game development"
         ]
     },
     "cpp": {
@@ -328,18 +438,41 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "The Complete C++ Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=C++"
+                "url": "https://www.udemy.com/courses/search/?q=C++",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "LeetCode C++",
-                "url": "https://leetcode.com/problemset/all/?search=C++"
+                "url": "https://leetcode.com/problemset/all/?search=C++",
+                "difficulty": "beginner"
             },
             {
                 "name": "GeeksforGeeks C++",
-                "url": "https://www.geeksforgeeks.org/"
+                "url": "https://www.geeksforgeeks.org/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Basic computer literacy",
+            "Problem-solving mindset",
+            "Text editor familiarity"
+        ],
+        "career_roles": [
+            "Software Developer",
+            "Full Stack Engineer",
+            "Systems Programmer",
+            "DevOps Engineer"
+        ],
+        "difficulty": "beginner",
+        "estimated_time": "3-6 months",
+        "use_cases": [
+            "Web applications",
+            "Mobile apps",
+            "Automation scripts",
+            "Game development"
         ]
     },
     "csharp": {
@@ -387,18 +520,41 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "The Complete C# Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=C#"
+                "url": "https://www.udemy.com/courses/search/?q=C#",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "LeetCode C#",
-                "url": "https://leetcode.com/problemset/all/?search=C#"
+                "url": "https://leetcode.com/problemset/all/?search=C#",
+                "difficulty": "beginner"
             },
             {
                 "name": "GeeksforGeeks C#",
-                "url": "https://www.geeksforgeeks.org/"
+                "url": "https://www.geeksforgeeks.org/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Basic computer literacy",
+            "Problem-solving mindset",
+            "Text editor familiarity"
+        ],
+        "career_roles": [
+            "Software Developer",
+            "Full Stack Engineer",
+            "Systems Programmer",
+            "DevOps Engineer"
+        ],
+        "difficulty": "beginner",
+        "estimated_time": "3-6 months",
+        "use_cases": [
+            "Web applications",
+            "Mobile apps",
+            "Automation scripts",
+            "Game development"
         ]
     },
     "rust": {
@@ -446,18 +602,41 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "The Complete Rust Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Rust"
+                "url": "https://www.udemy.com/courses/search/?q=Rust",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "LeetCode Rust",
-                "url": "https://leetcode.com/problemset/all/?search=Rust"
+                "url": "https://leetcode.com/problemset/all/?search=Rust",
+                "difficulty": "beginner"
             },
             {
                 "name": "GeeksforGeeks Rust",
-                "url": "https://www.geeksforgeeks.org/"
+                "url": "https://www.geeksforgeeks.org/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Basic computer literacy",
+            "Problem-solving mindset",
+            "Text editor familiarity"
+        ],
+        "career_roles": [
+            "Software Developer",
+            "Full Stack Engineer",
+            "Systems Programmer",
+            "DevOps Engineer"
+        ],
+        "difficulty": "beginner",
+        "estimated_time": "3-6 months",
+        "use_cases": [
+            "Web applications",
+            "Mobile apps",
+            "Automation scripts",
+            "Game development"
         ]
     },
     "php": {
@@ -505,18 +684,40 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "The Complete PHP Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=PHP"
+                "url": "https://www.udemy.com/courses/search/?q=PHP",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "LeetCode PHP",
-                "url": "https://leetcode.com/problemset/all/?search=PHP"
+                "url": "https://leetcode.com/problemset/all/?search=PHP",
+                "difficulty": "beginner"
             },
             {
                 "name": "GeeksforGeeks PHP",
-                "url": "https://www.geeksforgeeks.org/"
+                "url": "https://www.geeksforgeeks.org/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "HTML & CSS basics",
+            "JavaScript fundamentals"
+        ],
+        "career_roles": [
+            "Frontend Developer",
+            "Backend Developer",
+            "Full Stack Engineer",
+            "UI/UX Developer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-8 months",
+        "use_cases": [
+            "E-commerce sites",
+            "SaaS platforms",
+            "Progressive web apps",
+            "Content management systems"
         ]
     },
     "ruby": {
@@ -564,18 +765,41 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "The Complete Ruby Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Ruby"
+                "url": "https://www.udemy.com/courses/search/?q=Ruby",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "LeetCode Ruby",
-                "url": "https://leetcode.com/problemset/all/?search=Ruby"
+                "url": "https://leetcode.com/problemset/all/?search=Ruby",
+                "difficulty": "beginner"
             },
             {
                 "name": "GeeksforGeeks Ruby",
-                "url": "https://www.geeksforgeeks.org/"
+                "url": "https://www.geeksforgeeks.org/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Basic computer literacy",
+            "Problem-solving mindset",
+            "Text editor familiarity"
+        ],
+        "career_roles": [
+            "Software Developer",
+            "Full Stack Engineer",
+            "Systems Programmer",
+            "DevOps Engineer"
+        ],
+        "difficulty": "beginner",
+        "estimated_time": "3-6 months",
+        "use_cases": [
+            "Web applications",
+            "Mobile apps",
+            "Automation scripts",
+            "Game development"
         ]
     },
     "swift": {
@@ -623,18 +847,40 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "The Complete Swift Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Swift"
+                "url": "https://www.udemy.com/courses/search/?q=Swift",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "LeetCode Swift",
-                "url": "https://leetcode.com/problemset/all/?search=Swift"
+                "url": "https://leetcode.com/problemset/all/?search=Swift",
+                "difficulty": "beginner"
             },
             {
                 "name": "GeeksforGeeks Swift",
-                "url": "https://www.geeksforgeeks.org/"
+                "url": "https://www.geeksforgeeks.org/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Programming fundamentals",
+            "UI/UX design concepts"
+        ],
+        "career_roles": [
+            "Mobile Developer",
+            "iOS Developer",
+            "Android Developer",
+            "Cross-platform Developer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-6 months",
+        "use_cases": [
+            "Consumer apps",
+            "Enterprise mobile",
+            "Social media apps",
+            "Fintech mobile apps"
         ]
     },
     "react_native": {
@@ -682,18 +928,40 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "The Complete React Native Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=React Native"
+                "url": "https://www.udemy.com/courses/search/?q=React Native",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "LeetCode React Native",
-                "url": "https://leetcode.com/problemset/all/?search=React Native"
+                "url": "https://leetcode.com/problemset/all/?search=React Native",
+                "difficulty": "beginner"
             },
             {
                 "name": "GeeksforGeeks React Native",
-                "url": "https://www.geeksforgeeks.org/"
+                "url": "https://www.geeksforgeeks.org/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Programming fundamentals",
+            "UI/UX design concepts"
+        ],
+        "career_roles": [
+            "Mobile Developer",
+            "iOS Developer",
+            "Android Developer",
+            "Cross-platform Developer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-6 months",
+        "use_cases": [
+            "Consumer apps",
+            "Enterprise mobile",
+            "Social media apps",
+            "Fintech mobile apps"
         ]
     },
     "flutter": {
@@ -741,18 +1009,40 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "The Complete Flutter Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Flutter"
+                "url": "https://www.udemy.com/courses/search/?q=Flutter",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "LeetCode Flutter",
-                "url": "https://leetcode.com/problemset/all/?search=Flutter"
+                "url": "https://leetcode.com/problemset/all/?search=Flutter",
+                "difficulty": "beginner"
             },
             {
                 "name": "GeeksforGeeks Flutter",
-                "url": "https://www.geeksforgeeks.org/"
+                "url": "https://www.geeksforgeeks.org/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Programming fundamentals",
+            "UI/UX design concepts"
+        ],
+        "career_roles": [
+            "Mobile Developer",
+            "iOS Developer",
+            "Android Developer",
+            "Cross-platform Developer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-6 months",
+        "use_cases": [
+            "Consumer apps",
+            "Enterprise mobile",
+            "Social media apps",
+            "Fintech mobile apps"
         ]
     },
     "go": {
@@ -800,18 +1090,41 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "The Complete Go Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Go"
+                "url": "https://www.udemy.com/courses/search/?q=Go",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "LeetCode Go",
-                "url": "https://leetcode.com/problemset/all/?search=Go"
+                "url": "https://leetcode.com/problemset/all/?search=Go",
+                "difficulty": "beginner"
             },
             {
                 "name": "GeeksforGeeks Go",
-                "url": "https://www.geeksforgeeks.org/"
+                "url": "https://www.geeksforgeeks.org/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Basic computer literacy",
+            "Problem-solving mindset",
+            "Text editor familiarity"
+        ],
+        "career_roles": [
+            "Software Developer",
+            "Full Stack Engineer",
+            "Systems Programmer",
+            "DevOps Engineer"
+        ],
+        "difficulty": "beginner",
+        "estimated_time": "3-6 months",
+        "use_cases": [
+            "Web applications",
+            "Mobile apps",
+            "Automation scripts",
+            "Game development"
         ]
     },
     "kotlin": {
@@ -859,18 +1172,40 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "The Complete Kotlin Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Kotlin"
+                "url": "https://www.udemy.com/courses/search/?q=Kotlin",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "LeetCode Kotlin",
-                "url": "https://leetcode.com/problemset/all/?search=Kotlin"
+                "url": "https://leetcode.com/problemset/all/?search=Kotlin",
+                "difficulty": "beginner"
             },
             {
                 "name": "GeeksforGeeks Kotlin",
-                "url": "https://www.geeksforgeeks.org/"
+                "url": "https://www.geeksforgeeks.org/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Programming fundamentals",
+            "UI/UX design concepts"
+        ],
+        "career_roles": [
+            "Mobile Developer",
+            "iOS Developer",
+            "Android Developer",
+            "Cross-platform Developer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-6 months",
+        "use_cases": [
+            "Consumer apps",
+            "Enterprise mobile",
+            "Social media apps",
+            "Fintech mobile apps"
         ]
     },
     "typescript": {
@@ -918,18 +1253,40 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "The Complete TypeScript Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=TypeScript"
+                "url": "https://www.udemy.com/courses/search/?q=TypeScript",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "LeetCode TypeScript",
-                "url": "https://leetcode.com/problemset/all/?search=TypeScript"
+                "url": "https://leetcode.com/problemset/all/?search=TypeScript",
+                "difficulty": "beginner"
             },
             {
                 "name": "GeeksforGeeks TypeScript",
-                "url": "https://www.geeksforgeeks.org/"
+                "url": "https://www.geeksforgeeks.org/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "HTML & CSS basics",
+            "JavaScript fundamentals"
+        ],
+        "career_roles": [
+            "Frontend Developer",
+            "Backend Developer",
+            "Full Stack Engineer",
+            "UI/UX Developer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-8 months",
+        "use_cases": [
+            "E-commerce sites",
+            "SaaS platforms",
+            "Progressive web apps",
+            "Content management systems"
         ]
     },
     "javascript": {
@@ -977,18 +1334,40 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "The Complete JavaScript Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=JavaScript"
+                "url": "https://www.udemy.com/courses/search/?q=JavaScript",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "LeetCode JavaScript",
-                "url": "https://leetcode.com/problemset/all/?search=JavaScript"
+                "url": "https://leetcode.com/problemset/all/?search=JavaScript",
+                "difficulty": "beginner"
             },
             {
                 "name": "GeeksforGeeks JavaScript",
-                "url": "https://www.geeksforgeeks.org/"
+                "url": "https://www.geeksforgeeks.org/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "HTML & CSS basics",
+            "JavaScript fundamentals"
+        ],
+        "career_roles": [
+            "Frontend Developer",
+            "Backend Developer",
+            "Full Stack Engineer",
+            "UI/UX Developer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-8 months",
+        "use_cases": [
+            "E-commerce sites",
+            "SaaS platforms",
+            "Progressive web apps",
+            "Content management systems"
         ]
     },
     "r_lang": {
@@ -1036,18 +1415,41 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "The Complete R Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=R"
+                "url": "https://www.udemy.com/courses/search/?q=R",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "LeetCode R",
-                "url": "https://leetcode.com/problemset/all/?search=R"
+                "url": "https://leetcode.com/problemset/all/?search=R",
+                "difficulty": "beginner"
             },
             {
                 "name": "GeeksforGeeks R",
-                "url": "https://www.geeksforgeeks.org/"
+                "url": "https://www.geeksforgeeks.org/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "matlab": {
@@ -1095,18 +1497,41 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "The Complete MATLAB Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=MATLAB"
+                "url": "https://www.udemy.com/courses/search/?q=MATLAB",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "LeetCode MATLAB",
-                "url": "https://leetcode.com/problemset/all/?search=MATLAB"
+                "url": "https://leetcode.com/problemset/all/?search=MATLAB",
+                "difficulty": "beginner"
             },
             {
                 "name": "GeeksforGeeks MATLAB",
-                "url": "https://www.geeksforgeeks.org/"
+                "url": "https://www.geeksforgeeks.org/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "julia": {
@@ -1154,18 +1579,41 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "The Complete Julia Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Julia"
+                "url": "https://www.udemy.com/courses/search/?q=Julia",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "LeetCode Julia",
-                "url": "https://leetcode.com/problemset/all/?search=Julia"
+                "url": "https://leetcode.com/problemset/all/?search=Julia",
+                "difficulty": "beginner"
             },
             {
                 "name": "GeeksforGeeks Julia",
-                "url": "https://www.geeksforgeeks.org/"
+                "url": "https://www.geeksforgeeks.org/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "sql": {
@@ -1213,18 +1661,41 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "The Complete SQL Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=SQL"
+                "url": "https://www.udemy.com/courses/search/?q=SQL",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "LeetCode SQL",
-                "url": "https://leetcode.com/problemset/all/?search=SQL"
+                "url": "https://leetcode.com/problemset/all/?search=SQL",
+                "difficulty": "beginner"
             },
             {
                 "name": "GeeksforGeeks SQL",
-                "url": "https://www.geeksforgeeks.org/"
+                "url": "https://www.geeksforgeeks.org/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "react": {
@@ -1272,18 +1743,40 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "The Complete React Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=React"
+                "url": "https://www.udemy.com/courses/search/?q=React",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "LeetCode React",
-                "url": "https://leetcode.com/problemset/all/?search=React"
+                "url": "https://leetcode.com/problemset/all/?search=React",
+                "difficulty": "beginner"
             },
             {
                 "name": "GeeksforGeeks React",
-                "url": "https://www.geeksforgeeks.org/"
+                "url": "https://www.geeksforgeeks.org/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "HTML & CSS basics",
+            "JavaScript fundamentals"
+        ],
+        "career_roles": [
+            "Frontend Developer",
+            "Backend Developer",
+            "Full Stack Engineer",
+            "UI/UX Developer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-8 months",
+        "use_cases": [
+            "E-commerce sites",
+            "SaaS platforms",
+            "Progressive web apps",
+            "Content management systems"
         ]
     },
     "angular": {
@@ -1331,18 +1824,40 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "The Complete Angular Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Angular"
+                "url": "https://www.udemy.com/courses/search/?q=Angular",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "LeetCode Angular",
-                "url": "https://leetcode.com/problemset/all/?search=Angular"
+                "url": "https://leetcode.com/problemset/all/?search=Angular",
+                "difficulty": "beginner"
             },
             {
                 "name": "GeeksforGeeks Angular",
-                "url": "https://www.geeksforgeeks.org/"
+                "url": "https://www.geeksforgeeks.org/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "HTML & CSS basics",
+            "JavaScript fundamentals"
+        ],
+        "career_roles": [
+            "Frontend Developer",
+            "Backend Developer",
+            "Full Stack Engineer",
+            "UI/UX Developer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-8 months",
+        "use_cases": [
+            "E-commerce sites",
+            "SaaS platforms",
+            "Progressive web apps",
+            "Content management systems"
         ]
     },
     "vue": {
@@ -1390,18 +1905,40 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "The Complete Vue Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Vue"
+                "url": "https://www.udemy.com/courses/search/?q=Vue",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "LeetCode Vue",
-                "url": "https://leetcode.com/problemset/all/?search=Vue"
+                "url": "https://leetcode.com/problemset/all/?search=Vue",
+                "difficulty": "beginner"
             },
             {
                 "name": "GeeksforGeeks Vue",
-                "url": "https://www.geeksforgeeks.org/"
+                "url": "https://www.geeksforgeeks.org/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "HTML & CSS basics",
+            "JavaScript fundamentals"
+        ],
+        "career_roles": [
+            "Frontend Developer",
+            "Backend Developer",
+            "Full Stack Engineer",
+            "UI/UX Developer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-8 months",
+        "use_cases": [
+            "E-commerce sites",
+            "SaaS platforms",
+            "Progressive web apps",
+            "Content management systems"
         ]
     },
     "django": {
@@ -1449,18 +1986,40 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "The Complete Django Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Django"
+                "url": "https://www.udemy.com/courses/search/?q=Django",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "LeetCode Django",
-                "url": "https://leetcode.com/problemset/all/?search=Django"
+                "url": "https://leetcode.com/problemset/all/?search=Django",
+                "difficulty": "beginner"
             },
             {
                 "name": "GeeksforGeeks Django",
-                "url": "https://www.geeksforgeeks.org/"
+                "url": "https://www.geeksforgeeks.org/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "HTML & CSS basics",
+            "JavaScript fundamentals"
+        ],
+        "career_roles": [
+            "Frontend Developer",
+            "Backend Developer",
+            "Full Stack Engineer",
+            "UI/UX Developer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-8 months",
+        "use_cases": [
+            "E-commerce sites",
+            "SaaS platforms",
+            "Progressive web apps",
+            "Content management systems"
         ]
     },
     "tensorflow": {
@@ -1514,23 +2073,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master TensorFlow for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=TensorFlow"
+                "url": "https://www.udemy.com/courses/search/?q=TensorFlow",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied TensorFlow Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=TensorFlow"
+                "url": "https://www.coursera.org/search?query=TensorFlow",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & TensorFlow Notebooks",
-                "url": "https://www.kaggle.com/search?q=TensorFlow"
+                "url": "https://www.kaggle.com/search?q=TensorFlow",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "pytorch": {
@@ -1584,23 +2168,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master PyTorch for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=PyTorch"
+                "url": "https://www.udemy.com/courses/search/?q=PyTorch",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied PyTorch Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=PyTorch"
+                "url": "https://www.coursera.org/search?query=PyTorch",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & PyTorch Notebooks",
-                "url": "https://www.kaggle.com/search?q=PyTorch"
+                "url": "https://www.kaggle.com/search?q=PyTorch",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "pandas": {
@@ -1654,23 +2263,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master Pandas for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Pandas"
+                "url": "https://www.udemy.com/courses/search/?q=Pandas",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied Pandas Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Pandas"
+                "url": "https://www.coursera.org/search?query=Pandas",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & Pandas Notebooks",
-                "url": "https://www.kaggle.com/search?q=Pandas"
+                "url": "https://www.kaggle.com/search?q=Pandas",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "numpy": {
@@ -1724,23 +2358,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master NumPy for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=NumPy"
+                "url": "https://www.udemy.com/courses/search/?q=NumPy",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied NumPy Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=NumPy"
+                "url": "https://www.coursera.org/search?query=NumPy",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & NumPy Notebooks",
-                "url": "https://www.kaggle.com/search?q=NumPy"
+                "url": "https://www.kaggle.com/search?q=NumPy",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "scikit_learn": {
@@ -1794,23 +2453,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master Scikit-Learn for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Scikit-Learn"
+                "url": "https://www.udemy.com/courses/search/?q=Scikit-Learn",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied Scikit-Learn Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Scikit-Learn"
+                "url": "https://www.coursera.org/search?query=Scikit-Learn",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & Scikit-Learn Notebooks",
-                "url": "https://www.kaggle.com/search?q=Scikit-Learn"
+                "url": "https://www.kaggle.com/search?q=Scikit-Learn",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "keras": {
@@ -1864,23 +2548,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master Keras for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Keras"
+                "url": "https://www.udemy.com/courses/search/?q=Keras",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied Keras Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Keras"
+                "url": "https://www.coursera.org/search?query=Keras",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & Keras Notebooks",
-                "url": "https://www.kaggle.com/search?q=Keras"
+                "url": "https://www.kaggle.com/search?q=Keras",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "apache_spark": {
@@ -1934,23 +2643,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master Apache Spark for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Apache Spark"
+                "url": "https://www.udemy.com/courses/search/?q=Apache Spark",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied Apache Spark Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Apache Spark"
+                "url": "https://www.coursera.org/search?query=Apache Spark",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & Apache Spark Notebooks",
-                "url": "https://www.kaggle.com/search?q=Apache Spark"
+                "url": "https://www.kaggle.com/search?q=Apache Spark",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "hadoop": {
@@ -2004,23 +2738,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master Hadoop for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Hadoop"
+                "url": "https://www.udemy.com/courses/search/?q=Hadoop",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied Hadoop Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Hadoop"
+                "url": "https://www.coursera.org/search?query=Hadoop",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & Hadoop Notebooks",
-                "url": "https://www.kaggle.com/search?q=Hadoop"
+                "url": "https://www.kaggle.com/search?q=Hadoop",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "tableau": {
@@ -2074,23 +2833,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master Tableau for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Tableau"
+                "url": "https://www.udemy.com/courses/search/?q=Tableau",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied Tableau Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Tableau"
+                "url": "https://www.coursera.org/search?query=Tableau",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & Tableau Notebooks",
-                "url": "https://www.kaggle.com/search?q=Tableau"
+                "url": "https://www.kaggle.com/search?q=Tableau",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "power_bi": {
@@ -2144,23 +2928,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master Power BI for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Power BI"
+                "url": "https://www.udemy.com/courses/search/?q=Power BI",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied Power BI Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Power BI"
+                "url": "https://www.coursera.org/search?query=Power BI",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & Power BI Notebooks",
-                "url": "https://www.kaggle.com/search?q=Power BI"
+                "url": "https://www.kaggle.com/search?q=Power BI",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "snowflake": {
@@ -2214,23 +3023,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master Snowflake for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Snowflake"
+                "url": "https://www.udemy.com/courses/search/?q=Snowflake",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied Snowflake Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Snowflake"
+                "url": "https://www.coursera.org/search?query=Snowflake",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & Snowflake Notebooks",
-                "url": "https://www.kaggle.com/search?q=Snowflake"
+                "url": "https://www.kaggle.com/search?q=Snowflake",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "databricks": {
@@ -2284,23 +3118,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master Databricks for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Databricks"
+                "url": "https://www.udemy.com/courses/search/?q=Databricks",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied Databricks Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Databricks"
+                "url": "https://www.coursera.org/search?query=Databricks",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & Databricks Notebooks",
-                "url": "https://www.kaggle.com/search?q=Databricks"
+                "url": "https://www.kaggle.com/search?q=Databricks",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "nlp": {
@@ -2354,23 +3213,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master Natural Language Processing for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Natural Language Processing"
+                "url": "https://www.udemy.com/courses/search/?q=Natural Language Processing",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied Natural Language Processing Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Natural Language Processing"
+                "url": "https://www.coursera.org/search?query=Natural Language Processing",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & Natural Language Processing Notebooks",
-                "url": "https://www.kaggle.com/search?q=Natural Language Processing"
+                "url": "https://www.kaggle.com/search?q=Natural Language Processing",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "computer_vision": {
@@ -2424,23 +3308,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master Computer Vision for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Computer Vision"
+                "url": "https://www.udemy.com/courses/search/?q=Computer Vision",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied Computer Vision Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Computer Vision"
+                "url": "https://www.coursera.org/search?query=Computer Vision",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & Computer Vision Notebooks",
-                "url": "https://www.kaggle.com/search?q=Computer Vision"
+                "url": "https://www.kaggle.com/search?q=Computer Vision",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "mlops": {
@@ -2494,23 +3403,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master MLOps for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=MLOps"
+                "url": "https://www.udemy.com/courses/search/?q=MLOps",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied MLOps Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=MLOps"
+                "url": "https://www.coursera.org/search?query=MLOps",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & MLOps Notebooks",
-                "url": "https://www.kaggle.com/search?q=MLOps"
+                "url": "https://www.kaggle.com/search?q=MLOps",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "machine_learning": {
@@ -2564,23 +3498,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master Machine Learning for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Machine Learning"
+                "url": "https://www.udemy.com/courses/search/?q=Machine Learning",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied Machine Learning Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Machine Learning"
+                "url": "https://www.coursera.org/search?query=Machine Learning",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & Machine Learning Notebooks",
-                "url": "https://www.kaggle.com/search?q=Machine Learning"
+                "url": "https://www.kaggle.com/search?q=Machine Learning",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "deep_learning": {
@@ -2634,23 +3593,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master Deep Learning for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Deep Learning"
+                "url": "https://www.udemy.com/courses/search/?q=Deep Learning",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied Deep Learning Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Deep Learning"
+                "url": "https://www.coursera.org/search?query=Deep Learning",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & Deep Learning Notebooks",
-                "url": "https://www.kaggle.com/search?q=Deep Learning"
+                "url": "https://www.kaggle.com/search?q=Deep Learning",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "data_science": {
@@ -2704,23 +3688,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master Data Science for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Data Science"
+                "url": "https://www.udemy.com/courses/search/?q=Data Science",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied Data Science Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Data Science"
+                "url": "https://www.coursera.org/search?query=Data Science",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & Data Science Notebooks",
-                "url": "https://www.kaggle.com/search?q=Data Science"
+                "url": "https://www.kaggle.com/search?q=Data Science",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "generative_ai": {
@@ -2774,23 +3783,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master Generative AI for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Generative AI"
+                "url": "https://www.udemy.com/courses/search/?q=Generative AI",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied Generative AI Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Generative AI"
+                "url": "https://www.coursera.org/search?query=Generative AI",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & Generative AI Notebooks",
-                "url": "https://www.kaggle.com/search?q=Generative AI"
+                "url": "https://www.kaggle.com/search?q=Generative AI",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "llm": {
@@ -2844,23 +3878,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master Large Language Models for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Large Language Models"
+                "url": "https://www.udemy.com/courses/search/?q=Large Language Models",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied Large Language Models Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Large Language Models"
+                "url": "https://www.coursera.org/search?query=Large Language Models",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & Large Language Models Notebooks",
-                "url": "https://www.kaggle.com/search?q=Large Language Models"
+                "url": "https://www.kaggle.com/search?q=Large Language Models",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "langchain": {
@@ -2914,23 +3973,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master LangChain for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=LangChain"
+                "url": "https://www.udemy.com/courses/search/?q=LangChain",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied LangChain Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=LangChain"
+                "url": "https://www.coursera.org/search?query=LangChain",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & LangChain Notebooks",
-                "url": "https://www.kaggle.com/search?q=LangChain"
+                "url": "https://www.kaggle.com/search?q=LangChain",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "huggingface": {
@@ -2984,23 +4068,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master Hugging Face for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Hugging Face"
+                "url": "https://www.udemy.com/courses/search/?q=Hugging Face",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied Hugging Face Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Hugging Face"
+                "url": "https://www.coursera.org/search?query=Hugging Face",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & Hugging Face Notebooks",
-                "url": "https://www.kaggle.com/search?q=Hugging Face"
+                "url": "https://www.kaggle.com/search?q=Hugging Face",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "data_engineering": {
@@ -3054,23 +4163,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master Data Engineering for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Data Engineering"
+                "url": "https://www.udemy.com/courses/search/?q=Data Engineering",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied Data Engineering Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Data Engineering"
+                "url": "https://www.coursera.org/search?query=Data Engineering",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & Data Engineering Notebooks",
-                "url": "https://www.kaggle.com/search?q=Data Engineering"
+                "url": "https://www.kaggle.com/search?q=Data Engineering",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "big_data": {
@@ -3124,23 +4258,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master Big Data Analytics for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Big Data Analytics"
+                "url": "https://www.udemy.com/courses/search/?q=Big Data Analytics",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied Big Data Analytics Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Big Data Analytics"
+                "url": "https://www.coursera.org/search?query=Big Data Analytics",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & Big Data Analytics Notebooks",
-                "url": "https://www.kaggle.com/search?q=Big Data Analytics"
+                "url": "https://www.kaggle.com/search?q=Big Data Analytics",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "matplotlib": {
@@ -3194,23 +4353,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master Matplotlib for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Matplotlib"
+                "url": "https://www.udemy.com/courses/search/?q=Matplotlib",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied Matplotlib Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Matplotlib"
+                "url": "https://www.coursera.org/search?query=Matplotlib",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & Matplotlib Notebooks",
-                "url": "https://www.kaggle.com/search?q=Matplotlib"
+                "url": "https://www.kaggle.com/search?q=Matplotlib",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "seaborn": {
@@ -3264,23 +4448,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master Seaborn for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Seaborn"
+                "url": "https://www.udemy.com/courses/search/?q=Seaborn",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied Seaborn Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Seaborn"
+                "url": "https://www.coursera.org/search?query=Seaborn",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & Seaborn Notebooks",
-                "url": "https://www.kaggle.com/search?q=Seaborn"
+                "url": "https://www.kaggle.com/search?q=Seaborn",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "opencv": {
@@ -3334,23 +4543,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master OpenCV for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=OpenCV"
+                "url": "https://www.udemy.com/courses/search/?q=OpenCV",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied OpenCV Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=OpenCV"
+                "url": "https://www.coursera.org/search?query=OpenCV",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & OpenCV Notebooks",
-                "url": "https://www.kaggle.com/search?q=OpenCV"
+                "url": "https://www.kaggle.com/search?q=OpenCV",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "reinforcement_learning": {
@@ -3404,23 +4638,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master Reinforcement Learning for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Reinforcement Learning"
+                "url": "https://www.udemy.com/courses/search/?q=Reinforcement Learning",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied Reinforcement Learning Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Reinforcement Learning"
+                "url": "https://www.coursera.org/search?query=Reinforcement Learning",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & Reinforcement Learning Notebooks",
-                "url": "https://www.kaggle.com/search?q=Reinforcement Learning"
+                "url": "https://www.kaggle.com/search?q=Reinforcement Learning",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "neural_networks": {
@@ -3474,23 +4733,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Master Neural Networks for Machine Learning",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Neural Networks"
+                "url": "https://www.udemy.com/courses/search/?q=Neural Networks",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Applied Neural Networks Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Neural Networks"
+                "url": "https://www.coursera.org/search?query=Neural Networks",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kaggle Datasets & Neural Networks Notebooks",
-                "url": "https://www.kaggle.com/search?q=Neural Networks"
+                "url": "https://www.kaggle.com/search?q=Neural Networks",
+                "difficulty": "beginner"
             },
             {
                 "name": "HackerRank Artificial Intelligence",
-                "url": "https://www.hackerrank.com/domains/ai"
+                "url": "https://www.hackerrank.com/domains/ai",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Python programming",
+            "Linear algebra basics",
+            "Statistics fundamentals"
+        ],
+        "career_roles": [
+            "Data Scientist",
+            "ML Engineer",
+            "AI Researcher",
+            "Data Analyst"
+        ],
+        "difficulty": "advanced",
+        "estimated_time": "6-12 months",
+        "use_cases": [
+            "Predictive analytics",
+            "Natural language processing",
+            "Computer vision",
+            "Recommendation systems"
         ]
     },
     "aws": {
@@ -3547,23 +4831,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Ultimate Amazon Web Services (AWS) Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Amazon Web Services (AWS)"
+                "url": "https://www.udemy.com/courses/search/?q=Amazon Web Services (AWS)",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Amazon Web Services (AWS) Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Amazon Web Services (AWS)"
+                "url": "https://www.coursera.org/search?query=Amazon Web Services (AWS)",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Amazon Web Services (AWS) Hands-on Labs",
-                "url": "https://www.google.com/search?q=Amazon Web Services (AWS)+hands+on+labs"
+                "url": "https://www.google.com/search?q=Amazon Web Services (AWS)+hands+on+labs",
+                "difficulty": "beginner"
             },
             {
                 "name": "KodeKloud Amazon Web Services (AWS)",
-                "url": "https://kodekloud.com/"
+                "url": "https://kodekloud.com/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Linux basics",
+            "Networking fundamentals",
+            "Command line proficiency"
+        ],
+        "career_roles": [
+            "Cloud Engineer",
+            "DevOps Engineer",
+            "Site Reliability Engineer",
+            "Platform Engineer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-8 months",
+        "use_cases": [
+            "Cloud migration",
+            "CI/CD pipelines",
+            "Infrastructure automation",
+            "Containerized deployments"
         ]
     },
     "azure": {
@@ -3620,23 +4929,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Ultimate Microsoft Azure Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Microsoft Azure"
+                "url": "https://www.udemy.com/courses/search/?q=Microsoft Azure",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Microsoft Azure Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Microsoft Azure"
+                "url": "https://www.coursera.org/search?query=Microsoft Azure",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Microsoft Azure Hands-on Labs",
-                "url": "https://www.google.com/search?q=Microsoft Azure+hands+on+labs"
+                "url": "https://www.google.com/search?q=Microsoft Azure+hands+on+labs",
+                "difficulty": "beginner"
             },
             {
                 "name": "KodeKloud Microsoft Azure",
-                "url": "https://kodekloud.com/"
+                "url": "https://kodekloud.com/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Linux basics",
+            "Networking fundamentals",
+            "Command line proficiency"
+        ],
+        "career_roles": [
+            "Cloud Engineer",
+            "DevOps Engineer",
+            "Site Reliability Engineer",
+            "Platform Engineer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-8 months",
+        "use_cases": [
+            "Cloud migration",
+            "CI/CD pipelines",
+            "Infrastructure automation",
+            "Containerized deployments"
         ]
     },
     "gcp": {
@@ -3693,23 +5027,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Ultimate Google Cloud Platform Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Google Cloud Platform"
+                "url": "https://www.udemy.com/courses/search/?q=Google Cloud Platform",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Google Cloud Platform Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Google Cloud Platform"
+                "url": "https://www.coursera.org/search?query=Google Cloud Platform",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Google Cloud Platform Hands-on Labs",
-                "url": "https://www.google.com/search?q=Google Cloud Platform+hands+on+labs"
+                "url": "https://www.google.com/search?q=Google Cloud Platform+hands+on+labs",
+                "difficulty": "beginner"
             },
             {
                 "name": "KodeKloud Google Cloud Platform",
-                "url": "https://kodekloud.com/"
+                "url": "https://kodekloud.com/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Linux basics",
+            "Networking fundamentals",
+            "Command line proficiency"
+        ],
+        "career_roles": [
+            "Cloud Engineer",
+            "DevOps Engineer",
+            "Site Reliability Engineer",
+            "Platform Engineer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-8 months",
+        "use_cases": [
+            "Cloud migration",
+            "CI/CD pipelines",
+            "Infrastructure automation",
+            "Containerized deployments"
         ]
     },
     "docker": {
@@ -3766,23 +5125,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Ultimate Docker Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Docker"
+                "url": "https://www.udemy.com/courses/search/?q=Docker",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Docker Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Docker"
+                "url": "https://www.coursera.org/search?query=Docker",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Docker Hands-on Labs",
-                "url": "https://www.google.com/search?q=Docker+hands+on+labs"
+                "url": "https://www.google.com/search?q=Docker+hands+on+labs",
+                "difficulty": "beginner"
             },
             {
                 "name": "KodeKloud Docker",
-                "url": "https://kodekloud.com/"
+                "url": "https://kodekloud.com/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Linux basics",
+            "Networking fundamentals",
+            "Command line proficiency"
+        ],
+        "career_roles": [
+            "Cloud Engineer",
+            "DevOps Engineer",
+            "Site Reliability Engineer",
+            "Platform Engineer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-8 months",
+        "use_cases": [
+            "Cloud migration",
+            "CI/CD pipelines",
+            "Infrastructure automation",
+            "Containerized deployments"
         ]
     },
     "kubernetes": {
@@ -3839,23 +5223,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Ultimate Kubernetes Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Kubernetes"
+                "url": "https://www.udemy.com/courses/search/?q=Kubernetes",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Kubernetes Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Kubernetes"
+                "url": "https://www.coursera.org/search?query=Kubernetes",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Kubernetes Hands-on Labs",
-                "url": "https://www.google.com/search?q=Kubernetes+hands+on+labs"
+                "url": "https://www.google.com/search?q=Kubernetes+hands+on+labs",
+                "difficulty": "beginner"
             },
             {
                 "name": "KodeKloud Kubernetes",
-                "url": "https://kodekloud.com/"
+                "url": "https://kodekloud.com/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Linux basics",
+            "Networking fundamentals",
+            "Command line proficiency"
+        ],
+        "career_roles": [
+            "Cloud Engineer",
+            "DevOps Engineer",
+            "Site Reliability Engineer",
+            "Platform Engineer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-8 months",
+        "use_cases": [
+            "Cloud migration",
+            "CI/CD pipelines",
+            "Infrastructure automation",
+            "Containerized deployments"
         ]
     },
     "terraform": {
@@ -3912,23 +5321,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Ultimate Terraform Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Terraform"
+                "url": "https://www.udemy.com/courses/search/?q=Terraform",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Terraform Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Terraform"
+                "url": "https://www.coursera.org/search?query=Terraform",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Terraform Hands-on Labs",
-                "url": "https://www.google.com/search?q=Terraform+hands+on+labs"
+                "url": "https://www.google.com/search?q=Terraform+hands+on+labs",
+                "difficulty": "beginner"
             },
             {
                 "name": "KodeKloud Terraform",
-                "url": "https://kodekloud.com/"
+                "url": "https://kodekloud.com/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Linux basics",
+            "Networking fundamentals",
+            "Command line proficiency"
+        ],
+        "career_roles": [
+            "Cloud Engineer",
+            "DevOps Engineer",
+            "Site Reliability Engineer",
+            "Platform Engineer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-8 months",
+        "use_cases": [
+            "Cloud migration",
+            "CI/CD pipelines",
+            "Infrastructure automation",
+            "Containerized deployments"
         ]
     },
     "ansible": {
@@ -3985,23 +5419,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Ultimate Ansible Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Ansible"
+                "url": "https://www.udemy.com/courses/search/?q=Ansible",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Ansible Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Ansible"
+                "url": "https://www.coursera.org/search?query=Ansible",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Ansible Hands-on Labs",
-                "url": "https://www.google.com/search?q=Ansible+hands+on+labs"
+                "url": "https://www.google.com/search?q=Ansible+hands+on+labs",
+                "difficulty": "beginner"
             },
             {
                 "name": "KodeKloud Ansible",
-                "url": "https://kodekloud.com/"
+                "url": "https://kodekloud.com/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Linux basics",
+            "Networking fundamentals",
+            "Command line proficiency"
+        ],
+        "career_roles": [
+            "Cloud Engineer",
+            "DevOps Engineer",
+            "Site Reliability Engineer",
+            "Platform Engineer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-8 months",
+        "use_cases": [
+            "Cloud migration",
+            "CI/CD pipelines",
+            "Infrastructure automation",
+            "Containerized deployments"
         ]
     },
     "jenkins": {
@@ -4058,23 +5517,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Ultimate Jenkins Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Jenkins"
+                "url": "https://www.udemy.com/courses/search/?q=Jenkins",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Jenkins Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Jenkins"
+                "url": "https://www.coursera.org/search?query=Jenkins",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Jenkins Hands-on Labs",
-                "url": "https://www.google.com/search?q=Jenkins+hands+on+labs"
+                "url": "https://www.google.com/search?q=Jenkins+hands+on+labs",
+                "difficulty": "beginner"
             },
             {
                 "name": "KodeKloud Jenkins",
-                "url": "https://kodekloud.com/"
+                "url": "https://kodekloud.com/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Linux basics",
+            "Networking fundamentals",
+            "Command line proficiency"
+        ],
+        "career_roles": [
+            "Cloud Engineer",
+            "DevOps Engineer",
+            "Site Reliability Engineer",
+            "Platform Engineer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-8 months",
+        "use_cases": [
+            "Cloud migration",
+            "CI/CD pipelines",
+            "Infrastructure automation",
+            "Containerized deployments"
         ]
     },
     "github_actions": {
@@ -4131,23 +5615,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Ultimate GitHub Actions Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=GitHub Actions"
+                "url": "https://www.udemy.com/courses/search/?q=GitHub Actions",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "GitHub Actions Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=GitHub Actions"
+                "url": "https://www.coursera.org/search?query=GitHub Actions",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "GitHub Actions Hands-on Labs",
-                "url": "https://www.google.com/search?q=GitHub Actions+hands+on+labs"
+                "url": "https://www.google.com/search?q=GitHub Actions+hands+on+labs",
+                "difficulty": "beginner"
             },
             {
                 "name": "KodeKloud GitHub Actions",
-                "url": "https://kodekloud.com/"
+                "url": "https://kodekloud.com/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Linux basics",
+            "Networking fundamentals",
+            "Command line proficiency"
+        ],
+        "career_roles": [
+            "Cloud Engineer",
+            "DevOps Engineer",
+            "Site Reliability Engineer",
+            "Platform Engineer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-8 months",
+        "use_cases": [
+            "Cloud migration",
+            "CI/CD pipelines",
+            "Infrastructure automation",
+            "Containerized deployments"
         ]
     },
     "linux_admin": {
@@ -4204,23 +5713,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Ultimate Linux Administration Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Linux Administration"
+                "url": "https://www.udemy.com/courses/search/?q=Linux Administration",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Linux Administration Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Linux Administration"
+                "url": "https://www.coursera.org/search?query=Linux Administration",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Linux Administration Hands-on Labs",
-                "url": "https://www.google.com/search?q=Linux Administration+hands+on+labs"
+                "url": "https://www.google.com/search?q=Linux Administration+hands+on+labs",
+                "difficulty": "beginner"
             },
             {
                 "name": "KodeKloud Linux Administration",
-                "url": "https://kodekloud.com/"
+                "url": "https://kodekloud.com/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Linux basics",
+            "Networking fundamentals",
+            "Command line proficiency"
+        ],
+        "career_roles": [
+            "Cloud Engineer",
+            "DevOps Engineer",
+            "Site Reliability Engineer",
+            "Platform Engineer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-8 months",
+        "use_cases": [
+            "Cloud migration",
+            "CI/CD pipelines",
+            "Infrastructure automation",
+            "Containerized deployments"
         ]
     },
     "nginx": {
@@ -4277,23 +5811,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Ultimate Nginx Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Nginx"
+                "url": "https://www.udemy.com/courses/search/?q=Nginx",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Nginx Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Nginx"
+                "url": "https://www.coursera.org/search?query=Nginx",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Nginx Hands-on Labs",
-                "url": "https://www.google.com/search?q=Nginx+hands+on+labs"
+                "url": "https://www.google.com/search?q=Nginx+hands+on+labs",
+                "difficulty": "beginner"
             },
             {
                 "name": "KodeKloud Nginx",
-                "url": "https://kodekloud.com/"
+                "url": "https://kodekloud.com/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Linux basics",
+            "Networking fundamentals",
+            "Command line proficiency"
+        ],
+        "career_roles": [
+            "Cloud Engineer",
+            "DevOps Engineer",
+            "Site Reliability Engineer",
+            "Platform Engineer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-8 months",
+        "use_cases": [
+            "Cloud migration",
+            "CI/CD pipelines",
+            "Infrastructure automation",
+            "Containerized deployments"
         ]
     },
     "prometheus": {
@@ -4350,23 +5909,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Ultimate Prometheus & Grafana Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Prometheus & Grafana"
+                "url": "https://www.udemy.com/courses/search/?q=Prometheus & Grafana",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Prometheus & Grafana Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Prometheus & Grafana"
+                "url": "https://www.coursera.org/search?query=Prometheus & Grafana",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Prometheus & Grafana Hands-on Labs",
-                "url": "https://www.google.com/search?q=Prometheus & Grafana+hands+on+labs"
+                "url": "https://www.google.com/search?q=Prometheus & Grafana+hands+on+labs",
+                "difficulty": "beginner"
             },
             {
                 "name": "KodeKloud Prometheus & Grafana",
-                "url": "https://kodekloud.com/"
+                "url": "https://kodekloud.com/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Linux basics",
+            "Networking fundamentals",
+            "Command line proficiency"
+        ],
+        "career_roles": [
+            "Cloud Engineer",
+            "DevOps Engineer",
+            "Site Reliability Engineer",
+            "Platform Engineer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-8 months",
+        "use_cases": [
+            "Cloud migration",
+            "CI/CD pipelines",
+            "Infrastructure automation",
+            "Containerized deployments"
         ]
     },
     "cicd": {
@@ -4423,23 +6007,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Ultimate CI/CD Pipelines Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=CI/CD Pipelines"
+                "url": "https://www.udemy.com/courses/search/?q=CI/CD Pipelines",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "CI/CD Pipelines Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=CI/CD Pipelines"
+                "url": "https://www.coursera.org/search?query=CI/CD Pipelines",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "CI/CD Pipelines Hands-on Labs",
-                "url": "https://www.google.com/search?q=CI/CD Pipelines+hands+on+labs"
+                "url": "https://www.google.com/search?q=CI/CD Pipelines+hands+on+labs",
+                "difficulty": "beginner"
             },
             {
                 "name": "KodeKloud CI/CD Pipelines",
-                "url": "https://kodekloud.com/"
+                "url": "https://kodekloud.com/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Linux basics",
+            "Networking fundamentals",
+            "Command line proficiency"
+        ],
+        "career_roles": [
+            "Cloud Engineer",
+            "DevOps Engineer",
+            "Site Reliability Engineer",
+            "Platform Engineer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-8 months",
+        "use_cases": [
+            "Cloud migration",
+            "CI/CD pipelines",
+            "Infrastructure automation",
+            "Containerized deployments"
         ]
     },
     "serverless": {
@@ -4496,23 +6105,48 @@ SKILLS_DATA: Dict[str, Any] = {
             {
                 "name": "Ultimate Serverless Computing Bootcamp",
                 "platform": "Udemy",
-                "url": "https://www.udemy.com/courses/search/?q=Serverless Computing"
+                "url": "https://www.udemy.com/courses/search/?q=Serverless Computing",
+                "rating": "4.6",
+                "duration": "20+ hours"
             },
             {
                 "name": "Serverless Computing Specialization",
                 "platform": "Coursera",
-                "url": "https://www.coursera.org/search?query=Serverless Computing"
+                "url": "https://www.coursera.org/search?query=Serverless Computing",
+                "rating": "4.6",
+                "duration": "20+ hours"
             }
         ],
         "practice": [
             {
                 "name": "Serverless Computing Hands-on Labs",
-                "url": "https://www.google.com/search?q=Serverless Computing+hands+on+labs"
+                "url": "https://www.google.com/search?q=Serverless Computing+hands+on+labs",
+                "difficulty": "beginner"
             },
             {
                 "name": "KodeKloud Serverless Computing",
-                "url": "https://kodekloud.com/"
+                "url": "https://kodekloud.com/",
+                "difficulty": "beginner"
             }
+        ],
+        "prerequisites": [
+            "Linux basics",
+            "Networking fundamentals",
+            "Command line proficiency"
+        ],
+        "career_roles": [
+            "Cloud Engineer",
+            "DevOps Engineer",
+            "Site Reliability Engineer",
+            "Platform Engineer"
+        ],
+        "difficulty": "intermediate",
+        "estimated_time": "4-8 months",
+        "use_cases": [
+            "Cloud migration",
+            "CI/CD pipelines",
+            "Infrastructure automation",
+            "Containerized deployments"
         ]
     }
 }

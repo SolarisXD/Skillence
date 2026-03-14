@@ -1,11 +1,14 @@
 from fastapi import APIRouter, HTTPException, Depends
 from typing import List, Dict, Any, Optional
+from datetime import datetime
 from app.data.skills_data import SKILLS_DATA
 from app.routers.auth import get_current_user
 from app.database import get_database
-from app.models.skill import UserActivityUpdate, UserActivityResponse, SkillModel
+from app.models.skill import UserActivityUpdate, UserActivityResponse, SkillModel, SavedSkillEntry
+from app.services.youtube_service import fetch_youtube_videos
 
 router = APIRouter()
+
 
 @router.get("", response_model=List[Dict[str, str]])
 async def get_all_skills():
@@ -20,13 +23,16 @@ async def get_all_skills():
         })
     return skills
 
+
 @router.get("/search", response_model=List[Dict[str, str]])
 async def search_skills(q: str):
-    """Search skills by name or category."""
+    """Search skills by name, category, or description."""
     query = q.lower()
     results = []
     for skill_id, skill_data in SKILLS_DATA.items():
-        if query in skill_data["name"].lower() or query in skill_data["category"].lower():
+        if (query in skill_data["name"].lower()
+                or query in skill_data["category"].lower()
+                or query in skill_data.get("description", "").lower()):
             results.append({
                 "id": skill_data["id"],
                 "name": skill_data["name"],
@@ -35,76 +41,128 @@ async def search_skills(q: str):
             })
     return results
 
-@router.get("/{skill_id}", response_model=SkillModel)
+
+@router.get("/youtube/{skill_id}")
+async def get_youtube_videos(skill_id: str, count: int = 5):
+    """Fetch top YouTube educational videos for a skill via YouTube Data API v3."""
+    if skill_id not in SKILLS_DATA:
+        raise HTTPException(status_code=404, detail="Skill not found")
+
+    skill_name = SKILLS_DATA[skill_id]["name"]
+    videos = await fetch_youtube_videos(skill_name, max_results=min(count, 10))
+    return {"skill_id": skill_id, "videos": videos}
+
+
+@router.get("/{skill_id}")
 async def get_skill(skill_id: str):
-    """Get full details of a specific skill."""
+    """Get full details of a specific skill with enhanced metadata."""
     if skill_id not in SKILLS_DATA:
         raise HTTPException(status_code=404, detail="Skill not found")
     return SKILLS_DATA[skill_id]
+
 
 # --- User Activity Endpoints ---
 
 @router.get("/user/activity", response_model=UserActivityResponse)
 async def get_user_activity(current_user: dict = Depends(get_current_user)):
-    """Get the currently logged in user's saved skills and progress."""
+    """Get the currently logged in user's saved skills, progress, and bookmark details."""
     db = get_database()
     user_skills_coll = db.user_skills
     user_id = current_user.get("id") or str(current_user.get("_id"))
-    
+
     activity = await user_skills_coll.find_one({"user_id": user_id})
     if not activity:
-        return UserActivityResponse(user_id=user_id, saved_skills=[], progress={})
-        
+        return UserActivityResponse(user_id=user_id, saved_skills=[], progress={}, saved_details={})
+
     return UserActivityResponse(
         user_id=activity["user_id"],
         saved_skills=activity.get("saved_skills", []),
-        progress=activity.get("progress", {})
+        progress=activity.get("progress", {}),
+        saved_details={
+            k: SavedSkillEntry(**v) if isinstance(v, dict) else SavedSkillEntry(skill_id=k)
+            for k, v in activity.get("saved_details", {}).items()
+        }
     )
+
 
 @router.post("/user/activity", response_model=UserActivityResponse)
 async def update_user_activity(update_data: UserActivityUpdate, current_user: dict = Depends(get_current_user)):
-    """Update saved skills or progress for a skill."""
+    """Update saved skills, progress, status, and completed steps."""
     db = get_database()
     user_skills_coll = db.user_skills
     user_id = current_user.get("id") or str(current_user.get("_id"))
-    
+
     # Check if skill exists
     if update_data.skill_id not in SKILLS_DATA:
         raise HTTPException(status_code=404, detail="Skill not found in dataset")
-        
+
     activity = await user_skills_coll.find_one({"user_id": user_id})
-    
+
     if not activity:
         activity = {
             "user_id": user_id,
             "saved_skills": [],
-            "progress": {}
+            "progress": {},
+            "saved_details": {}
         }
-        
+
     saved_skills = set(activity.get("saved_skills", []))
     progress = activity.get("progress", {})
-    
+    saved_details = activity.get("saved_details", {})
+
+    sid = update_data.skill_id
+
     # Update saved status
     if update_data.is_saved is True:
-        saved_skills.add(update_data.skill_id)
-    elif update_data.is_saved is False and update_data.skill_id in saved_skills:
-        saved_skills.remove(update_data.skill_id)
-        
-    # Update progress
+        saved_skills.add(sid)
+        if sid not in saved_details:
+            saved_details[sid] = {
+                "skill_id": sid,
+                "status": "interested",
+                "progress_percentage": 0,
+                "bookmarked_at": datetime.utcnow().isoformat(),
+                "completed_steps": []
+            }
+    elif update_data.is_saved is False and sid in saved_skills:
+        saved_skills.discard(sid)
+        saved_details.pop(sid, None)
+
+    # Update status (interested / learning / completed)
+    if update_data.status and sid in saved_details:
+        saved_details[sid]["status"] = update_data.status
+
+    # Update progress percentage
+    if update_data.progress_percentage is not None and sid in saved_details:
+        saved_details[sid]["progress_percentage"] = update_data.progress_percentage
+
+    # Update completed roadmap steps
+    if update_data.completed_steps is not None and sid in saved_details:
+        saved_details[sid]["completed_steps"] = update_data.completed_steps
+
+    # Legacy progress field
     if update_data.progress is not None:
-        progress[update_data.skill_id] = update_data.progress
-        
+        progress[sid] = update_data.progress
+
     # Save to db
     updated_doc = {
         "user_id": user_id,
         "saved_skills": list(saved_skills),
-        "progress": progress
+        "progress": progress,
+        "saved_details": saved_details
     }
-    
+
     await user_skills_coll.update_one(
         {"user_id": user_id},
         {"$set": updated_doc},
         upsert=True
     )
-    
-    return UserActivityResponse(**updated_doc)
+
+    return UserActivityResponse(
+        user_id=user_id,
+        saved_skills=list(saved_skills),
+        progress=progress,
+        saved_details={
+            k: SavedSkillEntry(**v) if isinstance(v, dict) else SavedSkillEntry(skill_id=k)
+            for k, v in saved_details.items()
+        }
+    )
