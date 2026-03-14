@@ -6,6 +6,7 @@ from app.routers.auth import get_current_user
 from app.database import get_database
 from app.models.skill import UserActivityUpdate, UserActivityResponse, SkillModel, SavedSkillEntry
 from app.services.youtube_service import fetch_youtube_videos
+from app.services.resource_fetcher import fetch_topic_resources
 
 router = APIRouter()
 
@@ -59,6 +60,62 @@ async def get_skill(skill_id: str):
     if skill_id not in SKILLS_DATA:
         raise HTTPException(status_code=404, detail="Skill not found")
     return SKILLS_DATA[skill_id]
+
+
+@router.get("/{skill_id}/resources")
+async def get_skill_resources(skill_id: str, topic: str):
+    """
+    Fetch external learning resources for a specific roadmap topic.
+    Strategy: Try DuckDuckGo first for fresh, up-to-date resources.
+    If the dynamic fetch fails or returns only generic fallbacks,
+    serve the pre-defined curated resource links instead.
+    """
+    if skill_id not in SKILLS_DATA:
+        raise HTTPException(status_code=404, detail="Skill not found")
+    
+    skill = SKILLS_DATA[skill_id]
+    skill_category = skill["category"]
+    
+    # Step 1: Try DuckDuckGo for fresh, up-to-date resources
+    try:
+        resources = await fetch_topic_resources(topic, skill_category)
+        
+        # Check if the fetcher returned real results (not just a generic "Search Engine" fallback)
+        has_real_results = any(
+            r.get("source", "") != "Search Engine" for r in resources
+        ) if resources else False
+        
+        if has_real_results:
+            return {"skill_id": skill_id, "topic": topic, "resources": resources}
+    except Exception:
+        pass  # DuckDuckGo failed — fall through to static resources
+    
+    # Step 2: Fallback — serve pre-defined curated resource links
+    roadmap = skill.get("roadmap", [])
+    if isinstance(roadmap, list):
+        for phase in roadmap:
+            if isinstance(phase, dict):
+                for t in phase.get("topics", []):
+                    if isinstance(t, dict) and t.get("name") == topic:
+                        static_resources = t.get("resources", [])
+                        if static_resources:
+                            formatted = []
+                            for r in static_resources:
+                                formatted.append({
+                                    "title": r.get("title", ""),
+                                    "description": f"Learn about {topic} from {r.get('source', 'Web')}.",
+                                    "url": r.get("url", ""),
+                                    "source": r.get("source", "Web Resource")
+                                })
+                            return {"skill_id": skill_id, "topic": topic, "resources": formatted}
+
+    # Step 3: Last resort — generic search link
+    return {"skill_id": skill_id, "topic": topic, "resources": [{
+        "title": f"Learn {topic}",
+        "description": "Explore documentation and tutorials.",
+        "url": f"https://www.google.com/search?q={topic.replace(' ', '+')}+{skill_category}",
+        "source": "Search Engine"
+    }]}
 
 
 # --- User Activity Endpoints ---

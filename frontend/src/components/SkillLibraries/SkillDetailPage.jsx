@@ -10,7 +10,7 @@ import {
 import './SkillLibraries.css';
 
 const PHASE_ICONS = [Layers, Code2, Target, Zap, Rocket];
-const PHASE_COLORS = ['#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444', '#22c55e'];
+const PHASE_COLORS = ['#3b82f6', '#8b5cf6', '#0ea5e9', '#6366f1', '#14b8a6'];
 
 const SkillDetailPage = () => {
   const { skill_id } = useParams();
@@ -21,7 +21,9 @@ const SkillDetailPage = () => {
   const [ytVideos, setYtVideos] = useState([]);
   const [ytLoading, setYtLoading] = useState(false);
   const [completedSteps, setCompletedSteps] = useState([]);
-  const [expandedPhases, setExpandedPhases] = useState({});
+  const [expandedPhases, setExpandedPhases] = useState({ 0: true });
+  const [topicResources, setTopicResources] = useState({});
+  const [resourceLoading, setResourceLoading] = useState({});
 
   useEffect(() => { fetchSkillDetail(); }, [skill_id]);
 
@@ -84,26 +86,96 @@ const SkillDetailPage = () => {
     });
   };
 
+  useEffect(() => {
+    if (activeTab === 'roadmap' && skill?.roadmap) {
+       const roadmap = parseRoadmap();
+       roadmap.forEach((phaseData, idx) => {
+          if (expandedPhases[idx] && phaseData.items) {
+             phaseData.items.forEach(item => {
+                const isObj = typeof item === 'object' && item !== null;
+                if (isObj) {
+                   fetchTopicRes(item.id, item.name);
+                }
+             });
+          }
+       });
+    }
+  }, [activeTab, skill, expandedPhases]);
+
   const togglePhaseExpand = (idx) => {
-    setExpandedPhases(prev => ({ ...prev, [idx]: !prev[idx] }));
+    const isNowExpanded = !expandedPhases[idx];
+    setExpandedPhases(prev => ({ ...prev, [idx]: isNowExpanded }));
+    
+    // Automatically fetch resources for topics in this phase if expanded
+    if (isNowExpanded && skill?.roadmap) {
+       const phaseData = parseRoadmap()[idx];
+       if (phaseData && phaseData.items) {
+          phaseData.items.forEach(item => {
+             const isObj = typeof item === 'object' && item !== null;
+             if (isObj) {
+                fetchTopicRes(item.id, item.name);
+             }
+          });
+       }
+    }
+  };
+
+  const fetchTopicRes = async (topicId, topicName) => {
+    if (topicResources[topicId] || resourceLoading[topicId]) return;
+    
+    setResourceLoading(prev => ({...prev, [topicId]: true}));
+    try {
+      const res = await fetch(`/api/skills/${skill_id}/resources?topic=${encodeURIComponent(topicName)}`);
+      if (res.ok) {
+        const data = await res.json();
+        setTopicResources(prev => ({...prev, [topicId]: data.resources || []}));
+      }
+    } catch (e) {
+      console.error('Failed to fetch resources', e);
+    } finally {
+      setResourceLoading(prev => ({...prev, [topicId]: false}));
+    }
   };
 
   const parseRoadmap = () => {
     if (!skill?.roadmap) return [];
+    
+    // 1. Check if it's the new structured object format (e.g. Frontend/Backend)
+    if (skill.roadmap.length > 0 && typeof skill.roadmap[0] === 'object') {
+      return skill.roadmap.map(phase => ({
+        title: phase.phase || 'Phase',
+        description: phase.description,
+        estimated_time: phase.estimated_time,
+        items: phase.topics || []
+      }));
+    }
+
+    // 2. Check if the string format has "Phase" wrappers or is just a flat list of topics
+    const hasPhases = skill.roadmap.some(item => typeof item === 'string' && (item.toLowerCase().includes('phase') || item.match(/^\d+\./)));
+    
+    if (!hasPhases) {
+       // Just a flat list (e.g. ["JSX", "Props", "Hooks"])
+       return skill.roadmap.map(str => ({ title: str, items: [str] }));
+    }
+
+    // 3. Fallback for older string-based roadmap format with some Phase indicators
     const phases = [];
     let current = null;
     skill.roadmap.forEach(item => {
-      if (item.startsWith('Phase') || item.match(/^\d+\./)) {
-        if (current) phases.push(current);
-        current = { title: item, items: [] };
-      } else if (item.startsWith('- ')) {
-        if (current) current.items.push(item.substring(2));
-      } else {
-        if (current) current.items.push(item);
-        else current = { title: item, items: [] };
+      if (typeof item === 'string') {
+        if (item.toLowerCase().includes('phase') || item.match(/^\d+\./)) {
+          if (current) phases.push(current);
+          current = { title: item, items: [] };
+        } else if (item.startsWith('- ')) {
+          if (current) current.items.push(item.substring(2));
+        } else {
+          if (current) current.items.push(item);
+          else current = { title: item, items: [item] };
+        }
       }
     });
     if (current) phases.push(current);
+    
     return phases;
   };
 
@@ -181,7 +253,7 @@ const SkillDetailPage = () => {
 
             {/* YouTube Videos */}
             <div style={{marginTop: '2rem'}}>
-              <h3 className="sl-section-title"><Play size={20} color="#ff0000" /> Top Learning Videos</h3>
+              <h3 className="sl-section-title"><Play size={20} color="#8b5cf6" /> Top Learning Videos</h3>
               {ytLoading ? (
                 <div className="sl-video-grid">
                   {[1,2,3,4,5].map(i => (
@@ -217,7 +289,7 @@ const SkillDetailPage = () => {
                   {skill.youtube_videos?.map((vid, idx) => (
                     <a key={idx} href={vid.url} target="_blank" rel="noreferrer" className="sl-link-card">
                       <div className="sl-link-top">
-                        <span className="sl-platform-badge" style={{color: '#ff0000', backgroundColor: 'rgba(255,0,0,0.1)'}}>YouTube</span>
+                        <span className="sl-platform-badge" style={{color: '#8b5cf6', backgroundColor: 'rgba(139,92,246,0.1)'}}>YouTube</span>
                         <ExternalLink size={16} color="var(--text-muted)" />
                       </div>
                       <h4 className="sl-link-title">{vid.title}</h4>
@@ -264,15 +336,24 @@ const SkillDetailPage = () => {
               {parsedRoadmap.map((phase, idx) => {
                 const PhaseIcon = PHASE_ICONS[idx % PHASE_ICONS.length];
                 const phaseColor = PHASE_COLORS[idx % PHASE_COLORS.length];
-                const isExpanded = expandedPhases[idx] !== false; // default expanded
-                const phaseCompleted = phase.items.every(item => completedSteps.includes(`${idx}-${item}`));
+                const isExpanded = !!expandedPhases[idx]; 
+                
+                const phaseCompleted = phase.items.length > 0 && phase.items.every(item => {
+                  const itemId = (typeof item === 'object' && item !== null) ? item.id : item;
+                  return completedSteps.includes(`${idx}-${itemId}`);
+                });
+
+                const completedInPhase = phase.items.filter(item => {
+                  const itemId = (typeof item === 'object' && item !== null) ? item.id : item;
+                  return completedSteps.includes(`${idx}-${itemId}`);
+                }).length;
 
                 return (
                   <div key={idx} className={`sl-timeline-node ${phaseCompleted ? 'completed' : ''}`}>
                     <div className="sl-node-marker">
                       <div className="sl-node-dot" style={{
-                        backgroundColor: phaseCompleted ? '#22c55e' : phaseColor,
-                        boxShadow: `0 0 16px ${phaseCompleted ? '#22c55e' : phaseColor}40`
+                        backgroundColor: phaseCompleted ? '#14b8a6' : phaseColor,
+                        boxShadow: `0 0 16px ${phaseCompleted ? '#14b8a6' : phaseColor}40`
                       }}>
                         <PhaseIcon size={10} color="white" />
                       </div>
@@ -280,26 +361,71 @@ const SkillDetailPage = () => {
                     </div>
                     <div className="sl-node-content">
                       <div className="sl-phase-header" onClick={() => togglePhaseExpand(idx)}>
-                        <h4 className="sl-node-title" style={{color: phaseColor}}>{phase.title}</h4>
+                        <div>
+                          <h4 className="sl-node-title" style={{color: phaseColor}}>{phase.title}</h4>
+                          {phase.description && <p className="sl-phase-desc">{phase.description}</p>}
+                        </div>
                         <div className="sl-phase-right">
                           <span className="sl-phase-count">
-                            {phase.items.filter(item => completedSteps.includes(`${idx}-${item}`)).length}/{phase.items.length}
+                            {completedInPhase}/{phase.items.length}
                           </span>
                           {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                         </div>
                       </div>
                       {isExpanded && phase.items.length > 0 && (
-                        <ul className="sl-node-list interactive">
+                        <ul className={`sl-node-list ${typeof phase.items[0] === 'object' ? 'structured' : 'interactive'}`}>
                           {phase.items.map((it, i) => {
-                            const stepKey = `${idx}-${it}`;
+                            const isObj = typeof it === 'object' && it !== null;
+                            const itemId = isObj ? it.id : it;
+                            const itemName = isObj ? it.name : it;
+                            const resources = isObj ? (it.resources || []) : [];
+                            
+                            const stepKey = `${idx}-${itemId}`;
                             const isDone = completedSteps.includes(stepKey);
+                            
+                            if (isObj) {
+                              // Use dynamically fetched resources or fallback to static ones
+                              const activeResources = topicResources[itemId] || resources;
+                              const isResLoading = resourceLoading[itemId];
+
+                              return (
+                                <li key={i} className={`sl-step-container ${isDone ? 'done' : ''}`}>
+                                  <div className="sl-step-header" onClick={() => toggleStep(stepKey)}>
+                                    {isDone ? <CheckSquare size={18} className="sl-check-icon done" /> : <Square size={18} className="sl-check-icon" />}
+                                    <span className="sl-step-name">{itemName}</span>
+                                  </div>
+                                  
+                                  {isResLoading ? (
+                                    <div className="sl-step-resources sl-grid" style={{marginTop: '0.8rem'}}>
+                                      <div className="sl-skeleton-bar" style={{width: '100%', height: '60px', borderRadius: '8px'}}></div>
+                                    </div>
+                                  ) : activeResources.length > 0 && (
+                                    <div className="sl-step-resources sl-link-grid" style={{marginTop: '0.8rem', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))'}}>
+                                      {activeResources.map((res, rIdx) => (
+                                        <a key={rIdx} href={res.url} target="_blank" rel="noreferrer" className="sl-link-card" style={{padding: '0.8rem', gap: '0.4rem'}}>
+                                          <div className="sl-link-top" style={{marginBottom: '0.2rem'}}>
+                                            <span className="sl-platform-badge" style={{fontSize: '0.65rem'}}>{res.source || 'Resource'}</span>
+                                            <ExternalLink size={14} color="var(--text-muted)" />
+                                          </div>
+                                          <span className="sl-res-title" style={{fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)'}}>{res.title}</span>
+                                          {res.description && (
+                                            <span className="sl-res-desc" style={{fontSize: '0.75rem', color: 'var(--text-muted)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>{res.description}</span>
+                                          )}
+                                        </a>
+                                      ))}
+                                    </div>
+                                  )}
+                                </li>
+                              );
+                            }
+
                             return (
                               <li key={i}
                                 className={`sl-step-item ${isDone ? 'done' : ''}`}
                                 onClick={() => toggleStep(stepKey)}
                               >
                                 {isDone ? <CheckSquare size={18} className="sl-check-icon done" /> : <Square size={18} className="sl-check-icon" />}
-                                <span>{it}</span>
+                                <span>{itemName}</span>
                               </li>
                             );
                           })}

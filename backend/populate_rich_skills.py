@@ -1,390 +1,212 @@
 import json
 import os
 import sys
+import pymongo
+from pymongo import MongoClient
+from dotenv import load_dotenv
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-NEW_SKILLS_DATA = {
-    "frontend": {
-        "id": "frontend",
-        "name": "Frontend Development",
-        "category": "Web Development",
-        "description": "Step by step guide to becoming a modern frontend developer. Learn how to build user interfaces, handle state management, and create engaging web applications.",
-        "overview": "Frontend development handles the visual and interactive aspects of a website that users interact with. Modern frontend development requires proficiency in HTML, CSS, and JavaScript, along with expertise in component-based frameworks like React, Vue, or Angular. You must also understand web performance, accessibility metrics, responsive design, and CSS architecture to build scalable single-page applications.",
-        "image_url": "https://images.unsplash.com/photo-1547658719-da2b51169166?q=80&w=2564&auto=format&fit=crop",
-        "roadmap": [
-            "1. Internet Basics",
-            "2. HTML, CSS, JavaScript",
-            "3. Version Control Systems",
-            "4. Web Security Knowledge",
-            "5. Package Managers (npm, yarn)",
-            "6. CSS Architecture",
-            "7. Frameworks (React, Vue, Angular)"
-        ],
-        "roadmap_url": "https://roadmap.sh/frontend",
-        "youtube_videos": [
-            {"title": "Web Development In 2024 - A Practical Guide", "url": "https://www.youtube.com/watch?v=zJSY8tbf_ys"},
-            {"title": "100+ Web Development Things you Should Know", "url": "https://www.youtube.com/watch?v=erEgovG9WBs"}
-        ],
-        "articles": [
-            {"title": "MDN Web Docs", "url": "https://developer.mozilla.org/"},
-            {"title": "CSS Tricks", "url": "https://css-tricks.com/"}
-        ],
-        "courses": [
-            {"name": "The Web Developer Bootcamp", "platform": "Udemy", "url": "https://www.udemy.com/"},
-            {"name": "CS50's Web Programming", "platform": "edX", "url": "https://www.edx.org/"}
-        ],
-        "practice": [
-            {"name": "Frontend Mentor", "url": "https://www.frontendmentor.io/"},
-            {"name": "HackerRank Web", "url": "https://www.hackerrank.com/"}
-        ]
-    },
-    "backend": {
-        "id": "backend",
-        "name": "Backend Development",
-        "category": "Web Development",
-        "description": "Step by step guide to becoming a modern backend developer. Learn how to build scalable APIs, handle databases, and implement server-side logic securely.",
-        "overview": "Backend development focuses on the server, databases, and application logic behind the scenes. It involves choosing languages like Python, Java, Node.js, or Go to build performant and secure APIs (REST, GraphQL, gRPC). Backend engineers also deal with database schema design (SQL vs NoSQL), caching strategies (Redis), message brokers (RabbitMQ/Kafka), and cloud deployment environments to ensure the system can handle large amounts of traffic efficiently.",
-        "image_url": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2670&auto=format&fit=crop",
-        "roadmap": [
-            "1. Internet and OS Basics",
-            "2. Pick a Language (Python, Go, Node.js, Java)",
-            "3. Relational Codebases & SQL",
-            "4. APIs (REST, GraphQL, gRPC)",
-            "5. Caching and Security",
-            "6. CI/CD and Docker",
-            "7. Message Brokers"
-        ],
-        "roadmap_url": "https://roadmap.sh/backend",
-        "youtube_videos": [
-            {"title": "Backend Web Development - A Complete Overview", "url": "https://www.youtube.com/watch?v=XBu54ncjgus"},
-            {"title": "APIs for Beginners", "url": "https://www.youtube.com/watch?v=GZvSYJDk-us"}
-        ],
-        "articles": [
-            {"title": "System Design Primer", "url": "https://github.com/donnemartin/system-design-primer"},
-            {"title": "REST API Best Practices", "url": "https://restfulapi.net/"}
-        ],
-        "courses": [
-            {"name": "Backend Development and APIs", "platform": "freeCodeCamp", "url": "https://www.freecodecamp.org/"},
-            {"name": "Complete Node.js Developer", "platform": "Udemy", "url": "https://www.udemy.com/"}
-        ],
-        "practice": [
-            {"name": "LeetCode Backend System Design", "url": "https://leetcode.com/discuss/interview-question/system-design"},
-            {"name": "HackerRank SQL", "url": "https://www.hackerrank.com/domains/sql"}
-        ]
-    },
-    "react": {
-        "id": "react",
-        "name": "React",
-        "category": "Web Development",
-        "description": "React is a declarative, efficient, and flexible JavaScript library for building user interfaces. It lets you compose complex UIs from small and isolated pieces of code called components.",
-        "overview": "Maintained by Meta, React is the most popular frontend framework for modern web applications. It utilizes a Virtual DOM for blazing-fast rendering and an ecosystem full of state-management libraries (Redux, Zustand) and routing solutions (React Router, Next.js). Mastering React involves deeply understanding component lifecycles, functional hooks, context API, and advanced performance optimization techniques.",
-        "image_url": "https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=2670&auto=format&fit=crop",
-        "roadmap": [
-            "1. JSX and Components",
-            "2. Props vs State",
-            "3. Component Lifecycle and Hooks",
-            "4. Routing (React Router)",
-            "5. Context API & State Management",
-            "6. React Ecosystem (Next.js)"
-        ],
-        "roadmap_url": "https://roadmap.sh/react",
-        "youtube_videos": [
-            {"title": "React Course - Beginner's Tutorial", "url": "https://www.youtube.com/watch?v=bMknfKXIFA8"},
-            {"title": "Learn React In 30 Minutes", "url": "https://www.youtube.com/watch?v=hQAHSlTtcmY"}
-        ],
-        "articles": [
-            {"title": "React Official Documentation", "url": "https://react.dev/"},
-            {"title": "Overreacted by Dan Abramov", "url": "https://overreacted.io/"}
-        ],
-        "courses": [
-            {"name": "React - The Complete Guide", "platform": "Udemy", "url": "https://www.udemy.com/course/react-the-complete-guide-incl-redux/"},
-            {"name": "Epic React", "platform": "EpicWeb", "url": "https://epicreact.dev/"}
-        ],
-        "practice": [
-            {"name": "Frontend Mentor", "url": "https://www.frontendmentor.io/"},
-            {"name": "CodeSandbox React Templates", "url": "https://codesandbox.io/"}
-        ]
-    },
-    "python": {
-        "id": "python",
-        "name": "Python",
-        "category": "Programming",
-        "description": "Python is a high-level, interpreted, general-purpose programming language widely known for its extremely clean code readability.",
-        "overview": "Python has become the undisputed king of Data Science, Artificial Intelligence, and highly rapid web development prototyping (via Django and FastAPI). Its extensive standard library and massive open-source ecosystem (PyPI) provide instant solutions for almost any domain, including system administration scripting, statistical modeling, and 3D graphics generation.",
-        "image_url": "https://images.unsplash.com/photo-1526379095098-d400fd0bfce8?q=80&w=2574&auto=format&fit=crop",
-        "roadmap": [
-            "1. Syntax Basics & Data Types",
-            "2. Data Structures",
-            "3. Object-Oriented Programming",
-            "4. Advanced (Decorators, Generators)",
-            "5. Memory Management",
-            "6. Package Managers (pip, poetry)"
-        ],
-        "roadmap_url": "https://roadmap.sh/python",
-        "youtube_videos": [
-            {"title": "Python for Beginners - Full Course", "url": "https://www.youtube.com/watch?v=eWRfhZUzrAc"},
-            {"title": "Advanced Python in 1 Hour", "url": "https://www.youtube.com/watch?v=vVj_0yX-x8w"}
-        ],
-        "articles": [
-            {"title": "Real Python Tutorials", "url": "https://realpython.com/"},
-            {"title": "The Hitchhiker's Guide to Python", "url": "https://docs.python-guide.org/"}
-        ],
-        "courses": [
-            {"name": "100 Days of Code: Python Pro", "platform": "Udemy", "url": "https://www.udemy.com/course/100-days-of-code/"},
-            {"name": "Python for Everybody", "platform": "Coursera", "url": "https://www.coursera.org/"}
-        ],
-        "practice": [
-            {"name": "LeetCode Python", "url": "https://leetcode.com/studyplan/programming-skills/"},
-            {"name": "HackerRank Python", "url": "https://www.hackerrank.com/domains/python"}
-        ]
-    },
-    "java": {
-        "id": "java",
-        "name": "Java",
-        "category": "Programming",
-        "description": "Java is an object-oriented, heavily typed language known for its 'write once, run anywhere' capability on the JVM.",
-        "overview": "Java is the backbone of massive enterprise architectures, Android application development, and large-scale data processing systems. Learning Java involves deeply understanding the Java Virtual Machine (JVM) internals, robust design patterns, thread management, and the massive Spring framework ecosystem for enterprise web services.",
-        "image_url": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2670&auto=format&fit=crop",
-        "roadmap": [
-            "1. JVM Architecture",
-            "2. Java Syntax & OOP",
-            "3. Collections Framework",
-            "4. Multi-threading",
-            "5. Java Streams & Lambdas",
-            "6. Build Tools (Maven/Gradle)"
-        ],
-        "roadmap_url": "https://roadmap.sh/java",
-        "youtube_videos": [
-            {"title": "Java Tutorial for Beginners", "url": "https://www.youtube.com/watch?v=eIrMbAQSU34"}
-        ],
-        "articles": [
-            {"title": "Baeldung - Java Guides", "url": "https://www.baeldung.com/"}
-        ],
-        "courses": [
-            {"name": "Java Programming Masterclass", "platform": "Udemy", "url": "https://www.udemy.com/"}
-        ],
-        "practice": [
-            {"name": "HackerRank Java", "url": "https://www.hackerrank.com/domains/java"},
-            {"name": "CodingBat Java", "url": "https://codingbat.com/java"}
-        ]
-    },
-    "cyber_security": {
-        "id": "cyber_security",
-        "name": "Cyber Security",
-        "category": "Cybersecurity",
-        "description": "Discover how to protect computer systems, networks, and confidential data from vicious digital attacks and vulnerabilities.",
-        "overview": "Cyber security covers everything from Ethical Hacking, Penetration Testing, and Vulnerability Assessment to Risk Management and Cryptography. You will learn to think like an attacker in order to build impenetrable defense mechanisms. Essential topics include recognizing OWASP Top 10 vulnerabilities, deploying firewalls, network monitoring, and implementing robust Zero Trust architecture schemas.",
-        "image_url": "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?q=80&w=2670&auto=format&fit=crop",
-        "roadmap": [
-            "1. IT Fundamentals (Networking, OS)",
-            "2. Network Security",
-            "3. Systems Security",
-            "4. Cryptography",
-            "5. Penetration Testing",
-            "6. Risk Management"
-        ],
-        "roadmap_url": "https://roadmap.sh/cyber-security",
-        "youtube_videos": [
-            {"title": "Cybersecurity Full Course for Beginner", "url": "https://www.youtube.com/watch?v=U_P23SqJaDc"}
-        ],
-        "articles": [
-            {"title": "OWASP Top Ten", "url": "https://owasp.org/www-project-top-ten/"}
-        ],
-        "courses": [
-            {"name": "CompTIA Security+ Certification", "platform": "Udemy", "url": "https://www.udemy.com/"}
-        ],
-        "practice": [
-            {"name": "Hack The Box", "url": "https://www.hackthebox.com/"},
-            {"name": "TryHackMe", "url": "https://tryhackme.com/"}
-        ]
-    },
-    "cpp": {
-        "id": "cpp",
-        "name": "C++",
-        "category": "Programming",
-        "description": "C++ is a highly performant, compiled language frequently utilized in game engines, high-frequency trading, and operating systems.",
-        "overview": "C++ provides developers with extensive control over system resources and memory allocation. It builds upon C by adding object-oriented features, templates, and the powerful Standard Template Library (STL). Professional game development (Unreal Engine), financial systems, and performance-critical software architectures heavily rely on the raw execution speed generated uniquely by C++ binaries.",
-        "image_url": "https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=2670&auto=format&fit=crop",
-        "roadmap": [
-            "1. Basic Syntax and Pointers",
-            "2. Object Oriented Programming",
-            "3. Memory Management (New/Delete, Smart Pointers)",
-            "4. Standard Template Library (STL)",
-            "5. Concurrency",
-            "6. Template Metaprogramming"
-        ],
-        "roadmap_url": "https://roadmap.sh/cpp",
-        "youtube_videos": [
-            {"title": "C++ Programming Full Course", "url": "https://www.youtube.com/watch?v=vLnPwxZdW4Y"}
-        ],
-        "articles": [
-            {"title": "C++ Reference", "url": "https://en.cppreference.com/w/"}
-        ],
-        "courses": [
-            {"name": "Beginning C++ Programming", "platform": "Udemy", "url": "https://www.udemy.com/"}
-        ],
-        "practice": [
-            {"name": "LeetCode C++", "url": "https://leetcode.com/"},
-            {"name": "HackerRank C++", "url": "https://www.hackerrank.com/domains/cpp"}
-        ]
-    },
-    "csharp": {
-        "id": "csharp",
-        "name": "C#",
-        "category": "Programming",
-        "description": "A modern, object-oriented language developed by Microsoft combining the computing power of C++ with the programming ease of Visual Basic.",
-        "overview": "C# runs entirely on the .NET framework, making it an exceptional choice for Windows desktop applications, robust enterprise backend infrastructure, and video game development utilizing the Unity engine. C# boasts massive improvements over time with extremely strong typing, asynchronous task functionality, and Language Integrated Query (LINQ) to interact flawlessly with databases in native code.",
-        "image_url": "https://images.unsplash.com/photo-1550439062-609e1531270e?q=80&w=2670&auto=format&fit=crop",
-        "roadmap": [
-            "1. Basic Syntax and Data Types",
-            "2. Classes and Object-Oriented Principles",
-            "3. Interfaces and Generics",
-            "4. LINQ (Language-Integrated Query)",
-            "5. Asynchronous Programming (async/await)",
-            "6. .NET Core Fundamentals"
-        ],
-        "roadmap_url": "https://roadmap.sh/dotnet",
-        "youtube_videos": [
-            {"title": "C# Full Course for Beginners", "url": "https://www.youtube.com/watch?v=GhQdlIFylQ8"}
-        ],
-        "articles": [
-            {"title": "Microsoft C# Documentation", "url": "https://learn.microsoft.com/en-us/dotnet/csharp/"}
-        ],
-        "courses": [
-            {"name": "C# Masterclass", "platform": "Udemy", "url": "https://www.udemy.com/"}
-        ],
-        "practice": [
-            {"name": "Codewars C#", "url": "https://www.codewars.com/"}
-        ]
-    },
-    "rust": {
-        "id": "rust",
-        "name": "Rust",
-        "category": "Programming",
-        "description": "Rust is a blazing-fast and memory-efficient systems programming language that guarantees memory safety and thread safety without a garbage collector.",
-        "overview": "Consistently voted the 'most loved programming language', Rust prevents segfaults and data races at compile time via its unique Ownership and Borrowing system. Rust empowers developers to confidently write performant abstractions for embedded systems, WebAssembly (Wasm) frontends, blockchain ecosystems, and highly concurrent networked web servers. ",
-        "image_url": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=2668&auto=format&fit=crop",
-        "roadmap": [
-            "1. Variables and Mutability",
-            "2. Ownership and Borrowing Rules",
-            "3. Structs and Enums",
-            "4. Pattern Matching",
-            "5. Lifetimes",
-            "6. Concurrency and Unsafe Rust"
-        ],
-        "roadmap_url": "https://roadmap.sh/rust",
-        "youtube_videos": [
-            {"title": "Rust Crash Course", "url": "https://www.youtube.com/watch?v=zF34dRivLOw"}
-        ],
-        "articles": [
-            {"title": "The Rust Programming Language Book", "url": "https://doc.rust-lang.org/book/"}
-        ],
-        "courses": [
-            {"name": "Ultimate Rust Crash Course", "platform": "Udemy", "url": "https://www.udemy.com/"}
-        ],
-        "practice": [
-            {"name": "Rustlings", "url": "https://github.com/rust-lang/rustlings"}
-        ]
-    },
-    "php": {
-        "id": "php",
-        "name": "PHP",
-        "category": "Web Development",
-        "description": "PHP is a highly widespread open-source scripting language that is especially suited for backend web development and can be embedded into HTML.",
-        "overview": "Powering massive content management systems like WordPress, Drupal, and Joomla, PHP runs roughly 80% of the entire internet's backend. In the modern era, PHP is incredibly robust and object-oriented, particularly through popular enterprise level MVC frameworks like Laravel and Symfony. It provides a simple learning curve but contains deep capabilities for high-throughput scaling.",
-        "image_url": "https://images.unsplash.com/photo-1599507593499-a3f7d7d97667?q=80&w=2670&auto=format&fit=crop",
-        "roadmap": [
-            "1. Basic Syntax and Forms",
-            "2. Arrays and Superglobals",
-            "3. Session & Cookies",
-            "4. Object-Oriented PHP",
-            "5. PDO & Database Security",
-            "6. Frameworks (Laravel, Symfony)"
-        ],
-        "roadmap_url": "https://roadmap.sh/php",
-        "youtube_videos": [
-            {"title": "PHP Programming Course", "url": "https://www.youtube.com/watch?v=OK_JCtrrv-c"}
-        ],
-        "articles": [
-            {"title": "PHP The Right Way", "url": "https://phptherightway.com/"}
-        ],
-        "courses": [
-            {"name": "PHP for Beginners", "platform": "Udemy", "url": "https://www.udemy.com/"}
-        ],
-        "practice": [
-            {"name": "Exercism PHP", "url": "https://exercism.org/tracks/php"}
-        ]
-    },
-    "ruby": {
-        "id": "ruby",
-        "name": "Ruby",
-        "category": "Programming",
-        "description": "Ruby is a dynamic, open-source programming language with a focus on absolute simplicity and developer productivity.",
-        "overview": "Ruby is designed specifically to make programming a joyful experience, famously utilizing the paradigm that 'everything is an object'. While capable of being used entirely on its own, Ruby reached widespread global dominance due to Ruby on Rails—a highly opinionated, full-stack MVC framework powering major tech giants like GitHub, Shopify, and Airbnb with rapid iterations.",
-        "image_url": "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=2669&auto=format&fit=crop",
-        "roadmap": [
-            "1. Variables and Methods",
-            "2. Control Flow and Iterators",
-            "3. Blocks, Procs, and Lambdas",
-            "4. Object-Oriented Programming Classes",
-            "5. Modules and Mixins",
-            "6. Ruby on Rails Basics"
-        ],
-        "roadmap_url": "https://roadmap.sh/ruby-on-rails",
-        "youtube_videos": [
-            {"title": "Ruby Programming Language - Full Course", "url": "https://www.youtube.com/watch?v=t_ispmWmdjY"}
-        ],
-        "articles": [
-            {"title": "Ruby Documentation", "url": "https://ruby-doc.org/"}
-        ],
-        "courses": [
-            {"name": "Complete Ruby on Rails Developer", "platform": "Udemy", "url": "https://www.udemy.com/"}
-        ],
-        "practice": [
-            {"name": "Codewars Ruby", "url": "https://www.codewars.com/"}
-        ]
-    },
-    "swift": {
-        "id": "swift",
-        "name": "Swift",
-        "category": "Mobile Development",
-        "description": "Swift is an incredibly robust and intuitive modern programming language created by Apple for building high-quality apps across iOS, Mac, Apple TV, and Apple Watch.",
-        "overview": "Replacing Objective-C, Swift is designed to be completely safe against errors (preventing null pointer exceptions) while being blistering fast. The ecosystem integrates heavily with Xcode, utilizing declarative UI technologies like SwiftUI to build gorgeous, deeply integrated applications specifically for Apple's monolithic hardware ecosystem.",
-        "image_url": "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=2670&auto=format&fit=crop",
-        "roadmap": [
-            "1. Swift Basics (Optionals, Try/Catch)",
-            "2. Structs vs Classes",
-            "3. Protocols and Extensions",
-            "4. SwiftUI Basics",
-            "5. State Management (ObservableObject)",
-            "6. Networking & CoreData"
-        ],
-        "roadmap_url": "https://roadmap.sh/ios",
-        "youtube_videos": [
-            {"title": "Swift Programming Course for Beginners", "url": "https://www.youtube.com/watch?v=8Xg7E9shq0U"}
-        ],
-        "articles": [
-            {"title": "Swift Documentation", "url": "https://docs.swift.org/swift-book/"}
-        ],
-        "courses": [
-            {"name": "iOS App Development Course", "platform": "Udemy", "url": "https://www.udemy.com/"}
-        ],
-        "practice": [
-            {"name": "Hacking with Swift", "url": "https://www.hackingwithswift.com/"}
-        ]
+def make_skill(id_str, name, category, desc, overview, image_url, phases, roadmap_url, videos, articles, courses, practice):
+    return {
+        "name": name,
+        "category": category,
+        "description": desc,
+        "overview": overview,
+        "image_url": image_url,
+        "roadmap": phases,
+        "roadmap_url": roadmap_url,
+        "youtube_videos": videos,
+        "articles": articles,
+        "courses": courses,
+        "practice": practice,
+        "prerequisites": [],
+        "career_roles": [],
+        "use_cases": []
     }
+
+def make_phase(phase_num, title, desc, time, topics):
+    return {
+        "phase": f"Phase {phase_num}: {title}",
+        "description": desc,
+        "estimated_time": time,
+        "topics": topics
+    }
+
+def make_topic(t_id, name, resources):
+    return {"id": t_id, "name": name, "resources": resources}
+
+def make_res(title, url, type_str, source):
+    return {"title": title, "url": url, "type": type_str, "source": source}
+
+# Define resources for frontend
+fe_phases = [
+    make_phase(1, "Internet & Foundations", "Understand the absolute basics of how the web works.", "1-2 Weeks", [
+        make_topic("fe-internet", "How the Internet Works", [make_res("MDN: How the Web Works", "https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/How_the_Web_works", "article", "MDN")])
+    ]),
+    make_phase(2, "HTML & CSS Core", "Learn to structure and style web pages properly.", "3-4 Weeks", [
+        make_topic("fe-html", "Semantic HTML", [make_res("HTML Crash Course", "https://www.freecodecamp.org/news/html-crash-course/", "article", "freeCodeCamp")])
+    ]),
+    make_phase(3, "JavaScript Deep Dive", "Adding interactivity and logic to the browser.", "4-6 Weeks", [
+        make_topic("fe-js", "ES6+ and DOM", [make_res("JavaScript Info", "https://javascript.info/", "documentation", "Ilya Kantor")])
+    ]),
+    make_phase(4, "Frontend Frameworks", "Learn industry-standard reactive frameworks like React/Vue.", "4-8 Weeks", [
+        make_topic("fe-react", "React Fundamentals", [make_res("React Docs", "https://react.dev/", "documentation", "React")])
+    ]),
+    make_phase(5, "Advanced System Design", "Web Performance, CI/CD, and SSR (Next.js/Nuxt).", "Ongoing", [
+        make_topic("fe-ssr", "Server Side Rendering", [make_res("Next.js Foundations", "https://nextjs.org/learn/foundations/about-nextjs", "documentation", "Vercel")])
+    ])
+]
+
+# Define resources for backend
+be_phases = [
+    make_phase(1, "Internet & OS Basics", "Understand networking, OS, and terminal commands.", "2-3 Weeks", [
+        make_topic("be-os", "OS and Terminal", [make_res("Linux Journey", "https://linuxjourney.com/", "practice", "LinuxJourney")])
+    ]),
+    make_phase(2, "Backend Languages", "Learn a server-side language (Python, Node, Go, Java).", "4-6 Weeks", [
+        make_topic("be-lang", "Language Mastery", [make_res("Python standard library", "https://docs.python.org/3/", "documentation", "Python.org")])
+    ]),
+    make_phase(3, "Databases & ORMs", "Master Relational (SQL) and NoSQL databases.", "4-8 Weeks", [
+        make_topic("be-sql", "SQL & Postgres", [make_res("PostgreSQL Tutorial", "https://www.postgresqltutorial.com/", "article", "Postgresqltutorial")])
+    ]),
+    make_phase(4, "APIs & Arch", "REST, GraphQL, microservices.", "4-6 Weeks", [
+        make_topic("be-api", "REST APIs", [make_res("REST API Guidelines", "https://restfulapi.net/", "article", "REST API")])
+    ]),
+    make_phase(5, "Scale & Deployment", "Docker, Kubernetes, CI/CD.", "Ongoing", [
+        make_topic("be-docker", "Containerization", [make_res("Docker Getting Started", "https://docs.docker.com/get-started/", "documentation", "Docker")])
+    ])
+]
+
+# React
+react_phases = [
+    make_phase(1, "Foundations", "JSX and Components", "1-2 Weeks", [
+        make_topic("react-jsx", "JSX & Rendering", [make_res("React Docs: Writing Markup", "https://react.dev/learn/writing-markup-with-jsx", "documentation", "React")])
+    ]),
+    make_phase(2, "Core Concepts", "State and Props", "2-3 Weeks", [
+        make_topic("react-state", "useState Hook", [make_res("State: A Component's Memory", "https://react.dev/learn/state-a-components-memory", "documentation", "React")])
+    ]),
+    make_phase(3, "Effects", "Effects and Lifecycle", "2-3 Weeks", [
+        make_topic("react-effects", "useEffect Hook", [make_res("Synchronizing with Effects", "https://react.dev/learn/synchronizing-with-effects", "documentation", "React")])
+    ]),
+    make_phase(4, "Advanced Topics", "Context, Styling, Routing", "3-5 Weeks", [
+        make_topic("react-context", "Context API", [make_res("Passing Data Deeply with Context", "https://react.dev/learn/passing-data-deeply-with-context", "documentation", "React")])
+    ]),
+    make_phase(5, "Ecosystem", "Frameworks and Perf", "Ongoing", [
+        make_topic("react-nextjs", "Next.js & SSR", [make_res("Next.js Tutorial", "https://nextjs.org/learn", "course", "Vercel")])
+    ])
+]
+
+python_phases = [
+    make_phase(1, "Foundations", "Variables and Loops", "2-3 Weeks", [make_topic("py-basics", "Syntax, Lists", [make_res("Python 3", "https://docs.python.org/3/tutorial/index.html", "documentation", "Python")])]),
+    make_phase(2, "Core Concepts", "Classes & OOP", "3-4 Weeks", [make_topic("py-oop", "OOP", [make_res("OOP in Python", "https://realpython.com/python3-object-oriented-programming/", "article", "Real Python")])]),
+    make_phase(3, "Data Structs", "Generators, Contexts", "3-5 Weeks", [make_topic("py-adv", "Generators", [make_res("Decorators", "https://realpython.com/primer-on-python-decorators/", "article", "Real Python")])]),
+    make_phase(4, "Advanced", "Concurrency & Web", "4-6 Weeks", [make_topic("py-web", "Frameworks", [make_res("FastAPI", "https://fastapi.tiangolo.com/", "documentation", "Tiangolo")])]),
+    make_phase(5, "Ecosystem", "AI & Data Science", "Ongoing", [make_topic("py-data", "Pandas", [make_res("Pandas", "https://pandas.pydata.org/", "documentation", "Pandas")])])
+]
+
+java_phases = [
+    make_phase(1, "Foundations", "JVM and Basics", "2-3 Weeks", [make_topic("java-intro", "JVM", [make_res("Java", "https://dev.java/learn/", "documentation", "Oracle")])]),
+    make_phase(2, "Core Concepts", "OOP and Interfaces", "3-5 Weeks", [make_topic("java-oop", "Classes", [make_res("OOP", "https://www.baeldung.com/java-oop", "article", "Baeldung")])]),
+    make_phase(3, "Collections", "List, Set, Map", "3-4 Weeks", [make_topic("java-col", "Collections", [make_res("Java Maps", "https://www.baeldung.com/java-collections", "article", "Baeldung")])]),
+    make_phase(4, "Advanced", "Concurrency & Streams", "4-6 Weeks", [make_topic("java-stream", "Streams", [make_res("Java 8 Streams", "https://www.baeldung.com/java-8-streams", "article", "Baeldung")])]),
+    make_phase(5, "Ecosystem", "Spring Boot", "Ongoing", [make_topic("java-spring", "Spring", [make_res("Spring Boot Docs", "https://spring.io/projects/spring-boot", "documentation", "Spring")])])
+]
+
+cyber_phases = [
+    make_phase(1, "Foundations", "Networking", "4-6 Weeks", [make_topic("cs-net", "TCP/IP", [make_res("Network Basics", "https://www.cisco.com/", "article", "Cisco")])]),
+    make_phase(2, "Core Concepts", "Threats", "4-8 Weeks", [make_topic("cs-threats", "Malware", [make_res("Threat Landscape", "https://www.kaspersky.com/", "article", "Kaspersky")])]),
+    make_phase(3, "Security", "Network Security", "5-7 Weeks", [make_topic("cs-fw", "Firewalls", [make_res("Nmap Guide", "https://nmap.org/", "documentation", "Nmap")])]),
+    make_phase(4, "Advanced", "Pen-testing", "6-10 Weeks", [make_topic("cs-pen", "Penetration Testing", [make_res("OWASP Top 10", "https://owasp.org/", "article", "OWASP")])]),
+    make_phase(5, "Ecosystem", "Socs", "Ongoing", [make_topic("cs-soc", "SOC Analyst", [make_res("Splunk", "https://www.splunk.com/", "documentation", "Splunk")])])
+]
+
+cpp_phases = [
+    make_phase(1, "Foundations", "Basics & Pointers", "2-3 Weeks", [make_topic("cpp-basics", "Syntax, Loops", [make_res("LearnCpp", "https://www.learncpp.com/", "documentation", "LearnCpp.com")])]),
+    make_phase(2, "Core Concepts", "OOP", "3-4 Weeks", [make_topic("cpp-oop", "Classes", [make_res("C++ Classes", "https://en.cppreference.com/w/cpp/language/classes", "documentation", "cppreference")])]),
+    make_phase(3, "Techniques", "Memory & STL", "4-6 Weeks", [make_topic("cpp-stl", "STL", [make_res("STL Containers", "https://en.cppreference.com/w/", "documentation", "cppreference")])]),
+    make_phase(4, "Advanced", "Concurrency", "5-8 Weeks", [make_topic("cpp-conc", "Threading", [make_res("C++ Threading", "https://en.cppreference.com/w/cpp/thread", "documentation", "cppreference")])]),
+    make_phase(5, "Ecosystem", "Game Engines", "Ongoing", [make_topic("cpp-game", "Unreal Engine", [make_res("Unreal Docs", "https://docs.unrealengine.com/", "documentation", "Epic")])])
+]
+
+csharp_phases = [
+    make_phase(1, "Foundations", "Basics", "2-3 Weeks", [make_topic("cs-basics", "Syntax", [make_res("C# Docs", "https://learn.microsoft.com/en-us/dotnet/csharp/", "documentation", "Microsoft")])]),
+    make_phase(2, "Core Concepts", "OOP", "2-4 Weeks", [make_topic("cs-oop", "Classes", [make_res("OOP in C#", "https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/object-oriented/", "article", "Microsoft")])]),
+    make_phase(3, "Techniques", "LINQ", "3-4 Weeks", [make_topic("cs-linq", "LINQ Queries", [make_res("LINQ", "https://learn.microsoft.com/en-us/dotnet/csharp/linq/", "documentation", "Microsoft")])]),
+    make_phase(4, "Advanced", "Async", "3-5 Weeks", [make_topic("cs-async", "Async/Await", [make_res("Async Programming", "https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/", "article", "Microsoft")])]),
+    make_phase(5, "Ecosystem", ".NET & Unity", "Ongoing", [make_topic("cs-net", ".NET Core", [make_res(".NET Guides", "https://dotnet.microsoft.com/learn", "course", "Microsoft")])])
+]
+
+rust_phases = [
+    make_phase(1, "Foundations", "Ownership", "3-4 Weeks", [make_topic("rust-basics", "The Book", [make_res("Rust Book", "https://doc.rust-lang.org/book/", "documentation", "Rust Lang")])]),
+    make_phase(2, "Core Concepts", "Structs & Enums", "3-4 Weeks", [make_topic("rust-struct", "Data Types", [make_res("Rust Enums", "https://doc.rust-lang.org/book/ch06-00-enums.html", "article", "Rust")])]),
+    make_phase(3, "Techniques", "Lifetimes", "4-6 Weeks", [make_topic("rust-life", "Lifetimes", [make_res("Validating References", "https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html", "article", "Rust")])]),
+    make_phase(4, "Advanced", "Concurrency", "4-6 Weeks", [make_topic("rust-conc", "Fearless Concurrency", [make_res("Threads", "https://doc.rust-lang.org/book/ch16-00-concurrency.html", "article", "Rust")])]),
+    make_phase(5, "Ecosystem", "WebAssembly", "Ongoing", [make_topic("rust-wasm", "WASM", [make_res("Rust WASM", "https://rustwasm.github.io/docs/book/", "documentation", "RustWasm")])])
+]
+
+php_phases = [
+    make_phase(1, "Foundations", "Basics", "1-2 Weeks", [make_topic("php-basics", "Syntax", [make_res("PHP Docs", "https://www.php.net/manual/en/", "documentation", "PHP")])]),
+    make_phase(2, "Core Concepts", "OOP", "2-3 Weeks", [make_topic("php-oop", "Classes", [make_res("PHP OOP", "https://www.php.net/manual/en/language.oop5.php", "article", "PHP")])]),
+    make_phase(3, "Techniques", "Databases", "3-4 Weeks", [make_topic("php-db", "PDO", [make_res("PHP Data Objects", "https://www.php.net/manual/en/book.pdo.php", "article", "PHP")])]),
+    make_phase(4, "Advanced", "Security", "3-5 Weeks", [make_topic("php-sec", "Sanitization", [make_res("PHP Security", "https://phptherightway.com/#security", "article", "PHP The Right Way")])]),
+    make_phase(5, "Ecosystem", "Laravel", "Ongoing", [make_topic("php-laravel", "Laravel", [make_res("Laravel Docs", "https://laravel.com/docs", "documentation", "Laravel")])])
+]
+
+ruby_phases = [
+    make_phase(1, "Foundations", "Basics", "1-2 Weeks", [make_topic("ruby-basics", "Syntax", [make_res("Ruby Docs", "https://www.ruby-lang.org/en/documentation/", "documentation", "Ruby")])]),
+    make_phase(2, "Core Concepts", "OOP", "2-3 Weeks", [make_topic("ruby-oop", "Classes", [make_res("Ruby OOP", "https://rubymonk.com/", "article", "RubyMonk")])]),
+    make_phase(3, "Techniques", "Blocks", "2-4 Weeks", [make_topic("ruby-blocks", "Blocks & Procs", [make_res("Ruby Blocks", "https://www.rubyguides.com/2016/02/ruby-procs-and-lambdas/", "article", "Ruby Guides")])]),
+    make_phase(4, "Advanced", "Metaprogramming", "3-5 Weeks", [make_topic("ruby-meta", "Metaprogramming", [make_res("Metaprogramming Ruby", "https://rubymonk.com/learning/books/2-metaprogramming-ruby", "article", "RubyMonk")])]),
+    make_phase(5, "Ecosystem", "Rails", "Ongoing", [make_topic("ruby-rails", "Ruby on Rails", [make_res("Rails Guides", "https://guides.rubyonrails.org/", "documentation", "Rails")])])
+]
+
+swift_phases = [
+    make_phase(1, "Foundations", "Basics", "2-3 Weeks", [make_topic("swift-basics", "Syntax", [make_res("Swift.org", "https://www.swift.org/documentation/", "documentation", "Swift")])]),
+    make_phase(2, "Core Concepts", "Optionals", "2-4 Weeks", [make_topic("swift-opt", "Optionals", [make_res("Optionals Guide", "https://docs.swift.org/swift-book/LanguageGuide/TheBasics.html", "article", "Apple")])]),
+    make_phase(3, "Techniques", "Protocols", "3-5 Weeks", [make_topic("swift-proto", "Protocols", [make_res("Protocols", "https://docs.swift.org/swift-book/LanguageGuide/Protocols.html", "article", "Apple")])]),
+    make_phase(4, "Advanced", "Concurrency", "4-6 Weeks", [make_topic("swift-async", "Async/Await", [make_res("Concurrency", "https://docs.swift.org/swift-book/LanguageGuide/Concurrency.html", "article", "Apple")])]),
+    make_phase(5, "Ecosystem", "SwiftUI", "Ongoing", [make_topic("swift-ui", "SwiftUI", [make_res("SwiftUI Tutorials", "https://developer.apple.com/tutorials/swiftui/", "course", "Apple")])])
+]
+
+
+NEW_SKILLS_DATA = {
+    "frontend": make_skill(
+        "frontend", "Frontend Development", "Web Development", "Build beautiful user interfaces.", 
+        "Frontend focuses on constructing the visual aspects of web applications, ensuring a seamless user experience.",
+        "https://images.unsplash.com/photo-1593720213428-28a5b9e94613?q=80&w=2670&auto=format&fit=crop", 
+        fe_phases, "https://roadmap.sh/frontend", [], [], [], []
+    ),
+    "backend": make_skill(
+        "backend", "Backend Development", "Web Development", "Power applications with server-side logic.",
+        "Backend powers the application architecture, APIs, authentication, and fast data querying behind the scenes.",
+        "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2670&auto=format&fit=crop",
+        be_phases, "https://roadmap.sh/backend", [], [], [], []
+    ),
+    "react": make_skill("react", "React", "Web Development", "Declarative UI Framework.", "Virtual DOM rendering for complex applications.", "https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=2670", react_phases, "https://roadmap.sh/react", [], [], [], []),
+    "python": make_skill("python", "Python", "Programming", "High level scripted programming.", "Number one for Data Science and versatile.", "https://images.unsplash.com/photo-1526379095098-d400fd0bfce8?q=80&w=2574", python_phases, "https://roadmap.sh/python", [], [], [], []),
+    "java": make_skill("java", "Java", "Programming", "Enterprise class OOP.", "Run anywhere with the JVM.", "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2670", java_phases, "https://roadmap.sh/java", [], [], [], []),
+    "cyber_security": make_skill("cyber_security", "Cyber Security", "Cybersecurity", "Network defense and hacking.", "Pen-testing, AppSec, Risk Assessment.", "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?q=80&w=2670", cyber_phases, "https://roadmap.sh/cyber-security", [], [], [], []),
+    "cpp": make_skill("cpp", "C++", "Programming", "Highly performant systems.", "Used in Game development and finance.", "https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=2670", cpp_phases, "https://roadmap.sh/cpp", [], [], [], []),
+    "csharp": make_skill("csharp", "C#", "Programming", "Microsoft's .NET language.", "Enterprise Web APIs and Unity Game Dev.", "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2670", csharp_phases, "", [], [], [], []),
+    "rust": make_skill("rust", "Rust", "Programming", "Memory safety and low latency.", "System toolings, WASM, and Web Servers.", "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2670", rust_phases, "", [], [], [], []),
+    "php": make_skill("php", "PHP", "Programming", "The web's most popular backend.", "Powers WordPress and server-rendered tools.", "https://images.unsplash.com/photo-1593720213428-28a5b9e94613?q=80&w=2670", php_phases, "", [], [], [], []),
+    "ruby": make_skill("ruby", "Ruby", "Programming", "Developer happiness first.", "Known for the famous Ruby on Rails.", "https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=2670", ruby_phases, "", [], [], [], []),
+    "swift": make_skill("swift", "Swift", "Programming", "Apple's UI language.", "The undisputed champion for iOS development.", "https://images.unsplash.com/photo-1526379095098-d400fd0bfce8?q=80&w=2574", swift_phases, "", [], [], [], [])
 }
 
-dumped_dict = json.dumps(NEW_SKILLS_DATA, indent=4)
-# convert true/false/null depending on what's there
-dumped_dict = dumped_dict.replace('null', 'None')
-dumped_dict = dumped_dict.replace('true', 'True')
-dumped_dict = dumped_dict.replace('false', 'False')
+def populate_database(db_url):
+    client = MongoClient(db_url)
+    db = client.career_ai
+    skills_collection = db.skills
+    result = skills_collection.delete_many({})
+    print(f"Cleared {result.deleted_count} existing skills from database.")
 
-output_code = "from typing import List, Dict, Any\n\nSKILLS_DATA: Dict[str, Any] = " + dumped_dict + "\n"
+    for skill_id, skill_data in NEW_SKILLS_DATA.items():
+        skills_collection.insert_one(skill_data)
+        print(f"Successfully inserted detailed skill: {skill_data['name']}")
 
-with open('app/data/skills_data.py', 'w') as f:
-    f.write(output_code)
-
-print("Updated skills successfully")
+if __name__ == "__main__":
+    load_dotenv()
+    mongo_uri = os.getenv("MONGO_URI", "mongodb://localhost:27017")
+    print(f"Connecting to MongoDB at: {mongo_uri}")
+    populate_database(mongo_uri)
