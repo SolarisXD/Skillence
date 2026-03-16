@@ -7,6 +7,7 @@ import {
   Eye, Clock, Calendar, CheckSquare, Square, ChevronDown,
   ChevronUp, Zap, Target, Layers, Code2, Rocket
 } from 'lucide-react';
+import { apiUrl } from '../../utils/api';
 import './SkillLibraries.css';
 
 const PHASE_ICONS = [Layers, Code2, Target, Zap, Rocket];
@@ -30,7 +31,7 @@ const SkillDetailPage = () => {
   const fetchSkillDetail = async () => {
     try {
       setIsLoading(true);
-      const res = await fetch(`/api/skills/${skill_id}`);
+      const res = await fetch(apiUrl(`/api/skills/${skill_id}`));
       if (res.ok) {
         const data = await res.json();
         setSkill(data);
@@ -52,7 +53,7 @@ const SkillDetailPage = () => {
     if (ytVideos.length > 0 || ytLoading) return;
     setYtLoading(true);
     try {
-      const res = await fetch(`/api/skills/youtube/${skill_id}`);
+      const res = await fetch(apiUrl(`/api/skills/youtube/${skill_id}`));
       if (res.ok) {
         const data = await res.json();
         setYtVideos(data.videos || []);
@@ -76,7 +77,7 @@ const SkillDetailPage = () => {
       // Persist to server
       const token = localStorage.getItem('token');
       if (token) {
-        fetch('/api/skills/user/activity', {
+        fetch(apiUrl('/api/skills/user/activity'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify({ skill_id, is_saved: true, completed_steps: next })
@@ -125,7 +126,7 @@ const SkillDetailPage = () => {
     
     setResourceLoading(prev => ({...prev, [topicId]: true}));
     try {
-      const res = await fetch(`/api/skills/${skill_id}/resources?topic=${encodeURIComponent(topicName)}`);
+      const res = await fetch(apiUrl(`/api/skills/${skill_id}/resources?topic=${encodeURIComponent(topicName)}`));
       if (res.ok) {
         const data = await res.json();
         setTopicResources(prev => ({...prev, [topicId]: data.resources || []}));

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
+import { apiUrl } from '../utils/api';
 import '../styles/AuthModal.css';
 
 const AuthModal = ({ isOpen, onClose, mode, onSwitchMode, onSuccess }) => {
@@ -38,7 +39,7 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode, onSuccess }) => {
           return;
         }
 
-        const response = await fetch('http://localhost:8000/api/auth/register', {
+        const response = await fetch(apiUrl('/api/auth/register'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -73,7 +74,7 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode, onSuccess }) => {
           setError(errorData.detail || 'Registration failed');
         }
       } else {
-        const response = await fetch('http://localhost:8000/api/auth/login', {
+        const response = await fetch(apiUrl('/api/auth/login'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -254,7 +255,7 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode, onSuccess }) => {
               setGoogleLoading(true);
               setError('');
               try {
-                const response = await fetch('http://localhost:8000/api/auth/google-login', {
+                const response = await fetch(apiUrl('/api/auth/google-login'), {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({ token: credentialResponse.credential }),

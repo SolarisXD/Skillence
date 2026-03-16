@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { BarChart3, Target, Briefcase, TrendingUp, AlertTriangle, Bot, CheckCircle, Lightbulb, Sparkles, Book, X, MapPin, Building, Settings, Check } from 'lucide-react';
+import { apiUrl } from '../../../../utils/api';
 import './SalaryPredictor.css';
 
 // API Configuration
-const API_BASE_URL = 'http://localhost:8000/api/job-trends';
+const API_BASE_URL = apiUrl('/api/job-trends');
 
 // API Functions (consolidated from salaryPredictorAPI.js)
 const predictSalary = async (profileData) => {

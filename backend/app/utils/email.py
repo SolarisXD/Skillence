@@ -12,6 +12,7 @@ EMAIL_HOST = os.getenv("EMAIL_HOST")
 EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000").rstrip("/")
 
 async def send_password_reset_email(email: str, reset_token: str):
     try:
@@ -22,7 +23,7 @@ async def send_password_reset_email(email: str, reset_token: str):
         msg['Subject'] = "Password Reset - Skillence"
         
         # Create reset URL
-        reset_url = f"http://localhost:3000/reset-password?token={reset_token}"
+        reset_url = f"{FRONTEND_URL}/reset-password?token={reset_token}"
         
         # Email body
         body = f"""

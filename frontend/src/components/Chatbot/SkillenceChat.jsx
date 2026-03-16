@@ -7,6 +7,7 @@ import { useSpeechToText } from "./hooks/useSpeechToText";
 import { useTextToSpeech } from "./hooks/useTextToSpeech";
 import { chatService } from "./services/chatService";
 import { generateSessionId } from "./utils/helpers";
+import { API_BASE_URL } from "../../utils/api";
 import styles from "../../styles/chatbot/chat.module.css";
 
 // Storage keys - localStorage only (no database, safe for team project)
@@ -16,7 +17,7 @@ const STORAGE_KEYS = {
 };
 
 // API URL for profile fetch
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const API_URL = API_BASE_URL;
 
 // Default welcome message (personalized if user name available)
 const getWelcomeMessage = (userName = null) => ({

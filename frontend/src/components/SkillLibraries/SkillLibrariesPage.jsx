@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../navbar';
 import SkillSearchBar from './SkillSearchBar';
 import SkillGrid from './SkillGrid';
+import { apiUrl } from '../../utils/api';
 import './SkillLibraries.css';
 
 const SkillLibrariesPage = () => {
@@ -19,7 +20,7 @@ const SkillLibrariesPage = () => {
     try {
       setIsLoading(true);
       setError(null);
-      const res = await fetch('/api/skills');
+      const res = await fetch(apiUrl('/api/skills'));
       if (res.ok) {
         const data = await res.json();
         setSkills(data);
@@ -43,7 +44,7 @@ const SkillLibrariesPage = () => {
     }
     try {
       setIsLoading(true);
-      const res = await fetch(`http://localhost:8000/api/skills/search?q=${encodeURIComponent(searchQuery)}`);
+      const res = await fetch(apiUrl(`/api/skills/search?q=${encodeURIComponent(searchQuery)}`));
       if (res.ok) {
         const data = await res.json();
         setFilteredSkills(data);

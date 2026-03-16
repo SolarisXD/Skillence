@@ -1,5 +1,7 @@
 // Job Trend API Service - Real Backend Integration with Advanced Features
-const API_BASE_URL = 'http://localhost:8000/api/job-trends';
+import { apiUrl } from '../../../../utils/api';
+
+const API_BASE_URL = apiUrl('/api/job-trends');
 
 class JobTrendAPIService {
   

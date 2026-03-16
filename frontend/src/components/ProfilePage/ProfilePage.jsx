@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Play, Github, AlertTriangle, PackageOpen, X } from 'lucide-react';
 import Navbar from '../navbar';
+import { apiUrl } from '../../utils/api';
 import { 
   UserIcon, 
   BriefcaseIcon, 
@@ -50,7 +51,7 @@ const ProfilePage = () => {
       }
 
       // First verify the token is valid and get current user info
-      const authResponse = await fetch('http://localhost:8000/api/auth/verify', {
+      const authResponse = await fetch(apiUrl('/api/auth/verify'), {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -68,7 +69,7 @@ const ProfilePage = () => {
       console.log('Current authenticated user:', authData.email);
 
       // Now fetch the profile
-      const response = await fetch('http://localhost:8000/api/profile/', {
+      const response = await fetch(apiUrl('/api/profile/'), {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -110,7 +111,7 @@ const ProfilePage = () => {
     // Also fetch student academics data (10th/12th percentages, CGPA)
     try {
       const token = localStorage.getItem('token');
-      const acadRes = await fetch('http://localhost:8000/api/student/placement/academics', {
+      const acadRes = await fetch(apiUrl('/api/student/placement/academics'), {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -170,7 +171,7 @@ const ProfilePage = () => {
         [sectionName]: updatedData
       };
 
-      const response = await fetch('http://localhost:8000/api/profile/update', {
+      const response = await fetch(apiUrl('/api/profile/update'), {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

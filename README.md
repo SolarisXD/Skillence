@@ -156,12 +156,20 @@ EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
 EMAIL_HOST_USER=your-email@gmail.com
 EMAIL_HOST_PASSWORD=your-app-password
+FRONTEND_URL=http://localhost:3000
+
+# CORS (Backend)
+# Comma-separated values
+CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+# Regex for preview deployments (Vercel)
+CORS_ORIGIN_REGEX=https://.*\\.vercel\\.app
 
 # Data Enrichment (Optional - for ML training only)
 ONET_API_KEY=your-onet-key
 JSEARCH_API_KEY=your-jsearch-key
 
 # Frontend (VITE_ prefix required)
+VITE_API_URL=http://localhost:8000
 VITE_GOOGLE_CLIENT_ID=your-google-oauth-client-id
 VITE_ADZUNA_API_KEY=your-adzuna-key
 VITE_ADZUNA_APP_ID=your-adzuna-app-id
@@ -185,6 +193,42 @@ pnpm run dev
 ```
 
 The frontend runs at `http://localhost:3000` and the backend API at `http://localhost:8000`.
+
+---
+
+## Deployment (Vercel + Render)
+
+This repository is set up for split deployment:
+- Frontend: `frontend/` on Vercel
+- Backend: `backend/` on Render
+
+### 1) Deploy backend to Render (GitHub import)
+
+- Import this repo into Render.
+- Use the existing [render.yaml](render.yaml) blueprint, or create a Web Service manually with:
+   - **Root Directory:** `backend`
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `uvicorn main:app --host 0.0.0.0 --port $PORT`
+- Set environment variables in Render (prompted by `sync: false` in blueprint), especially:
+   - `MONGODB_URI`, `SECRET_KEY`, `GEMINI_API`, `AZURE_ENDPOINT`, `AZURE_API_KEY`
+   - `FRONTEND_URL` = your Vercel production URL (e.g. `https://your-app.vercel.app`)
+   - `CORS_ORIGINS` = comma-separated Vercel + local origins
+- After deploy, copy your Render backend URL (e.g. `https://your-backend.onrender.com`).
+
+### 2) Deploy frontend to Vercel (GitHub import)
+
+- Import this repo into Vercel.
+- Set **Root Directory** to `frontend`.
+- Framework preset: **Vite** (auto-detected).
+- Ensure environment variable:
+   - `VITE_API_URL` = your Render backend URL (no trailing slash)
+- SPA routing fallback is configured in [frontend/vercel.json](frontend/vercel.json).
+
+### 3) Local + production compatibility
+
+- Local dev defaults still work (`VITE_API_URL` defaults to `http://localhost:8000`).
+- Backend CORS now supports both local origins and configured deployment origins.
+- Password reset email links now use `FRONTEND_URL` instead of hardcoded localhost.
 
 ---
 

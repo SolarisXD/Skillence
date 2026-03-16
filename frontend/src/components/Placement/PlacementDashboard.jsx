@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../navbar';
+import { apiUrl } from '../../utils/api';
 import './PlacementDashboard.css';
 
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = apiUrl('/api');
 
 const getHeaders = () => ({
   Authorization: `Bearer ${localStorage.getItem('token')}`,

@@ -10,6 +10,19 @@ import logging
 env_path = os.path.join(os.path.dirname(__file__), '..', '.env')
 load_dotenv(dotenv_path=env_path)
 
+
+def _parse_allowed_origins() -> list:
+    origins_from_env = os.getenv("CORS_ORIGINS", "")
+    parsed = [origin.strip() for origin in origins_from_env.split(",") if origin.strip()]
+
+    if not parsed:
+        parsed = [
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+        ]
+
+    return parsed
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await connect_to_mongo()
@@ -24,9 +37,13 @@ logging.basicConfig(
 
 app = FastAPI(title="Skillence API", version="1.0.0", lifespan=lifespan)
 
+allowed_origins = _parse_allowed_origins()
+cors_origin_regex = os.getenv("CORS_ORIGIN_REGEX", r"https://.*\.vercel\.app")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=allowed_origins,
+    allow_origin_regex=cors_origin_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

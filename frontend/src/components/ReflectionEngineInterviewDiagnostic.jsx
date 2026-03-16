@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { MessageSquare } from 'lucide-react';
 import Navbar from "./navbar";
+import { API_BASE_URL } from "../utils/api";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const STORAGE_KEYS = {
   SESSION_ID: "reflection_engine_session_id",
   MESSAGES: "reflection_engine_messages",

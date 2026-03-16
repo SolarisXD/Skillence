@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../navbar';
 import ProgressBar, { PhaseProgressBar, DetailedProgressBar } from '../ProgressBar';
+import { apiUrl } from '../../utils/api';
 import './CareerPathRecommendation.css';
 
 // SVG Icons
@@ -199,7 +200,7 @@ const CareerPathRecommendation = () => {
     if (!token) return;
 
     try {
-      const response = await fetch('http://localhost:8000/api/career-path/get-career-path', {
+      const response = await fetch(apiUrl('/api/career-path/get-career-path'), {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -232,7 +233,7 @@ const CareerPathRecommendation = () => {
     setLoadingLearningPlan(true);
     setHasStartedRoadmap(true);
     try {
-      const response = await fetch('http://localhost:8000/api/career-path/learning-plan', {
+      const response = await fetch(apiUrl('/api/career-path/learning-plan'), {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -277,7 +278,7 @@ const CareerPathRecommendation = () => {
     setCollapsedPhases({ 1: true, 2: true, 3: true }); // Reset to collapsed state
     
     try {
-      const response = await fetch('http://localhost:8000/api/career-path/recommendations', {
+      const response = await fetch(apiUrl('/api/career-path/recommendations'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -326,7 +327,7 @@ const CareerPathRecommendation = () => {
     setSavingCareer(career.occupation_code);
     
     try {
-      const response = await fetch('http://localhost:8000/api/career-path/save-career-path', {
+      const response = await fetch(apiUrl('/api/career-path/save-career-path'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -377,7 +378,7 @@ const CareerPathRecommendation = () => {
     setLearnedSkills(prev => new Set([...prev, skill]));
 
     try {
-      const response = await fetch('http://localhost:8000/api/career-path/add-learned-skills', {
+      const response = await fetch(apiUrl('/api/career-path/add-learned-skills'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -427,7 +428,7 @@ const CareerPathRecommendation = () => {
     // Reset to collapsed state when regenerating
     setCollapsedPhases({ 1: true, 2: true, 3: true });
     try {
-      const response = await fetch('http://localhost:8000/api/career-path/regenerate-learning-plan', {
+      const response = await fetch(apiUrl('/api/career-path/regenerate-learning-plan'), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`

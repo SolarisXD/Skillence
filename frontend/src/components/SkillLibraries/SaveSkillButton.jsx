@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Bookmark, BookmarkCheck, ChevronDown, Sparkles, BookOpen, CheckCircle2 } from 'lucide-react';
+import { apiUrl } from '../../utils/api';
 
 const STATUS_OPTIONS = [
   { value: 'interested', label: 'Interested', icon: Sparkles, color: '#f59e0b' },
@@ -41,7 +42,7 @@ const SaveSkillButton = ({ skillId }) => {
     if (!token) { setIsLoading(false); return; }
 
     try {
-      const res = await fetch('/api/skills/user/activity', { headers: getAuthHeaders() });
+      const res = await fetch(apiUrl('/api/skills/user/activity'), { headers: getAuthHeaders() });
       if (res.ok) {
         const data = await res.json();
         if (data.saved_skills?.includes(skillId)) {
@@ -65,7 +66,7 @@ const SaveSkillButton = ({ skillId }) => {
     setIsSaved(newSavedStatus);
 
     try {
-      const res = await fetch('/api/skills/user/activity', {
+      const res = await fetch(apiUrl('/api/skills/user/activity'), {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify({ skill_id: skillId, is_saved: newSavedStatus })
@@ -83,7 +84,7 @@ const SaveSkillButton = ({ skillId }) => {
     setShowDropdown(false);
 
     try {
-      await fetch('/api/skills/user/activity', {
+      await fetch(apiUrl('/api/skills/user/activity'), {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify({ skill_id: skillId, is_saved: true, status: newStatus })
