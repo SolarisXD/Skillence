@@ -13,10 +13,47 @@ core_skills = {
         "overview": "Frontend development handles the visual and interactive aspects of a website that users interact with. Modern frontend development requires proficiency in HTML, CSS, and JavaScript, along with expertise in component-based frameworks like React, Vue, or Angular. You must also understand web performance, accessibility metrics, responsive design, and CSS architecture to build scalable single-page applications.",
         "image_url": "https://images.unsplash.com/photo-1547658719-da2b51169166?q=80&w=2564&auto=format&fit=crop",
         "roadmap": [
-            "Phase 1: Basics", "- Internet Fundamentals", "- HTML Semantic Structure", "- CSS Styling and Layouts", "- Basic JavaScript",
-            "Phase 2: Advanced JavaScript", "- DOM Manipulation", "- Fetch and APIs", "- ES6+ Features",
-            "Phase 3: Frameworks", "- React / Vue / Angular Basics", "- State Management", "- Component Architecture",
-            "Phase 4: Build Tools & Practices", "- Webpack / Vite", "- Git & GitHub", "- Testing (Jest, Cypress)"
+            {
+                "phase": "Phase 1: Basics",
+                "description": "Learn the fundamentals of the web.",
+                "estimated_time": "2-4 Weeks",
+                "topics": [
+                    {"id": "fe-internet", "name": "Internet Fundamentals"},
+                    {"id": "fe-html", "name": "HTML Semantic Structure"},
+                    {"id": "fe-css", "name": "CSS Styling and Layouts"},
+                    {"id": "fe-js-basic", "name": "Basic JavaScript"}
+                ]
+            },
+            {
+                "phase": "Phase 2: Advanced JavaScript",
+                "description": "Master the core language of the web.",
+                "estimated_time": "3-5 Weeks",
+                "topics": [
+                    {"id": "fe-dom", "name": "DOM Manipulation"},
+                    {"id": "fe-fetch", "name": "Fetch and APIs"},
+                    {"id": "fe-es6", "name": "ES6+ Features"}
+                ]
+            },
+            {
+                "phase": "Phase 3: Frameworks",
+                "description": "Build modern Single Page Applications.",
+                "estimated_time": "4-8 Weeks",
+                "topics": [
+                    {"id": "fe-react", "name": "React / Vue / Angular Basics"},
+                    {"id": "fe-state", "name": "State Management"},
+                    {"id": "fe-components", "name": "Component Architecture"}
+                ]
+            },
+            {
+                "phase": "Phase 4: Build Tools & Practices",
+                "description": "Professional engineering practices.",
+                "estimated_time": "3-4 Weeks",
+                "topics": [
+                    {"id": "fe-tools", "name": "Webpack / Vite"},
+                    {"id": "fe-git", "name": "Git & GitHub"},
+                    {"id": "fe-testing", "name": "Testing (Jest, Cypress)"}
+                ]
+            }
         ],
         "roadmap_url": "https://roadmap.sh/frontend",
         "youtube_videos": [{"title": "Web Development In 2024", "url": "https://www.youtube.com/watch?v=zJSY8tbf_ys"}],
@@ -32,11 +69,55 @@ core_skills = {
         "overview": "Backend development focuses on the server, databases, and application logic behind the scenes. It involves choosing languages like Python, Java, Node.js, or Go to build performant and secure APIs (REST, GraphQL, gRPC).",
         "image_url": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2670&auto=format&fit=crop",
         "roadmap": [
-            "Phase 1: Basics", "- Internet and OS Fundamentals", "- Command Line Basics",
-            "Phase 2: Programming", "- Learn Python, Java, Node.js or Go", "- Basic Data Structures", "- Version Control",
-            "Phase 3: Databases", "- Relational (PostgreSQL, MySQL)", "- NoSQL (MongoDB)", "- ORMs and Caching (Redis)",
-            "Phase 4: APIs & Architecture", "- REST APIs & GraphQL", "- Authentication (JWT, OAuth)", "- Web Security",
-            "Phase 5: DevOps & Deployment", "- Docker & Containers", "- CI/CD Pipelines", "- AWS / GCP Deployment"
+            {
+                "phase": "Phase 1: Basics",
+                "description": "Foundational knowledge for servers.",
+                "estimated_time": "2-3 Weeks",
+                "topics": [
+                    {"id": "be-internet", "name": "Internet and OS Fundamentals"},
+                    {"id": "be-cli", "name": "Command Line Basics"}
+                ]
+            },
+            {
+                "phase": "Phase 2: Programming",
+                "description": "Master a backend language.",
+                "estimated_time": "4-6 Weeks",
+                "topics": [
+                    {"id": "be-language", "name": "Learn Python, Java, Node.js or Go"},
+                    {"id": "be-ds", "name": "Basic Data Structures"},
+                    {"id": "be-git", "name": "Version Control"}
+                ]
+            },
+            {
+                "phase": "Phase 3: Databases",
+                "description": "Store and manage application data.",
+                "estimated_time": "4-6 Weeks",
+                "topics": [
+                    {"id": "be-sql", "name": "Relational (PostgreSQL, MySQL)"},
+                    {"id": "be-nosql", "name": "NoSQL (MongoDB)"},
+                    {"id": "be-orm", "name": "ORMs and Caching (Redis)"}
+                ]
+            },
+            {
+                "phase": "Phase 4: APIs & Architecture",
+                "description": "Connect frontend to backend securely.",
+                "estimated_time": "4-5 Weeks",
+                "topics": [
+                    {"id": "be-rest", "name": "REST APIs & GraphQL"},
+                    {"id": "be-auth", "name": "Authentication (JWT, OAuth)"},
+                    {"id": "be-sec", "name": "Web Security"}
+                ]
+            },
+            {
+                "phase": "Phase 5: DevOps & Deployment",
+                "description": "Server hosting and pipelines.",
+                "estimated_time": "Ongoing",
+                "topics": [
+                    {"id": "be-docker", "name": "Docker & Containers"},
+                    {"id": "be-cicd", "name": "CI/CD Pipelines"},
+                    {"id": "be-cloud", "name": "AWS / GCP Deployment"}
+                ]
+            }
         ],
         "roadmap_url": "https://roadmap.sh/backend",
         "youtube_videos": [{"title": "Backend Web Development Complete", "url": "https://www.youtube.com/watch?v=XBu54ncjgus"}],
@@ -53,11 +134,56 @@ core_skills = {
         "image_url": "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?q=80&w=2670&auto=format&fit=crop",
         "image_url": "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?q=80&w=2670&auto=format&fit=crop",
         "roadmap": [
-            "Phase 1: IT Fundamentals", "- Basic Networking (TCP/IP, OSI)", "- Linux Essentials", "- Windows Server Basics",
-            "Phase 2: Security Concepts", "- CIA Triad", "- Cryptography Basics", "- Identity & Access Management",
-            "Phase 3: Network Security", "- Firewalls and Proxies", "- Intrusion Detection (IDS/IPS)", "- VPNs and Secure Protocols",
-            "Phase 4: Offense & Defense", "- Ethical Hacking Basics", "- Vulnerability Assessment", "- Malware Analysis",
-            "Phase 5: Certifications & Real World", "- Security+ / CEH / OSCP Prep", "- Incident Response", "- Cloud Security"
+            {
+                "phase": "Phase 1: IT Fundamentals",
+                "description": "Understand the systems you are protecting.",
+                "estimated_time": "3-5 Weeks",
+                "topics": [
+                    {"id": "cs-net", "name": "Basic Networking (TCP/IP, OSI)"},
+                    {"id": "cs-linux", "name": "Linux Essentials"},
+                    {"id": "cs-windows", "name": "Windows Server Basics"}
+                ]
+            },
+            {
+                "phase": "Phase 2: Security Concepts",
+                "description": "Core security principles.",
+                "estimated_time": "3-4 Weeks",
+                "topics": [
+                    {"id": "cs-cia", "name": "CIA Triad"},
+                    {"id": "cs-crypto", "name": "Cryptography Basics"},
+                    {"id": "cs-iam", "name": "Identity & Access Management"}
+                ]
+            },
+            {
+                "phase": "Phase 3: Network Security",
+                "description": "Securing data in transit.",
+                "estimated_time": "4-5 Weeks",
+                "topics": [
+                    {"id": "cs-firewall", "name": "Firewalls and Proxies"},
+                    {"id": "cs-ids", "name": "Intrusion Detection (IDS/IPS)"},
+                    {"id": "cs-vpn", "name": "VPNs and Secure Protocols"}
+                ]
+            },
+            {
+                "phase": "Phase 4: Offense & Defense",
+                "description": "Attack surfaces and mitigations.",
+                "estimated_time": "5-8 Weeks",
+                "topics": [
+                    {"id": "cs-eh", "name": "Ethical Hacking Basics"},
+                    {"id": "cs-vuln", "name": "Vulnerability Assessment"},
+                    {"id": "cs-malware", "name": "Malware Analysis"}
+                ]
+            },
+            {
+                "phase": "Phase 5: Certifications & Real World",
+                "description": "Professional cyber roles.",
+                "estimated_time": "Ongoing",
+                "topics": [
+                    {"id": "cs-certs", "name": "Security+ / CEH / OSCP Prep"},
+                    {"id": "cs-ir", "name": "Incident Response"},
+                    {"id": "cs-cloudsec", "name": "Cloud Security"}
+                ]
+            }
         ],
         "roadmap_url": "https://roadmap.sh/cyber-security",
         "youtube_videos": [{"title": "Cybersecurity Full Course", "url": "https://www.youtube.com/watch?v=U_P23SqJaDc"}],
@@ -203,25 +329,55 @@ for idx, (lang_id, name, category, desc) in enumerate(languages):
         "overview": f"A comprehensive guide to {name}. Mastering {name} is crucial for {category.lower()} modern applications. Dive deep into the core concepts, syntax, and advanced features of {name} to elevate your engineering skills to the next level.",
         "image_url": image_urls[idx % len(image_urls)],
         "roadmap": [
-            f"Phase 1: Foundations",
-            f"- Understand the history and core philosophy behind {name}",
-            f"- Master basic syntax, data types, and variable declarations",
-            f"- Learn control flow (if/else, switch, loops) and error handling",
-            f"- Set up your local development environment and CLI tooling",
-            f"Phase 2: Core Paradigms",
-            f"- Deep dive into object-oriented vs functional paradigms in {name}",
-            f"- Master classes, structs, interfaces, and inheritance",
-            f"- Understand memory management and garbage collection logic",
-            f"Phase 3: Data Structures & Algorithms",
-            f"- Arrays, Linked Lists, Trees, and HashMaps implementation in {name}",
-            f"- Time complexity (Big O) and performance optimization",
-            f"Phase 4: Advanced Concepts & Concurrency",
-            f"- Multi-threading, async/await, and asynchronous programming logic",
-            f"- Explore the standard library and third-party package managers",
-            f"Phase 5: Real-world System Design",
-            f"- Build full-scale CRUD applications and API integrations",
-            f"- Learn testing frameworks (Unit testing, Integration testing)",
-            f"- CI/CD and production deployment"
+            {
+                "phase": "Phase 1: Foundations",
+                "description": f"Learn the absolute basics of {name}",
+                "estimated_time": "2-4 Weeks",
+                "topics": [
+                    {"id": f"{lang_id}-history", "name": f"Understand the history and core philosophy behind {name}"},
+                    {"id": f"{lang_id}-syntax", "name": f"Master basic syntax, data types, and variable declarations"},
+                    {"id": f"{lang_id}-control", "name": f"Learn control flow (if/else, switch, loops) and error handling"},
+                    {"id": f"{lang_id}-setup", "name": f"Set up your local development environment and CLI tooling"}
+                ]
+            },
+            {
+                "phase": "Phase 2: Core Paradigms",
+                "description": f"Deep dive into paradigms in {name}",
+                "estimated_time": "3-4 Weeks",
+                "topics": [
+                    {"id": f"{lang_id}-paradigms", "name": f"Deep dive into object-oriented vs functional paradigms in {name}"},
+                    {"id": f"{lang_id}-classes", "name": f"Master classes, structs, interfaces, and inheritance"},
+                    {"id": f"{lang_id}-memory", "name": f"Understand memory management and garbage collection logic"}
+                ]
+            },
+            {
+                "phase": "Phase 3: Data Structures & Algorithms",
+                "description": "Work with complex data.",
+                "estimated_time": "4-6 Weeks",
+                "topics": [
+                    {"id": f"{lang_id}-ds", "name": f"Arrays, Linked Lists, Trees, and HashMaps implementation in {name}"},
+                    {"id": f"{lang_id}-complexity", "name": f"Time complexity (Big O) and performance optimization"}
+                ]
+            },
+            {
+                "phase": "Phase 4: Advanced Concepts & Concurrency",
+                "description": "Write advanced, scalable code.",
+                "estimated_time": "4-6 Weeks",
+                "topics": [
+                    {"id": f"{lang_id}-concurrency", "name": f"Multi-threading, async/await, and asynchronous programming logic"},
+                    {"id": f"{lang_id}-packages", "name": f"Explore the standard library and third-party package managers"}
+                ]
+            },
+            {
+                "phase": "Phase 5: Real-world System Design",
+                "description": "Build production applications.",
+                "estimated_time": "Ongoing",
+                "topics": [
+                    {"id": f"{lang_id}-crud", "name": f"Build full-scale CRUD applications and API integrations"},
+                    {"id": f"{lang_id}-testing", "name": f"Learn testing frameworks (Unit testing, Integration testing)"},
+                    {"id": f"{lang_id}-cicd", "name": f"CI/CD and production deployment"}
+                ]
+            }
         ],
         "roadmap_url": None,
         "youtube_videos": [{"title": f"{name} Full Course", "url": f"https://www.youtube.com/results?search_query={name}+full+course"}],
@@ -243,23 +399,53 @@ for ai_id, name, desc in ai_data_tools:
         "overview": f"Deep dive into {name}. It is widely used in the Data Science and Artificial Intelligence ecosystem for processing immense quantities of data and training deep neural networks. Mastering {name} is essential for aspiring Data Scientists and Machine Learning Engineers.",
         "image_url": ai_image_url,
         "roadmap": [
-            f"Phase 1: Mathematics & Data Foundation",
-            f"- Linear Algebra, Calculus, and Probability Theory essentials",
-            f"- Exploratory Data Analysis (EDA) and data wrangling",
-            f"- Understanding the specific ecosystem surrounding {name}",
-            f"Phase 2: Core Deep-Dive into {name}",
-            f"- Syntax patterns, initialization, and core configuration of {name}",
-            f"- Building models, setting hyperparameters, and validation",
-            f"Phase 3: Architecture & Performance",
-            f"- Constructing pipelines and distributed data processing",
-            f"- Hardware acceleration processing (GPU, TPU, Neural Engines)",
-            f"- Dimensionality reduction and feature engineering",
-            f"Phase 4: Advanced Machine Learning/AI Models",
-            f"- Neural network layers, CNNs, RNNs, and Transformers",
-            f"- Reinforcement learning protocols and tuning strategies",
-            f"Phase 5: Production & MLOps",
-            f"- Serving models via REST APIs and containerization (Docker)",
-            f"- Monitoring inference drift and continuous CI/CD training loops"
+            {
+                "phase": "Phase 1: Mathematics & Data Foundation",
+                "description": f"Learn the foundation required for {name}",
+                "estimated_time": "3-5 Weeks",
+                "topics": [
+                    {"id": f"{ai_id}-math", "name": "Linear Algebra, Calculus, and Probability Theory essentials"},
+                    {"id": f"{ai_id}-eda", "name": "Exploratory Data Analysis (EDA) and data wrangling"},
+                    {"id": f"{ai_id}-ecosystem", "name": f"Understanding the specific ecosystem surrounding {name}"}
+                ]
+            },
+            {
+                "phase": f"Phase 2: Core Deep-Dive into {name}",
+                "description": f"Master the specific APIs and patterns of {name}",
+                "estimated_time": "4-6 Weeks",
+                "topics": [
+                    {"id": f"{ai_id}-syntax", "name": f"Syntax patterns, initialization, and core configuration of {name}"},
+                    {"id": f"{ai_id}-models", "name": "Building models, setting hyperparameters, and validation"}
+                ]
+            },
+            {
+                "phase": "Phase 3: Architecture & Performance",
+                "description": "Learn to process data efficiently.",
+                "estimated_time": "4-6 Weeks",
+                "topics": [
+                    {"id": f"{ai_id}-pipelines", "name": "Constructing pipelines and distributed data processing"},
+                    {"id": f"{ai_id}-hardware", "name": "Hardware acceleration processing (GPU, TPU, Neural Engines)"},
+                    {"id": f"{ai_id}-features", "name": "Dimensionality reduction and feature engineering"}
+                ]
+            },
+            {
+                "phase": "Phase 4: Advanced Machine Learning/AI Models",
+                "description": "Understand complex model architectures.",
+                "estimated_time": "6-8 Weeks",
+                "topics": [
+                    {"id": f"{ai_id}-nn", "name": "Neural network layers, CNNs, RNNs, and Transformers"},
+                    {"id": f"{ai_id}-rl", "name": "Reinforcement learning protocols and tuning strategies"}
+                ]
+            },
+            {
+                "phase": "Phase 5: Production & MLOps",
+                "description": "Serve models in production environments.",
+                "estimated_time": "Ongoing",
+                "topics": [
+                    {"id": f"{ai_id}-serving", "name": "Serving models via REST APIs and containerization (Docker)"},
+                    {"id": f"{ai_id}-monitoring", "name": "Monitoring inference drift and continuous CI/CD training loops"}
+                ]
+            }
         ],
         "roadmap_url": None,
         "youtube_videos": [
@@ -316,26 +502,56 @@ for cd_id, name, desc in cloud_devops_tools:
         "overview": f"Master {name} to build, deploy, and operate scalable cloud-native infrastructure and CI/CD pipelines. {name} is a critical skill in today's DevOps and Cloud engineering ecosystem used by top tech companies worldwide.",
         "image_url": cloud_image_url,
         "roadmap": [
-            f"Phase 1: Foundations",
-            f"- Linux fundamentals and shell scripting",
-            f"- Networking basics (DNS, TCP/IP, HTTP)",
-            f"- Understanding cloud computing concepts",
-            f"Phase 2: Core {name} Concepts",
-            f"- Getting started with {name} documentation and setup",
-            f"- Core services, configuration, and architecture",
-            f"- Identity, access management, and security",
-            f"Phase 3: Infrastructure as Code & Automation",
-            f"- Automating deployments with {name}",
-            f"- Infrastructure provisioning and templating",
-            f"- Monitoring, logging, and alerting",
-            f"Phase 4: Advanced Patterns",
-            f"- High availability and disaster recovery",
-            f"- Cost optimization and performance tuning",
-            f"- Multi-region and multi-cloud strategies",
-            f"Phase 5: Certifications & Production",
-            f"- Certification preparation resources",
-            f"- Real-world production architecture case studies",
-            f"- Site Reliability Engineering (SRE) practices"
+            {
+                "phase": "Phase 1: Foundations",
+                "description": "Foundational networking and systems knowledge.",
+                "estimated_time": "3-4 Weeks",
+                "topics": [
+                    {"id": f"{cd_id}-linux", "name": "Linux fundamentals and shell scripting"},
+                    {"id": f"{cd_id}-network", "name": "Networking basics (DNS, TCP/IP, HTTP)"},
+                    {"id": f"{cd_id}-cloud-concepts", "name": "Understanding cloud computing concepts"}
+                ]
+            },
+            {
+                "phase": f"Phase 2: Core {name} Concepts",
+                "description": f"Master the core services and configurations of {name}",
+                "estimated_time": "4-6 Weeks",
+                "topics": [
+                    {"id": f"{cd_id}-setup", "name": f"Getting started with {name} documentation and setup"},
+                    {"id": f"{cd_id}-services", "name": "Core services, configuration, and architecture"},
+                    {"id": f"{cd_id}-iam", "name": "Identity, access management, and security"}
+                ]
+            },
+            {
+                "phase": "Phase 3: Infrastructure as Code & Automation",
+                "description": "Learn to script infrastructure.",
+                "estimated_time": "4-6 Weeks",
+                "topics": [
+                    {"id": f"{cd_id}-automation", "name": f"Automating deployments with {name}"},
+                    {"id": f"{cd_id}-iac", "name": "Infrastructure provisioning and templating"},
+                    {"id": f"{cd_id}-monitoring", "name": "Monitoring, logging, and alerting"}
+                ]
+            },
+            {
+                "phase": "Phase 4: Advanced Patterns",
+                "description": "Build resilient operations.",
+                "estimated_time": "6-8 Weeks",
+                "topics": [
+                    {"id": f"{cd_id}-ha", "name": "High availability and disaster recovery"},
+                    {"id": f"{cd_id}-cost", "name": "Cost optimization and performance tuning"},
+                    {"id": f"{cd_id}-multi", "name": "Multi-region and multi-cloud strategies"}
+                ]
+            },
+            {
+                "phase": "Phase 5: Certifications & Production",
+                "description": "Apply knowledge to real-world production cases.",
+                "estimated_time": "Ongoing",
+                "topics": [
+                    {"id": f"{cd_id}-certs", "name": "Certification preparation resources"},
+                    {"id": f"{cd_id}-casestudies", "name": "Real-world production architecture case studies"},
+                    {"id": f"{cd_id}-sre", "name": "Site Reliability Engineering (SRE) practices"}
+                ]
+            }
         ],
         "roadmap_url": None,
         "youtube_videos": [

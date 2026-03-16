@@ -20,11 +20,57 @@ async def fetch_topic_resources(topic_name: str, skill_category: str):
             return cache_entry["data"]
 
     # Create targeted queries for high-quality developer resources
-    sites = ["site:geeksforgeeks.org", "site:developer.mozilla.org", "site:w3schools.com", "site:freecodecamp.org"]
+    sites = [
+        "site:geeksforgeeks.org", 
+        "site:developer.mozilla.org", 
+        "site:w3schools.com", 
+        "site:freecodecamp.org",
+        "site:datacamp.com",
+        "site:coursera.org",
+        "site:udemy.com",
+        "site:codecademy.com",
+        "site:stackoverflow.com",
+        "site:medium.com"
+    ]
     site_query = " OR ".join(sites)
-    query = f"{topic_name} {skill_category} tutorial ({site_query})"
+    query = f"{topic_name} {skill_category} tutorial OR course OR documentation ({site_query})"
     
     resources = []
+    
+    def fallback_links():
+        encoded_topic = topic_name.replace(' ', '+')
+        resources.extend([
+            {
+                "title": f"Learn {topic_name} on GeeksforGeeks",
+                "description": "Explore comprehensive tutorials and computer science fundamentals.",
+                "url": f"https://www.geeksforgeeks.org/search/?q={encoded_topic}",
+                "source": "GeeksforGeeks"
+            },
+            {
+                "title": f"Search {topic_name} on freeCodeCamp",
+                "description": "Discover open-source coding tutorials and practical guides.",
+                "url": f"https://www.freecodecamp.org/news/search/?query={encoded_topic}",
+                "source": "freeCodeCamp"
+            },
+            {
+                "title": f"MDN Web Docs: {topic_name}",
+                "description": "Read official developer documentation and web standards.",
+                "url": f"https://developer.mozilla.org/en-US/search?q={encoded_topic}",
+                "source": "MDN Docs"
+            },
+            {
+                "title": f"W3Schools: {topic_name}",
+                "description": "Browse simplified and interactive coding tutorials.",
+                "url": f"https://www.google.com/search?q=site:w3schools.com+{encoded_topic}",
+                "source": "W3Schools"
+            },
+            {
+                "title": f"DataCamp: {topic_name}",
+                "description": "Find interactive data science and AI courses.",
+                "url": f"https://www.datacamp.com/search?q={encoded_topic}",
+                "source": "DataCamp"
+            }
+        ])
     
     try:
         loop = asyncio.get_event_loop()
@@ -76,6 +122,16 @@ async def fetch_topic_resources(topic_name: str, skill_category: str):
                 source = "W3Schools"
             elif "freecodecamp.org" in url:
                 source = "freeCodeCamp"
+            elif "datacamp.com" in url:
+                source = "DataCamp"
+            elif "coursera.org" in url:
+                source = "Coursera"
+            elif "udemy.com" in url:
+                source = "Udemy"
+            elif "codecademy.com" in url:
+                source = "Codecademy"
+            elif "stackoverflow.com" in url:
+                source = "StackOverflow"
             elif "dev.to" in url:
                 source = "Dev.to"
             elif "medium.com" in url:
@@ -89,24 +145,11 @@ async def fetch_topic_resources(topic_name: str, skill_category: str):
             })
             
         if not resources:
-            resources.append({
-                "title": f"Learn {topic_name}",
-                "description": "Explore documentation and tutorials.",
-                "url": f"https://www.google.com/search?q={topic_name.replace(' ', '+')}+{skill_category}",
-                "source": "Search Engine"
-            })
+            fallback_links()
             
     except Exception as e:
         print(f"Error fetching resources for {topic_name}: {e}")
-        # Return fallback items if search fails completely
-        return [
-            {
-                "title": f"Learn {topic_name}",
-                "description": "Explore documentation and tutorials.",
-                "url": f"https://www.google.com/search?q={topic_name.replace(' ', '+')}+{skill_category}",
-                "source": "Search Engine"
-            }
-        ]
+        fallback_links()
         
     # cache results
     _resource_cache[cache_key] = {

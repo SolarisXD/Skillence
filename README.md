@@ -26,6 +26,14 @@ Skillence is a full-stack web application that combines resume parsing, AI caree
 - **ML Salary Prediction** — Neural network predicts salaries based on skills, experience, location, industry, and more.
 - **Data Export** — Download filtered results as CSV or JSON.
 
+### Skill Libraries
+- **Rich Learning Content** — Detailed skill profiles including prerequisites, use cases, learning difficulty, and top courses from platforms like Udemy and Coursera.
+- **YouTube API Integration** — Fetching and displaying top educational videos for each skill using the YouTube Data API v3.
+- **Interactive Roadmap** — Visual, trackable learning roadmap with expandable phases, topics, and completion checkboxes.
+- **Dynamic Resources** — Fetching relevant external resources (MDN, GeeksforGeeks, W3Schools, freeCodeCamp) for specific roadmap topics using DuckDuckGo search and static fallbacks.
+- **Bookmark System** — Robust system for users to save skills with status tracking (Interested, Learning, Completed) and course progress percentage.
+- **Practice Platforms** — Direct links to relevant coding, AI, and cloud practice sites.
+
 ### Job Offer Evaluator
 - **Side-by-Side Comparison** — Compare two job offers with salary charts (Chart.js), cost-of-living analysis via Gemini, and interactive Leaflet maps with Nominatim geocoding.
 - **Market Context** — Adzuna API integration for salary benchmarks across 25+ countries.
@@ -95,11 +103,11 @@ Skillence is a full-stack web application that combines resume parsing, AI caree
                        │ REST API (fetch / axios)
 ┌──────────────────────▼──────────────────────────────────────┐
 │                  Backend (FastAPI)                            │
-│  Port 8000 · 9 Routers · Async Motor · JWT Auth             │
+│  Port 8000 · 10 Routers · Async Motor · JWT Auth            │
 │                                                              │
 │  Routers:  auth · resume · profile · career_path · chatbot  │
 │            job_trends · ml_predictions · placement_cell      │
-│            student_placement                                 │
+│            student_placement · skills                        │
 │                                                              │
 │  Services: 14 service modules (auth, resume parsing,        │
 │            career matching, learning plans, job trends,      │
@@ -128,7 +136,7 @@ Skillence is a full-stack web application that combines resume parsing, AI caree
 - **Node.js 16+** with **pnpm**
 - **MongoDB Atlas** instance (or local MongoDB)
 - **API Keys:** Google Gemini, Azure AI Document Intelligence
-- **Optional API Keys:** O\*NET Web Services, JSearch (RapidAPI), Adzuna, Google OAuth
+- **Optional API Keys:** O\*NET Web Services, JSearch (RapidAPI), Adzuna, Google OAuth, YouTube Data API v3
 
 ### Environment Variables
 
@@ -241,14 +249,14 @@ This repository is set up for split deployment:
 ├── package.json                     # Root package.json
 │
 ├── backend/
-│   ├── main.py                      # FastAPI entrypoint, 9 routers
+│   ├── main.py                      # FastAPI entrypoint, 10 routers
 │   ├── requirements.txt             # Python dependencies
 │   ├── run_salary_pipeline.py       # CLI: salary model training pipeline
 │   ├── seed_course_catalog.py       # CLI: curriculum PDF → MongoDB seed
 │   └── app/
 │       ├── database.py              # Async Motor client
 │       ├── models/                  # Pydantic models (user, resume, placement, roadmap)
-│       ├── routers/                 # 9 API routers
+│       ├── routers/                 # 10 API routers
 │       ├── services/                # 14 business logic services
 │       ├── utils/                   # JWT, role auth, email
 │       ├── data/                    # skill_taxonomy.json
@@ -313,6 +321,17 @@ This repository is set up for split deployment:
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | POST | `/chat` | Optional | Interview coaching conversation |
+
+### Skills — `/api/skills`
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/` | — | List minimal skill info for browsing |
+| GET | `/search` | — | Search skills by name or category |
+| GET | `/{skill_id}` | — | Get full details of a specific skill |
+| GET | `/youtube/{skill_id}` | — | Fetch top YouTube educational videos |
+| GET | `/{skill_id}/resources` | — | Fetch external resources for a roadmap topic |
+| GET | `/user/activity` | Bearer | Get user's saved skills and progress |
+| POST | `/user/activity` | Bearer | Update saved skills, progress, and status |
 
 ### Job Trends — `/api/job-trends`
 | Method | Endpoint | Auth | Description |
@@ -429,6 +448,8 @@ python seed_course_catalog.py --pdf ../curr.pdf
 | **Adzuna API** | Salary benchmarks, job market data | Frontend: `JobOfferEvaluator` |
 | **Nominatim (OSM)** | Geocoding for map location picker | Frontend: `MapLocationPicker` |
 | **Google OAuth 2.0** | Social login | Frontend → Backend |
+| **YouTube Data API v3** | Fetching educational videos for skills | Backend: `youtube_service.py` |
+| **DuckDuckGo Search** | Dynamic scraping of learning resources | Backend: `resource_fetcher.py` |
 
 ---
 
@@ -464,6 +485,7 @@ python seed_course_catalog.py --pdf ../curr.pdf
 | `student_academics` | CGPA, 10th/12th%, courses, skills, grade history |
 | `course_catalog` | Course → skill mappings from curriculum PDFs |
 | `learning_roadmaps` | Saved career paths and learning plan progress |
+| `user_skills` | Saved skills, progress, and status tracking for users |
 
 ---
 
