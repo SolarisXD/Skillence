@@ -354,3 +354,46 @@
     display: none;
   }
 }
+
+/* ─── Role Toggle ──────────────────────────── */
+.role-toggle {
+  display: flex;
+  gap: 0.5rem;
+  border-radius: 10px;
+  background: var(--bg-tertiary, #f3f4f6);
+  padding: 4px;
+}
+
+.role-option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0.55rem 0.75rem;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary, #6B7280);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.role-option:hover {
+  color: var(--text-primary, #111827);
+  background: var(--bg-secondary, #f9fafb);
+}
+
+.role-option.active {
+  background: var(--bg-primary, #ffffff);
+  color: var(--accent-color, #1E3A8A);
+  border-color: var(--accent-color, #1E3A8A);
+  box-shadow: 0 1px 3px rgba(30, 58, 138, 0.15);
+  font-weight: 600;
+}
+
+.role-option svg {
+  flex-shrink: 0;
+}

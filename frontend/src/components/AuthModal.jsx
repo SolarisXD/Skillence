@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
+import { apiUrl } from '../utils/api';
 import '../styles/AuthModal.css';
 
 const AuthModal = ({ isOpen, onClose, mode, onSwitchMode, onSuccess }) => {
@@ -9,7 +10,8 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode, onSuccess }) => {
     name: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    role: 'student'
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -37,7 +39,7 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode, onSuccess }) => {
           return;
         }
 
-        const response = await fetch('http://localhost:8000/api/auth/register', {
+        const response = await fetch(apiUrl('/api/auth/register'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -45,7 +47,8 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode, onSuccess }) => {
           body: JSON.stringify({
             name: formData.name,
             email: formData.email,
-            password: formData.password
+            password: formData.password,
+            role: formData.role
           }),
         });
 
@@ -53,7 +56,8 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode, onSuccess }) => {
           const data = await response.json();
           localStorage.setItem('token', data.access_token);
           localStorage.setItem('userId', data.user_id);
-          localStorage.setItem('user', JSON.stringify({ email: formData.email, name: formData.name }));
+          localStorage.setItem('userRole', formData.role || 'student');
+          localStorage.setItem('user', JSON.stringify({ email: formData.email, name: formData.name, role: formData.role }));
           // Notify parent (Navbar) about successful auth so it can update UI immediately
           if (typeof onSuccess === 'function') {
             try {
@@ -70,7 +74,7 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode, onSuccess }) => {
           setError(errorData.detail || 'Registration failed');
         }
       } else {
-        const response = await fetch('http://localhost:8000/api/auth/login', {
+        const response = await fetch(apiUrl('/api/auth/login'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -85,8 +89,9 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode, onSuccess }) => {
           const data = await response.json();
           localStorage.setItem('token', data.access_token);
           localStorage.setItem('userId', data.user_id);
+          localStorage.setItem('userRole', data.role || 'student');
           // Try to persist some user info. If API returns user info prefer that, otherwise fall back to email.
-          const userToStore = data.user || { email: formData.email };
+          const userToStore = data.user || { email: formData.email, role: data.role || 'student' };
           localStorage.setItem('user', JSON.stringify(userToStore));
           // Notify parent (Navbar) about successful auth so it can update UI immediately
           if (typeof onSuccess === 'function') {
@@ -117,7 +122,8 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode, onSuccess }) => {
       name: '',
       email: '',
       password: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      role: 'student'
     });
     setError('');
   }, [isOpen, mode]);
@@ -155,6 +161,30 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode, onSuccess }) => {
                 placeholder="Enter your full name"
                 autoComplete="name"
               />
+            </div>
+          )}
+
+          {mode === 'signup' && (
+            <div className="form-group">
+              <label>I am a</label>
+              <div className="role-toggle">
+                <button
+                  type="button"
+                  className={`role-option ${formData.role === 'student' ? 'active' : ''}`}
+                  onClick={() => setFormData(prev => ({ ...prev, role: 'student' }))}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
+                  Student
+                </button>
+                <button
+                  type="button"
+                  className={`role-option ${formData.role === 'placement_cell' ? 'active' : ''}`}
+                  onClick={() => setFormData(prev => ({ ...prev, role: 'placement_cell' }))}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  Placement Cell
+                </button>
+              </div>
             </div>
           )}
 
@@ -225,7 +255,7 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode, onSuccess }) => {
               setGoogleLoading(true);
               setError('');
               try {
-                const response = await fetch('http://localhost:8000/api/auth/google-login', {
+                const response = await fetch(apiUrl('/api/auth/google-login'), {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({ token: credentialResponse.credential }),
@@ -233,6 +263,7 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode, onSuccess }) => {
                 if (response.ok) {
                   const data = await response.json();
                   localStorage.setItem('token', data.access_token);
+                  localStorage.setItem('userRole', data.role || 'student');
                   if (data.user) {
                     localStorage.setItem('userId', data.user.id);
                     localStorage.setItem('user', JSON.stringify(data.user));

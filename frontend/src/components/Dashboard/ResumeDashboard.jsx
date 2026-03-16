@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../navbar';
+import { apiUrl } from '../../utils/api';
 import './ResumeDashboard.css';
 
 // Utility function to check if token is expired
@@ -1180,7 +1181,7 @@ const ProfileBuilder = () => {
         const token = localStorage.getItem('token');
         console.log('Token from localStorage:', token ? 'Token exists' : 'No token found');
 
-        const response = await fetch('http://localhost:8000/api/resume/test-upload', {
+        const response = await fetch(apiUrl('/api/resume/test-upload'), {
           method: 'POST',
           body: formData
         });
@@ -1529,7 +1530,7 @@ const ProfileBuilder = () => {
 
         console.log('Saving profile data:', profilePayload);
 
-        const response = await fetch('http://localhost:8000/api/profile/save', {
+        const response = await fetch(apiUrl('/api/profile/save'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -2052,7 +2053,7 @@ const ProfileBuilder = () => {
           updatedAt: new Date().toISOString()
         };
 
-        const response = await fetch('http://localhost:8000/api/profile/save', {
+        const response = await fetch(apiUrl('/api/profile/save'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

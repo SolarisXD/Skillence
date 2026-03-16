@@ -683,6 +683,49 @@
   line-height: 1.5;
 }
 
+/* Academic Percentages */
+.academic-percentages {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-secondary, #e5e7eb);
+}
+
+.academic-percentages-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary, #6B7280);
+  margin: 0 0 0.75rem;
+}
+
+.academic-percentages-grid {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.academic-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0.6rem 1rem;
+  background: var(--bg-primary, #f9fafb);
+  border: 1px solid var(--border-secondary, #e5e7eb);
+  border-radius: 8px;
+  min-width: 120px;
+}
+
+.academic-stat-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #6B7280);
+  font-weight: 500;
+}
+
+.academic-stat-value {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary, #111827);
+}
+
 /* Skills Styles */
 .skills-container {
   display: flex;

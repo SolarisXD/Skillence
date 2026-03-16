@@ -40,6 +40,7 @@ class AuthService:
             "email": user_data.email,
             "name": user_data.name,
             "password": hashed_password,
+            "role": getattr(user_data, "role", "student"),
             "created_at": datetime.utcnow(),
             "is_verified": False
         }
@@ -47,12 +48,16 @@ class AuthService:
         # Insert user
         result = await users_collection.insert_one(user_doc)
         
-        # Create access token
+        # Create access token (include role)
         access_token = create_access_token(
-            data={"sub": user_data.email, "user_id": str(result.inserted_id)}
+            data={
+                "sub": user_data.email,
+                "user_id": str(result.inserted_id),
+                "role": user_doc["role"],
+            }
         )
         
-        return {"access_token": access_token, "token_type": "bearer"}
+        return {"access_token": access_token, "token_type": "bearer", "role": user_doc["role"]}
     
     async def login_user(self, login_data: UserLogin):
         users_collection = self._get_collection()
@@ -72,12 +77,13 @@ class AuthService:
                 detail="Invalid email or password"
             )
         
-        # Create access token
+        # Create access token (include role)
+        role = user.get("role", "student")
         access_token = create_access_token(
-            data={"sub": user["email"], "user_id": str(user["_id"])}
+            data={"sub": user["email"], "user_id": str(user["_id"]), "role": role}
         )
         
-        return {"access_token": access_token, "token_type": "bearer"}
+        return {"access_token": access_token, "token_type": "bearer", "role": role}
     
     async def verify_token(self, token: str):
         """Verify JWT token and return user data"""
@@ -110,7 +116,8 @@ class AuthService:
             "email": user["email"],
             "name": user["name"],
             "created_at": user["created_at"],
-            "is_verified": user["is_verified"]
+            "is_verified": user["is_verified"],
+            "role": user.get("role", "student"),
         }
 
     async def get_current_user(self, token: str):
@@ -142,7 +149,8 @@ class AuthService:
             "email": user["email"],
             "name": user["name"],
             "created_at": user["created_at"],
-            "is_verified": user["is_verified"]
+            "is_verified": user["is_verified"],
+            "role": user.get("role", "student"),
         }
     
     async def request_password_reset(self, email: str):
@@ -245,35 +253,40 @@ class AuthService:
         user = await users_collection.find_one({"email": email})
 
         if not user:
-            # Auto sign-up
+            # Auto sign-up (Google users default to student role)
             random_password = secrets.token_urlsafe(32)
             hashed_password = get_password_hash(random_password)
             user_doc = {
                 "email": email,
                 "name": name,
                 "password": hashed_password,
+                "role": "student",
                 "created_at": datetime.utcnow(),
                 "is_verified": True,
                 "auth_provider": "google"
             }
             result = await users_collection.insert_one(user_doc)
             user_id = str(result.inserted_id)
+            role = "student"
         else:
             user_id = str(user["_id"])
             name = user.get("name", name)
+            role = user.get("role", "student")
 
-        # Create JWT access token
+        # Create JWT access token (include role)
         access_token = create_access_token(
-            data={"sub": email, "user_id": user_id}
+            data={"sub": email, "user_id": user_id, "role": role}
         )
 
         return {
             "access_token": access_token,
             "token_type": "bearer",
+            "role": role,
             "user": {
                 "id": user_id,
                 "email": email,
-                "name": name
+                "name": name,
+                "role": role,
             }
         }
         

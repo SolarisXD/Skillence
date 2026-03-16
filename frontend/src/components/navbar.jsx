@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { ChevronRight, LayoutDashboard, User, Palette, LogOut } from 'lucide-react';
 import AuthModal from './AuthModal';
 import ThemeSelector from './ThemeSelector';
 import '../styles/navbar.css';
@@ -12,7 +13,8 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
   const [isAtTop, setIsAtTop] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [showServices, setShowServices] = useState(false);
+  const [showCareerGrowth, setShowCareerGrowth] = useState(false);
+  const [showMarketInsights, setShowMarketInsights] = useState(false);
   const [user, setUser] = useState(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState('login');
@@ -60,7 +62,8 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
         setShowThemeSelector(false);
       }
       if (!event.target.closest('.services-dropdown')) {
-        setShowServices(false);
+        setShowCareerGrowth(false);
+        setShowMarketInsights(false);
       }
     };
 
@@ -81,9 +84,15 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
     }
   };
 
+  const getUserRole = () => {
+    return localStorage.getItem('userRole') || 'student';
+  };
+
   const handleSignOut = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userId');
     setIsAuthenticated(false);
     setUser(null);
     setShowDropdown(false);
@@ -182,58 +191,118 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
               <li className="nav-item">
                 <a href="#about-us" className="nav-link" onClick={scrollToAbout}>About Us</a>
               </li>
-              <li className="nav-item services-dropdown" onClick={() => setShowServices(!showServices)}>
-                <button className={`nav-link services-toggle ${showServices ? 'open' : ''}`} type="button">
-                  Services
-                  <svg viewBox="0 0 24 24" className="chevron-icon">
-                    <path fill="currentColor" d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
-                  </svg>
-                </button>
-                {showServices && (
-                  <div className="services-menu dropdown-menu">
-                    <button
-                      className="dropdown-item"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate('/job-offer-evaluator');
-                        setShowServices(false);
-                      }}
-                    >
-                      Job Offer Evaluator
-                    </button>
-                    <button
-                      className="dropdown-item"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate('/job-trends');
-                        setShowServices(false);
-                      }}
-                    >
-                      Job Trend Analysis
-                    </button>
-                    <button
-                      className="dropdown-item"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate('/reflection-engine');
-                        setShowServices(false);
-                      }}
-                    >
-                      Reflection Engine
-                    </button>
-                    <button
-                      className="dropdown-item"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate('/career-path-recommendation');
-                        setShowServices(false);
-                      }}
-                    >
-                      Career Path Recommendation
-                    </button>
-                  </div>
-                )}
-              </li>
+              {isAuthenticated && getUserRole() === 'student' && (
+                <>
+                <li
+                  className="nav-item services-dropdown"
+                  onClick={() => {
+                    setShowCareerGrowth((prev) => {
+                      const next = !prev;
+                      if (next) setShowMarketInsights(false);
+                      return next;
+                    });
+                  }}
+                >
+                  <button className={`nav-link services-toggle ${showCareerGrowth ? 'open' : ''}`} type="button">
+                    Career Growth
+                    <ChevronRight className="chevron-icon" size={20} />
+                  </button>
+                  {showCareerGrowth && (
+                    <div className="services-menu dropdown-menu">
+                      <button
+                        className="dropdown-item"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate('/career-path-recommendation');
+                          setShowCareerGrowth(false);
+                          setShowMarketInsights(false);
+                        }}
+                      >
+                        Career Path Recommendation
+                      </button>
+                      <button
+                        className="dropdown-item"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate('/reflection-engine');
+                          setShowCareerGrowth(false);
+                          setShowMarketInsights(false);
+                        }}
+                      >
+                        Reflection Engine
+                      </button>
+                      <button
+                        className="dropdown-item"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate('/skill-libraries');
+                          setShowCareerGrowth(false);
+                          setShowMarketInsights(false);
+                        }}
+                      >
+                        Skill Libraries
+                      </button>
+                    </div>
+                  )}
+                </li>
+
+                <li
+                  className="nav-item services-dropdown"
+                  onClick={() => {
+                    setShowMarketInsights((prev) => {
+                      const next = !prev;
+                      if (next) setShowCareerGrowth(false);
+                      return next;
+                    });
+                  }}
+                >
+                  <button className={`nav-link services-toggle ${showMarketInsights ? 'open' : ''}`} type="button">
+                    Market Insights
+                    <ChevronRight className="chevron-icon" size={20} />
+                  </button>
+                  {showMarketInsights && (
+                    <div className="services-menu dropdown-menu">
+                      <button
+                        className="dropdown-item"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate('/job-trends');
+                          setShowCareerGrowth(false);
+                          setShowMarketInsights(false);
+                        }}
+                      >
+                        Job Trend Analysis
+                      </button>
+                      <button
+                        className="dropdown-item"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate('/job-offer-evaluator');
+                          setShowCareerGrowth(false);
+                          setShowMarketInsights(false);
+                        }}
+                      >
+                        Job Offer Evaluator
+                      </button>
+                    </div>
+                  )}
+                </li>
+
+                <li className="nav-item">
+                  <button
+                    className="nav-link campus-nav-button"
+                    type="button"
+                    onClick={() => {
+                      navigate('/campus-placement');
+                      setShowCareerGrowth(false);
+                      setShowMarketInsights(false);
+                    }}
+                  >
+                    Campus Placement
+                  </button>
+                </li>
+                </>
+              )}
             </ul>
           </div>
           
@@ -255,12 +324,10 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
                 {/* Dashboard Button - Only shown when logged in */}
                 <button 
                   className="dashboard-btn"
-                  onClick={() => navigate('/dashboard/resume')}
+                  onClick={() => navigate(getUserRole() === 'placement_cell' ? '/placement-dashboard' : '/dashboard/resume')}
                   title="Dashboard"
                 >
-                  <svg viewBox="0 0 24 24" className="dashboard-icon">
-                    <path fill="currentColor" d="M13,3V9H21V3M13,21H21V11H13M3,21H11V15H3M3,13H11V3H3V13Z" />
-                  </svg>
+                  <LayoutDashboard className="dashboard-icon" size={20} />
                   <span>Dashboard</span>
                 </button>
                 
@@ -282,9 +349,7 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
                         }} 
                         className="dropdown-item"
                       >
-                        <svg viewBox="0 0 24 24" className="dropdown-icon">
-                          <path fill="currentColor" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
-                        </svg>
+                        <User className="dropdown-icon" size={20} />
                         Profile
                       </button>
                       <div className="dropdown-item theme-dropdown-container">
@@ -292,13 +357,9 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
                           className="theme-dropdown-btn"
                           onClick={handleThemeClick}
                         >
-                          <svg viewBox="0 0 24 24" className="dropdown-icon">
-                            <path fill="currentColor" d="M12,18V6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,15.31L23.31,12L20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31Z" />
-                          </svg>
+                          <Palette className="dropdown-icon" size={20} />
                           Theme
-                          <svg viewBox="0 0 24 24" className="chevron-icon">
-                            <path fill="currentColor" d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
-                          </svg>
+                          <ChevronRight className="chevron-icon" size={20} />
                         </button>
                         {showThemeSelector && (
                           <ThemeSelector
@@ -309,9 +370,7 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
                         )}
                       </div>
                       <button onClick={handleSignOut} className="dropdown-item">
-                        <svg viewBox="0 0 24 24" className="dropdown-icon">
-                          <path fill="currentColor" d="M16,17V14H9V10H16V7L21,12L16,17M14,2A2,2 0 0,1 16,4V6H14V4H5V20H14V18H16V20A2,2 0 0,1 14,22H5A2,2 0 0,1 3,20V4A2,2 0 0,1 5,2H14Z" />
-                        </svg>
+                        <LogOut className="dropdown-icon" size={20} />
                         Sign Out
                       </button>
                     </div>
@@ -354,29 +413,88 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
                 About Us
               </a>
             </li>
-            <li className="mobile-nav-item">
-              <a 
-                href="#advanced-ai-career-intelligence" 
-                className="mobile-nav-link"
-                onClick={(e) => {
-                  scrollToServices(e);
-                  setMobileMenuOpen(false);
-                }}
-              >
-                Services
-              </a>
-            </li>
-            <li className="mobile-nav-item">
-              <button
-                className="mobile-nav-link"
-                onClick={() => {
-                  navigate('/job-offer-evaluator');
-                  setMobileMenuOpen(false);
-                }}
-              >
-                Job Offer Evaluator
-              </button>
-            </li>
+            {isAuthenticated && getUserRole() === 'student' && (
+              <>
+                <li className="mobile-nav-item">
+                  <a 
+                    href="#advanced-ai-career-intelligence" 
+                    className="mobile-nav-link"
+                    onClick={(e) => {
+                      scrollToServices(e);
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    Services
+                  </a>
+                </li>
+                <li className="mobile-nav-item">
+                  <button
+                    className="mobile-nav-link"
+                    onClick={() => {
+                      navigate('/career-path-recommendation');
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    Career Path Recommendation
+                  </button>
+                </li>
+                <li className="mobile-nav-item">
+                  <button
+                    className="mobile-nav-link"
+                    onClick={() => {
+                      navigate('/reflection-engine');
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    Reflection Engine
+                  </button>
+                </li>
+                <li className="mobile-nav-item">
+                  <button
+                    className="mobile-nav-link"
+                    onClick={() => {
+                      navigate('/skill-libraries');
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    Skill Libraries
+                  </button>
+                </li>
+                <li className="mobile-nav-item">
+                  <button
+                    className="mobile-nav-link"
+                    onClick={() => {
+                      navigate('/job-trends');
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    Job Trend Analysis
+                  </button>
+                </li>
+                <li className="mobile-nav-item">
+                  <button
+                    className="mobile-nav-link"
+                    onClick={() => {
+                      navigate('/job-offer-evaluator');
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    Job Offer Evaluator
+                  </button>
+                </li>
+                <li className="mobile-nav-item">
+                  <button
+                    className="mobile-nav-link"
+                    onClick={() => {
+                      navigate('/campus-placement');
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    Campus Placement
+                  </button>
+                </li>
+              </>
+            )}
           </ul>
           
           {isAuthenticated && (
@@ -384,11 +502,11 @@ const Navbar = ({ onAuthClick, onAboutClick }) => {
               <button 
                 className="btn-primary"
                 onClick={() => {
-                  navigate('/dashboard/resume');
+                  navigate(getUserRole() === 'placement_cell' ? '/placement-dashboard' : '/dashboard/resume');
                   setMobileMenuOpen(false);
                 }}
               >
-                Resume Dashboard
+                {getUserRole() === 'placement_cell' ? 'Placement Dashboard' : 'Resume Dashboard'}
               </button>
             </div>
           )}

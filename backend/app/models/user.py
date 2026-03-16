@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional
+from typing import Optional, Literal
 from datetime import datetime
 
 class UserBase(BaseModel):
@@ -8,6 +8,7 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
+    role: Literal["student", "placement_cell"] = "student"
 
 class UserLogin(BaseModel):
     email: EmailStr
@@ -17,10 +18,12 @@ class UserResponse(UserBase):
     id: str
     created_at: datetime
     is_verified: bool
+    role: str = "student"
 
 class Token(BaseModel):
     access_token: str
     token_type: str
+    role: str = "student"
 
 class PasswordReset(BaseModel):
     email: EmailStr

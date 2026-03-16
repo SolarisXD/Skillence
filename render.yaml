@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: skillence-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /
+    autoDeployTrigger: commit
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "30"
+      - key: AZURE_ENDPOINT
+        sync: false
+      - key: AZURE_API_KEY
+        sync: false
+      - key: GEMINI_API
+        sync: false
+      - key: GEMINI_ENDPOINT
+        value: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash
+      - key: FRONTEND_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: CORS_ORIGIN_REGEX
+        value: https://.*\\.vercel\\.app
+      - key: EMAIL_HOST
+        sync: false
+      - key: EMAIL_PORT
+        value: "587"
+      - key: EMAIL_HOST_USER
+        sync: false
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
+      - key: ONET_API_KEY
+        sync: false
+      - key: JSEARCH_API_KEY
+        sync: false

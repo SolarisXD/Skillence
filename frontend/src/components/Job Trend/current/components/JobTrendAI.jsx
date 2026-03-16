@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { isFeatureEnabled } from '../utils/featureFlags';
+import { apiUrl } from '../../../../utils/api';
 
 const JobTrendAI = ({ selectedFilters }) => {
   const [insights, setInsights] = useState(null);
@@ -13,7 +14,7 @@ const JobTrendAI = ({ selectedFilters }) => {
     setLoading(true);
     
     try {
-      const response = await fetch('http://localhost:8000/api/job-trends/ai-insights-gemini', {
+      const response = await fetch(apiUrl('/api/job-trends/ai-insights-gemini'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

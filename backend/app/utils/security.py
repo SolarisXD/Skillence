@@ -24,7 +24,14 @@ def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
 def create_access_token(data: dict, expires_delta: timedelta = None):
+    """Create a JWT access token.
+
+    The *data* dict should contain at minimum ``sub`` (email),
+    ``user_id``, and ``role`` (defaults to "student" if absent).
+    """
     to_encode = data.copy()
+    # Ensure role is always present in the token
+    to_encode.setdefault("role", "student")
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:

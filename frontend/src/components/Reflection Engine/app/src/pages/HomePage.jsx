@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Target } from 'lucide-react';
 import Icons from "../components/Icons.jsx";
 import homeTitleImg from "../assets/home_title.png";
 
@@ -1296,7 +1297,7 @@ export default function HomePage({ onLogin }) {
                     justifyContent: 'center',
                     fontSize: '18px'
                   }}>
-                    <svg width='20' height='20' viewBox='0 0 24 24' fill='white'><circle cx='12' cy='12' r='10' fill='none' stroke='white' strokeWidth='2'/><circle cx='12' cy='12' r='4' fill='white'/></svg>
+                    <Target size={20} color='white' />
                   </div>
                   <h3 style={{
                     fontSize: '18px',
@@ -1431,7 +1432,7 @@ export default function HomePage({ onLogin }) {
                 fontWeight: '600',
                 gap: '6px'
               }}>
-                <svg width='16' height='16' viewBox='0 0 24 24' fill='currentColor'><circle cx='12' cy='12' r='10' fill='none' stroke='currentColor' strokeWidth='2'/><circle cx='12' cy='12' r='4' fill='currentColor'/></svg>
+                <Target size={16} />
                 MistakeLoop AI Coach
               </div>
               

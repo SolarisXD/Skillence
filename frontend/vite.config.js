@@ -8,7 +8,13 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000,
-    host: true
+    host: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8000',
+        changeOrigin: true
+      }
+    }
   },
   envDir: resolve(fileURLToPath(new URL('.', import.meta.url)), '..'), // Look for .env files in the parent directory (root)
 })
