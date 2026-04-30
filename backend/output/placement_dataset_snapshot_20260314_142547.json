@@ -1,0 +1,1002 @@
+{
+  "generated_at": "2026-03-14T14:25:47.178477",
+  "db_name": "skillence_db",
+  "collection_counts": {
+    "users": 23,
+    "profiles": 5,
+    "student_academics": 4,
+    "company_drives": 2,
+    "applications": 7,
+    "course_catalog": 105
+  },
+  "placement_users": [
+    {
+      "user_id": "69a148b2a3465a743ab85714",
+      "name": "I am Shriram ma",
+      "email": "shriram@gmail.com"
+    },
+    {
+      "user_id": "69ac58153019e34bf75d922f",
+      "name": "Test User",
+      "email": "test1772902420@example.com"
+    },
+    {
+      "user_id": "69b53653adf46b0a0622fac3",
+      "name": "Raj kumar",
+      "email": "rajkumar@gmail.com"
+    }
+  ],
+  "drives": [
+    {
+      "id": "69b53787adf46b0a0622fac6",
+      "company_name": "ARC",
+      "role_title": "AI Engineer",
+      "status": "upcoming",
+      "created_by": "69b53653adf46b0a0622fac3",
+      "application_deadline": "2026-03-17",
+      "drive_date": "2026-03-14",
+      "criteria": {
+        "min_tenth_percentage": 60.0,
+        "min_twelfth_percentage": 60.0,
+        "min_ug_cgpa": 7.0,
+        "max_shortlist_count": 200
+      },
+      "package": {
+        "ctc": "8",
+        "base_salary": "7",
+        "location": null,
+        "role_type": null
+      },
+      "jd_type": "none",
+      "required_skills_count": 0,
+      "preferred_skills_count": 0,
+      "required_skills": [],
+      "preferred_skills": []
+    },
+    {
+      "id": "69ac54633bcf7c912ca6918e",
+      "company_name": "Saloni Corporation",
+      "role_title": "Pati ",
+      "status": "upcoming",
+      "created_by": "69a148b2a3465a743ab85714",
+      "application_deadline": "2026-03-17",
+      "drive_date": "2026-03-19",
+      "criteria": {
+        "min_tenth_percentage": 60.0,
+        "min_twelfth_percentage": 60.0,
+        "min_ug_cgpa": 6.0,
+        "max_shortlist_count": 200
+      },
+      "package": {
+        "ctc": "69",
+        "base_salary": "42",
+        "location": null,
+        "role_type": null
+      },
+      "jd_type": "text+structured",
+      "required_skills_count": 13,
+      "preferred_skills_count": 14,
+      "required_skills": [
+        "object-oriented programming",
+        "data structures",
+        "version control",
+        "documentation",
+        "javascript",
+        "algorithms",
+        "python",
+        "java",
+        "oop",
+        "sql",
+        "git",
+        "go",
+        "c"
+      ],
+      "preferred_skills": [
+        "problem solving",
+        "software design",
+        "system design",
+        "communication",
+        "kubernetes",
+        "debugging",
+        "teamwork",
+        "angular",
+        "docker",
+        "ci/cd",
+        "react",
+        "azure",
+        "aws",
+        "gcp"
+      ]
+    }
+  ],
+  "applications": [
+    {
+      "id": "69b54265866df0c14e1294a7",
+      "drive_id": "69b53787adf46b0a0622fac6",
+      "user_id": "69b541fb866df0c14e1294a5",
+      "status": "applied",
+      "match_score": null,
+      "applied_at": "2026-03-14T11:11:33.857000"
+    },
+    {
+      "id": "69b54264866df0c14e1294a6",
+      "drive_id": "69ac54633bcf7c912ca6918e",
+      "user_id": "69b541fb866df0c14e1294a5",
+      "status": "applied",
+      "match_score": 0.4563,
+      "applied_at": "2026-03-14T11:11:32.639000"
+    },
+    {
+      "id": "69b537f4adf46b0a0622fac9",
+      "drive_id": "69b53787adf46b0a0622fac6",
+      "user_id": "68bd1395a56a73c1aa18810f",
+      "status": "applied",
+      "match_score": null,
+      "applied_at": "2026-03-14T10:27:00.039000"
+    },
+    {
+      "id": "69ac5942f203cee2ffbd5fe6",
+      "drive_id": "69ac54633bcf7c912ca6918e",
+      "user_id": "68bd1395a56a73c1aa18810f",
+      "status": "applied",
+      "match_score": 0.4089,
+      "applied_at": "2026-03-07T16:58:42.324000"
+    },
+    {
+      "id": "69ac54963bcf7c912ca6918f",
+      "drive_id": "69ac54633bcf7c912ca6918e",
+      "user_id": "6985b7600d49450e38d019cf",
+      "status": "applied",
+      "match_score": 0.4159,
+      "applied_at": "2026-03-07T16:38:46.967000"
+    },
+    {
+      "id": "69ac5492b3b4affeefb802af",
+      "drive_id": "69ac54633bcf7c912ca6918e",
+      "user_id": "68bef99c2fa2ee1d2165c31e",
+      "status": "applied",
+      "match_score": 0.4001,
+      "applied_at": "2026-03-07T16:38:42.580000"
+    },
+    {
+      "id": "69a2d89d1e149c57f708b5b9",
+      "drive_id": "69a2d2989f49e317c1d5c2ea",
+      "user_id": "6985b7600d49450e38d019cf",
+      "status": "applied",
+      "match_score": 0.404,
+      "applied_at": "2026-02-28T11:59:25.497000"
+    }
+  ],
+  "users_with_profiles_or_academics": [
+    {
+      "user_id": "68bef99c2fa2ee1d2165c31e",
+      "name": "Manan Sandhaliya",
+      "email": "mananzks95@gmail.com",
+      "role": "student",
+      "created_at": "2025-09-08T15:43:24.069000",
+      "profile_skills": {
+        "technical": [
+          "C++",
+          "Python",
+          "TensorFlow",
+          "Keras",
+          "Scikit-learn",
+          "OpenCV",
+          "Pandas",
+          "NumPy",
+          "MySQL",
+          "VS Code",
+          "Google Collab",
+          "Jupyter",
+          "Git",
+          "GitHub"
+        ],
+        "soft": [],
+        "languages": []
+      },
+      "career_objective": null,
+      "academics": {
+        "cgpa": 8.56,
+        "tenth_percentage": 92,
+        "twelfth_percentage": 80,
+        "student_info": {
+          "name": "MANANSINH KIRTIBHADRASINH SANDHALIYA",
+          "register_number": "22BAI10330",
+          "program": "B.Tech. - Computer Science and Engineering (Artificial Intelligence and Machine Learning)",
+          "school": "SCSE - School of Computing Science and Engineering"
+        },
+        "weighted_skill_count": 98,
+        "resume_skill_count": 0,
+        "course_count": 54
+      }
+    },
+    {
+      "user_id": "68bd1395a56a73c1aa18810f",
+      "name": "rajeev ranajn",
+      "email": "rajeevranjanpratapsingh7@gmail.com",
+      "role": "student",
+      "created_at": "2025-09-07T05:09:41.758000",
+      "profile_skills": {
+        "technical": [
+          "Python",
+          "Java",
+          "React.js",
+          "Tailwind",
+          "HTML",
+          "CSS",
+          "Node.js",
+          "MySQL",
+          "TensorFlow",
+          "Keras",
+          "Scikit-learn",
+          "NumPy",
+          "Pandas",
+          "OpenCV",
+          "CNNs",
+          "ResNet",
+          "DenseNet",
+          "CBAM",
+          "LangGraph",
+          "LangChain",
+          "Git",
+          "GitHub",
+          "Jupyter Notebook",
+          "VS Code",
+          "MongoDB",
+          "PyCharm",
+          "Excel",
+          "AWS"
+        ],
+        "soft": [],
+        "languages": []
+      },
+      "career_objective": null,
+      "academics": {
+        "cgpa": 8.55,
+        "tenth_percentage": 65.5,
+        "twelfth_percentage": 69.6,
+        "student_info": {
+          "name": "RAJEEV RANJAN PRATAP SINGH",
+          "register_number": "22BAI10344",
+          "program": "B.Tech. - Computer Science and Engineering (Artificial Intelligence and Machine Learning)",
+          "school": "SCSE - School of Computing Science and Engineering"
+        },
+        "weighted_skill_count": 98,
+        "resume_skill_count": 0,
+        "course_count": 55
+      }
+    },
+    {
+      "user_id": "6985b7600d49450e38d019cf",
+      "name": "Namit",
+      "email": "karmaifb@gmail.com",
+      "role": "student",
+      "created_at": "2026-02-06T09:41:52.759000",
+      "profile_skills": {
+        "technical": [
+          "C++",
+          "Python",
+          "HTML",
+          "CSS",
+          "TensorFlow",
+          "PyTorch",
+          "Keras",
+          "NumPy",
+          "OpenCV",
+          "NLTK",
+          "GitHub",
+          "REST API",
+          "Flask",
+          "React",
+          "Azure Cognitive Services",
+          "MongoDB",
+          "MySQL",
+          "AWS Basics"
+        ],
+        "soft": [],
+        "languages": [
+          "English",
+          "Hindi",
+          "Japanese"
+        ]
+      },
+      "career_objective": null,
+      "academics": {
+        "cgpa": 8.72,
+        "tenth_percentage": 90,
+        "twelfth_percentage": 90,
+        "student_info": {
+          "name": "NAMIT RUSTAGI",
+          "register_number": "22BAI10043",
+          "program": "B.Tech. - Computer Science and Engineering (Artificial Intelligence and Machine Learning)",
+          "school": "SCSE - School of Computing Science and Engineering"
+        },
+        "weighted_skill_count": 98,
+        "resume_skill_count": 0,
+        "course_count": 55
+      }
+    },
+    {
+      "user_id": "6986488b5b1d5ec3ec3de123",
+      "name": "Rahul Gehlot",
+      "email": "rogerstechrk1@gmail.com",
+      "role": "student",
+      "created_at": "2026-02-06T20:01:15.162000",
+      "profile_skills": {
+        "technical": [
+          "Python",
+          "C++",
+          "TensorFlow",
+          "PyTorch",
+          "Scikit-learn",
+          "OpenCV",
+          "Pandas",
+          "HTML5",
+          "CSS3",
+          "JavaScript",
+          "MySQL",
+          "MongoDB",
+          "Git",
+          "GitHub",
+          "VS Code",
+          "React",
+          "Node.js",
+          "Express",
+          "TailwindCSS",
+          "Passport.js",
+          "Streamlit",
+          "Pygame",
+          "Mongoose ODM",
+          "Axios",
+          "spaCy",
+          "Pillow"
+        ],
+        "soft": [],
+        "languages": []
+      },
+      "career_objective": null,
+      "academics": {
+        "cgpa": null,
+        "tenth_percentage": null,
+        "twelfth_percentage": null,
+        "student_info": null,
+        "weighted_skill_count": 0,
+        "resume_skill_count": 0,
+        "course_count": 0
+      }
+    },
+    {
+      "user_id": "69b541fb866df0c14e1294a5",
+      "name": "dinga",
+      "email": "karmaifg@gmail.com",
+      "role": "student",
+      "created_at": "2026-03-14T11:09:47.979000",
+      "profile_skills": {
+        "technical": [],
+        "soft": [],
+        "languages": []
+      },
+      "career_objective": null,
+      "academics": {
+        "cgpa": 8.72,
+        "tenth_percentage": 95,
+        "twelfth_percentage": 95,
+        "student_info": {
+          "name": "NAMIT RUSTAGI",
+          "register_number": "22BAI10043",
+          "program": "B.Tech. - Computer Science and Engineering (Artificial Intelligence and Machine Learning)",
+          "school": "SCSE - School of Computing Science and Engineering"
+        },
+        "weighted_skill_count": 133,
+        "resume_skill_count": 0,
+        "course_count": 55
+      }
+    }
+  ],
+  "skill_frequency": {
+    "profile_technical_top_100": [
+      [
+        "python",
+        4
+      ],
+      [
+        "tensorflow",
+        4
+      ],
+      [
+        "opencv",
+        4
+      ],
+      [
+        "mysql",
+        4
+      ],
+      [
+        "github",
+        4
+      ],
+      [
+        "c++",
+        3
+      ],
+      [
+        "keras",
+        3
+      ],
+      [
+        "scikit-learn",
+        3
+      ],
+      [
+        "pandas",
+        3
+      ],
+      [
+        "numpy",
+        3
+      ],
+      [
+        "vs code",
+        3
+      ],
+      [
+        "git",
+        3
+      ],
+      [
+        "mongodb",
+        3
+      ],
+      [
+        "html",
+        2
+      ],
+      [
+        "css",
+        2
+      ],
+      [
+        "node.js",
+        2
+      ],
+      [
+        "pytorch",
+        2
+      ],
+      [
+        "react",
+        2
+      ],
+      [
+        "google collab",
+        1
+      ],
+      [
+        "jupyter",
+        1
+      ],
+      [
+        "java",
+        1
+      ],
+      [
+        "react.js",
+        1
+      ],
+      [
+        "tailwind",
+        1
+      ],
+      [
+        "cnns",
+        1
+      ],
+      [
+        "resnet",
+        1
+      ],
+      [
+        "densenet",
+        1
+      ],
+      [
+        "cbam",
+        1
+      ],
+      [
+        "langgraph",
+        1
+      ],
+      [
+        "langchain",
+        1
+      ],
+      [
+        "jupyter notebook",
+        1
+      ],
+      [
+        "pycharm",
+        1
+      ],
+      [
+        "excel",
+        1
+      ],
+      [
+        "aws",
+        1
+      ],
+      [
+        "nltk",
+        1
+      ],
+      [
+        "rest api",
+        1
+      ],
+      [
+        "flask",
+        1
+      ],
+      [
+        "azure cognitive services",
+        1
+      ],
+      [
+        "aws basics",
+        1
+      ],
+      [
+        "html5",
+        1
+      ],
+      [
+        "css3",
+        1
+      ],
+      [
+        "javascript",
+        1
+      ],
+      [
+        "express",
+        1
+      ],
+      [
+        "tailwindcss",
+        1
+      ],
+      [
+        "passport.js",
+        1
+      ],
+      [
+        "streamlit",
+        1
+      ],
+      [
+        "pygame",
+        1
+      ],
+      [
+        "mongoose odm",
+        1
+      ],
+      [
+        "axios",
+        1
+      ],
+      [
+        "spacy",
+        1
+      ],
+      [
+        "pillow",
+        1
+      ]
+    ],
+    "academics_weighted_top_100": [
+      [
+        "machine learning",
+        4
+      ],
+      [
+        "deep learning",
+        4
+      ],
+      [
+        "supervised learning",
+        4
+      ],
+      [
+        "unsupervised learning",
+        4
+      ],
+      [
+        "calculus",
+        4
+      ],
+      [
+        "numerical methods",
+        4
+      ],
+      [
+        "algorithms",
+        4
+      ],
+      [
+        "data structures",
+        4
+      ],
+      [
+        "python",
+        4
+      ],
+      [
+        "c",
+        4
+      ],
+      [
+        "data preprocessing",
+        4
+      ],
+      [
+        "exploratory data analysis",
+        4
+      ],
+      [
+        "statistical analysis",
+        4
+      ],
+      [
+        "embedded systems",
+        4
+      ],
+      [
+        "complexity theory",
+        4
+      ],
+      [
+        "graph theory",
+        4
+      ],
+      [
+        "dynamic programming",
+        4
+      ],
+      [
+        "discrete mathematics",
+        4
+      ],
+      [
+        "project management",
+        4
+      ],
+      [
+        "java",
+        4
+      ],
+      [
+        "object-oriented programming",
+        4
+      ],
+      [
+        "linear algebra",
+        4
+      ],
+      [
+        "scikit-learn",
+        4
+      ],
+      [
+        "model evaluation",
+        4
+      ],
+      [
+        "theory of computation",
+        4
+      ],
+      [
+        "compiler design",
+        4
+      ],
+      [
+        "automata theory",
+        4
+      ],
+      [
+        "formal languages",
+        4
+      ],
+      [
+        "operating systems",
+        4
+      ],
+      [
+        "linux",
+        4
+      ],
+      [
+        "unix",
+        4
+      ],
+      [
+        "networking",
+        4
+      ],
+      [
+        "tcp/ip",
+        4
+      ],
+      [
+        "http/https",
+        4
+      ],
+      [
+        "information security",
+        4
+      ],
+      [
+        "cryptography",
+        4
+      ],
+      [
+        "access control",
+        4
+      ],
+      [
+        "optimization",
+        4
+      ],
+      [
+        "c++",
+        4
+      ],
+      [
+        "data visualization",
+        4
+      ],
+      [
+        "tableau",
+        4
+      ],
+      [
+        "power bi",
+        4
+      ],
+      [
+        "matplotlib",
+        4
+      ],
+      [
+        "seaborn",
+        4
+      ],
+      [
+        "neural networks",
+        4
+      ],
+      [
+        "database management systems",
+        4
+      ],
+      [
+        "dbms",
+        4
+      ],
+      [
+        "database design",
+        4
+      ],
+      [
+        "sql",
+        4
+      ],
+      [
+        "mysql",
+        4
+      ],
+      [
+        "computer vision",
+        4
+      ],
+      [
+        "opencv",
+        4
+      ],
+      [
+        "probability",
+        4
+      ],
+      [
+        "statistics",
+        4
+      ],
+      [
+        "hypothesis testing",
+        4
+      ],
+      [
+        "computer architecture",
+        4
+      ],
+      [
+        "etl",
+        4
+      ],
+      [
+        "data modeling",
+        4
+      ],
+      [
+        "data cleaning",
+        4
+      ],
+      [
+        "natural language processing",
+        4
+      ],
+      [
+        "nlp",
+        4
+      ],
+      [
+        "reinforcement learning",
+        4
+      ],
+      [
+        "greedy algorithms",
+        4
+      ],
+      [
+        "sorting algorithms",
+        4
+      ],
+      [
+        "aws",
+        4
+      ],
+      [
+        "amazon web services",
+        4
+      ],
+      [
+        "serverless",
+        4
+      ],
+      [
+        "ec2",
+        4
+      ],
+      [
+        "code documentation",
+        3
+      ],
+      [
+        "iot",
+        3
+      ],
+      [
+        "firmware",
+        3
+      ],
+      [
+        "microcontrollers",
+        3
+      ],
+      [
+        "software engineering",
+        3
+      ],
+      [
+        "api design",
+        3
+      ],
+      [
+        "spring boot",
+        3
+      ],
+      [
+        "concurrent programming",
+        3
+      ],
+      [
+        "computer networks",
+        3
+      ],
+      [
+        "network security",
+        3
+      ],
+      [
+        "model deployment",
+        3
+      ],
+      [
+        "application security",
+        3
+      ],
+      [
+        "software design",
+        3
+      ],
+      [
+        "system design",
+        3
+      ],
+      [
+        "expert systems",
+        3
+      ],
+      [
+        "mobile ui design",
+        3
+      ],
+      [
+        "responsive design",
+        3
+      ],
+      [
+        "web accessibility",
+        3
+      ],
+      [
+        "git",
+        3
+      ],
+      [
+        "version control",
+        3
+      ],
+      [
+        "assembly",
+        3
+      ],
+      [
+        "data warehouse",
+        3
+      ],
+      [
+        "data pipeline",
+        3
+      ],
+      [
+        "tensorflow",
+        3
+      ],
+      [
+        "pytorch",
+        3
+      ],
+      [
+        "keras",
+        3
+      ],
+      [
+        "large language models",
+        3
+      ],
+      [
+        "hugging face",
+        3
+      ],
+      [
+        "spacy",
+        3
+      ],
+      [
+        "cloud architecture",
+        3
+      ],
+      [
+        "classification",
+        1
+      ],
+      [
+        "clustering",
+        1
+      ]
+    ]
+  }
+}
