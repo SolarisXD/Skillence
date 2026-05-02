@@ -10,8 +10,8 @@ Comprehensive security audit completed. **Found exposed test credentials and use
 ### 1. **Exposed Test Credentials in Git** (Priority: HIGH)
 **Location:** `backend/output/` directory
 
-Three JSON files contain plaintext test passwords and real user emails:
-- `dummy_placement_seed_summary_20260314_142559.json` - 10 test accounts with passwords like `Dummy@Stu01!`
+Three JSON files contained plaintext test passwords and real user emails before cleanup:
+- `dummy_placement_seed_summary_20260314_142559.json` - dummy account credentials
 - `placement_dataset_snapshot_20260314_142547.json` - User data snapshots
 - `placement_dataset_snapshot_20260314_142605.json` - User data with real emails
 
@@ -83,7 +83,7 @@ Template file with all required environment variables (no actual secrets)
 - Database credentials environment-based
 
 ### Exposed Data ⚠️
-- Test passwords in JSON files (tracked in git)
+- Historical test passwords in JSON files (tracked in git before cleanup)
 - Real user emails in JSON snapshots
 - User profile data (CGPA, skills) in snapshots
 - **Note:** These are test/development data, not production secrets
@@ -145,7 +145,7 @@ A: No ✅ All real credentials are in `.env` (not in git). Only test credentials
 A: Immediate action taken ✓. If making repo public, follow REMEDIATION_GUIDE.md.
 
 **Q: Are the dummy passwords a security risk?**  
-A: Low risk for test accounts, but they expose real user emails and profile data.
+A: They should be random and local-only. Static shared passwords are not a good public-release pattern.
 
 **Q: What about my team?**  
 A: Share `.env.example`. Each member creates their own local `.env` with actual credentials.

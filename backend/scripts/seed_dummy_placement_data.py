@@ -2,6 +2,7 @@ import json
 import os
 import random
 import string
+import secrets
 from collections import defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -206,6 +207,19 @@ def _choose_from_pool(pool: List[str], requested: List[str]) -> List[str]:
 
 def _random_phone(rng: random.Random) -> str:
     return "+91 " + "".join(rng.choice(string.digits) for _ in range(10))
+
+
+def _generate_dummy_password(length: int = 16) -> str:
+    alphabet = string.ascii_letters + string.digits + "!@#$%^&*()-_=+"
+    while True:
+        password = "".join(secrets.choice(alphabet) for _ in range(length))
+        if (
+            any(ch.islower() for ch in password)
+            and any(ch.isupper() for ch in password)
+            and any(ch.isdigit() for ch in password)
+            and any(ch in string.punctuation for ch in password)
+        ):
+            return password
 
 
 def _grade_for_strength(rng: random.Random, strong: bool) -> str:
@@ -446,10 +460,11 @@ def main() -> None:
         raise RuntimeError("Could not find placement creator user. Ensure at least one placement_cell user exists.")
 
     student_summary = []
+    credential_records = []
 
     for idx, (name, track) in enumerate(DUMMY_STUDENTS, start=1):
         email = f"dummy.student{idx:02d}@skillence.test"
-        password = f"Dummy@Stu{idx:02d}!"
+        password = _generate_dummy_password()
         user_id = _upsert_user(users_col, name, email, password)
 
         phone = _random_phone(rng)
@@ -523,7 +538,6 @@ def main() -> None:
                 "user_id": user_id,
                 "name": name,
                 "email": email,
-                "password": password,
                 "track": track,
                 "cgpa": cgpa,
                 "tenth_percentage": tenth,
@@ -531,6 +545,16 @@ def main() -> None:
                 "weighted_skill_count": len(skill_profile),
                 "resume_skill_count": len(technical_skills),
                 "course_count": len(all_courses),
+            }
+        )
+
+        credential_records.append(
+            {
+                "user_id": user_id,
+                "name": name,
+                "email": email,
+                "password": password,
+                "track": track,
             }
         )
 
@@ -643,18 +667,30 @@ def main() -> None:
         "drive_ids": drive_ids,
         "applications_created": created_apps,
         "applications_updated": updated_apps,
-        "notes": "Use the email/password pairs for dummy student logins.",
+        "notes": "Dummy passwords are written to a local ignored credentials file and are not stored in this summary.",
     }
 
     summary_path = output_dir / f"dummy_placement_seed_summary_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.json"
     with summary_path.open("w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2, ensure_ascii=False)
 
+    credentials_path = output_dir / f"dummy_placement_seed_credentials_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.json"
+    with credentials_path.open("w", encoding="utf-8") as f:
+        json.dump(
+            {
+                "generated_at": datetime.utcnow().isoformat(),
+                "seed_batch": SEED_BATCH,
+                "credentials": credential_records,
+                "notes": "Keep this file local. It is ignored by git and contains dummy account passwords.",
+            },
+            f,
+            indent=2,
+            ensure_ascii=False,
+        )
+
     print(f"Seed complete. Summary: {summary_path}")
+    print(f"Dummy credentials: {credentials_path}")
     print(f"Students: {len(student_summary)} | Drives: {len(drive_ids)} | Apps created: {created_apps} | Apps updated: {updated_apps}")
-    print("Dummy credentials:")
-    for s in student_summary:
-        print(f"- {s['name']} | {s['email']} | {s['password']} | user_id={s['user_id']}")
 
     client.close()
 

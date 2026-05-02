@@ -7,7 +7,7 @@ Found exposed test credentials and sensitive user data in committed JSON output 
 
 ## 🔴 CRITICAL FINDINGS
 
-### 1. Exposed Dummy Test Passwords in Git
+### 1. Exposed Dummy Test Credentials in Historical Git Data
 **Location:** `backend/output/`  
 **Files:**
 - `backend/output/dummy_placement_seed_summary_20260314_142559.json`
@@ -15,9 +15,9 @@ Found exposed test credentials and sensitive user data in committed JSON output 
 - `backend/output/placement_dataset_snapshot_20260314_142605.json`
 
 **Issue:** These files are **tracked in git** and contain:
-- Plaintext test passwords: `Dummy@Stu01!`, `Dummy@Stu02!`, etc.
-- Test emails: `dummy.student01@skillence.test`, etc.
-- Real user emails: `shriram@gmail.com`, `rajkumar@gmail.com`, etc.
+- Plaintext test passwords for dummy accounts
+- Test emails such as `dummy.student01@skillence.test`
+- Real user emails and placement data snapshots
 - User profile data (CGPA, scores, skills)
 
 **Severity:** ⚠️ **HIGH** - While these are test credentials, they expose:
@@ -99,8 +99,8 @@ All actual API keys and secrets are correctly managed:
    ```
 
 5. **Review Dummy Data Generation**
-   - The script `backend/scripts/seed_dummy_placement_data.py` uses predictable passwords
-   - Consider generating random passwords for test users
+   - The script `backend/scripts/seed_dummy_placement_data.py` should generate random passwords for test users
+   - Keep dummy credentials in ignored local output only
    - Mark test data clearly to avoid mixing with production
 
 ---
