@@ -1,8 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from app.routers import auth, profile, resume, job_trends, career_path, chatbot, ml_predictions, placement_cell, student_placement, skills
-from app.database import connect_to_mongo, close_mongo_connection
+from app.database import connect_to_mongo, close_mongo_connection, get_connection_status
 import os
 from dotenv import load_dotenv
 import logging
@@ -63,6 +63,20 @@ app.include_router(skills.router, prefix="/api/skills", tags=["skills"])
 @app.get("/")
 async def root():
     return {"message": "Skillence API is running"}
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint that reports service status."""
+    db_status = get_connection_status()
+    if not db_status["connected"]:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Service Unavailable: {db_status['error']}"
+        )
+    return {
+        "status": "healthy",
+        "message": "Skillence API is running with database connected"
+    }
 
 if __name__ == "__main__":
     import uvicorn
