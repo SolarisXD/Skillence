@@ -18,7 +18,7 @@ services:
         value: "30"
       - key: AZURE_ENDPOINT
         sync: false
-      - key: AZURE_API_KEY
+      - key: DOC_INTEL_API
         sync: false
       - key: GEMINI_API
         sync: false
