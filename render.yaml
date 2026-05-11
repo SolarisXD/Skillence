@@ -8,6 +8,8 @@ services:
     healthCheckPath: /
     autoDeployTrigger: commit
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
       - key: MONGODB_URI
         sync: false
       - key: SECRET_KEY
