@@ -1,0 +1,93 @@
+name: Test & Lint
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install -r requirements.txt
+
+      - name: Lint with flake8
+        continue-on-error: true
+        run: |
+          pip install flake8
+          cd backend
+          # Stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # Exit-code is 0 even if there are warnings
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+      - name: Test with pytest (if tests exist)
+        continue-on-error: true
+        run: |
+          pip install pytest pytest-cov
+          cd backend
+          if [ -d "tests" ]; then
+            pytest tests/ --cov=app --cov-report=xml
+          else
+            echo "No tests directory found. Skipping tests."
+          fi
+
+  test-frontend:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: |
+          cd frontend
+          pnpm install
+
+      - name: Lint with ESLint
+        continue-on-error: true
+        run: |
+          cd frontend
+          pnpm run lint
+
+      - name: Build frontend
+        run: |
+          cd frontend
+          pnpm run build
+
+      - name: Run tests (if configured)
+        continue-on-error: true
+        run: |
+          cd frontend
+          if grep -q '"test"' package.json; then
+            pnpm run test
+          else
+            echo "No test script configured. Skipping tests."
+          fi

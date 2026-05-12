@@ -63,7 +63,7 @@ backend/scripts/seed_dummy_placement_data.py.output
 Thumbs.db
 
 # Ignore the entire .github folder
-.github/
+
 VALIDATION_REPORT.md
 
 # Python

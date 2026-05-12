@@ -1,0 +1,36 @@
+name: Scheduled Health Check
+
+on:
+  schedule:
+    - cron: '*/5 * * * *' # every 5 minutes
+  workflow_dispatch:
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check backend /health
+        run: |
+          set -e
+          echo "Checking backend /health..."
+          status=$(curl -s -o /dev/null -w "%{http_code}" https://skillence-backend-gq6i.onrender.com/health || echo "000")
+          echo "backend_status=$status"
+          if [ "$status" != "200" ]; then
+            echo "Backend health check failed: $status" >&2
+            exit 1
+          fi
+
+      - name: Check frontend root
+        run: |
+          set -e
+          echo "Checking frontend root..."
+          status=$(curl -s -o /dev/null -w "%{http_code}" https://skillence-pi.vercel.app/ || echo "000")
+          echo "frontend_status=$status"
+          if [ "$status" != "200" ]; then
+            echo "Frontend check failed: $status" >&2
+            exit 1
+          fi
+
+      - name: Success
+        if: ${{ success() }}
+        run: echo "Health checks passed"

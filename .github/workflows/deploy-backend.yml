@@ -1,0 +1,49 @@
+name: Deploy Backend to Render
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+      - 'render.yaml'
+      - '.github/workflows/deploy-backend.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+      RENDER_BACKEND_URL: ${{ secrets.RENDER_BACKEND_URL }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Notify Render deployment
+        run: |
+          if [ -z "$RENDER_DEPLOY_HOOK" ]; then
+            echo "Warning: RENDER_DEPLOY_HOOK not set. Backend will not auto-deploy."
+            echo "Set up Render deploy hook in GitHub Secrets to enable automatic deployments."
+          else
+            curl -fsS -X POST "$RENDER_DEPLOY_HOOK"
+            echo "Backend deployment triggered on Render"
+          fi
+
+      - name: Wait for Render deployment
+        if: ${{ env.RENDER_DEPLOY_HOOK != '' && env.RENDER_BACKEND_URL != '' }}
+        run: sleep 30
+
+      - name: Verify backend is live
+        if: ${{ env.RENDER_DEPLOY_HOOK != '' && env.RENDER_BACKEND_URL != '' }}
+        run: |
+          for i in {1..30}; do
+            if curl -fsS "https://$RENDER_BACKEND_URL/"; then
+              echo "✅ Backend is live and responding"
+              exit 0
+            fi
+            echo "Attempt $i/30: Waiting for backend..."
+            sleep 10
+          done
+          echo "❌ Backend failed to respond after 5 minutes"
+          exit 1
